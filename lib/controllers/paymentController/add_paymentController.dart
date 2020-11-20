@@ -57,8 +57,7 @@ class AddPaymentController<T> extends GetxController {
   /* to get current db logged in user */
   var authController = Get.put(AuthController());
 /*..................... get and set projectList..............*/
-  var _projectList = List<Project>().obs;
-  List<Project> get getProjectLIst => _projectList;
+  var projectList = List<Project>().obs;
   //set setProjectList(Project project) => _projectList.add(project);
 /*..................... get and set projectList..............*/
 
@@ -111,7 +110,7 @@ class AddPaymentController<T> extends GetxController {
 /*<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Bank >>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
   void onInit() {
-    _projectList.bindStream(Database()
+    projectList.bindStream(Database()
         .getOnPmAllProjects(authController.getLoggedInFirebaseUser.uid));
     banAccountList.bindStream(
         Database().getBankAccounts(authController.getLoggedInFirebaseUser.uid));

@@ -116,7 +116,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
         ),
         Flexible(
           child: Obx(() {
-            if (controller.getProjectLIst != null) {
+            if (controller != null) {
               return DropdownButtonFormField(
                   isExpanded: true,
                   validator: (val) => val == null ? "Plz select project" : null,
@@ -136,7 +136,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
                     filled: true,
                   ),
                   hint: Text('Select Project'),
-                  items: controller.getProjectLIst
+                  items: controller.projectList
                       .map((projectObj) => DropdownMenuItem<Project>(
                           value: projectObj,
                           child: Column(

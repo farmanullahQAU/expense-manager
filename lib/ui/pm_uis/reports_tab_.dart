@@ -1,10 +1,18 @@
+import 'package:expense_manager/controllers/ReportsController/payment_report_controller.dart';
+import 'package:expense_manager/controllers/add_project_controller/add_project_controller.dart';
+import 'package:expense_manager/controllers/paymentController/add_paymentController.dart';
+import 'package:expense_manager/models/payment_model.dart';
+import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/ui/admin_ui/login1.dart';
 import 'package:expense_manager/ui/pm_uis/add_project.dart';
 import 'package:expense_manager/ui/sliver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class Reports extends StatelessWidget {
+class Reports extends GetWidget {
+  var paymentReportController = Get.put(PaymentReportController());
+  var addPaymentController = Get.put(AddPaymentController());
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,30 +29,10 @@ class Reports extends StatelessWidget {
               },
             ),
             InkWell(
-              child: addCard(context, Colors.red, ' Payent Report ',
+              child: addCard(context, Colors.red, ' Payment Report ',
                   Icons.account_balance_wallet),
               onTap: () {
-                {
-                  Get.defaultDialog(
-                    barrierDismissible: false,
-                    onCancel: () {
-                      Get.back();
-                    },
-                    confirmTextColor: Get.isDarkMode
-                        ? Theme.of(context).primaryColor
-                        : Colors.white,
-
-                    onConfirm: () {
-                      Get.back();
-                    },
-                    title: 'Add Payment',
-                    //payment option ui displa
-                    actions: [
-                      // Text(e.address),
-                    ],
-                    radius: 10.0,
-                  );
-                }
+                showSelectDialog(context);
               },
             ),
             addCard(context, Colors.purple, 'Labor Report', Icons.work),
@@ -80,6 +68,137 @@ class Reports extends StatelessWidget {
           Text(title)
         ],
       )),
+    );
+  }
+
+  showSelectDialog(BuildContext context) {
+    showDialog(
+      useSafeArea: true,
+      barrierDismissible: false, //enable and disable outside click
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        actions: <Widget>[
+          Row(
+            children: [
+              RaisedButton(
+                color: Theme.of(context).primaryColor,
+                elevation: 5.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                onPressed: () {
+                  if (paymentReportController
+                          .paymentReportFormKey.value.currentState
+                          .validate() &&
+                      paymentReportController.currPaymentType.value != null) {
+                    paymentReportController
+                        .paymentReportFormKey.value.currentState
+                        .save();
+                  }
+                },
+                child: Text(
+                  "Ok",
+                ),
+              ),
+              RaisedButton(
+                color:
+                    Get.isDarkMode ? Theme.of(context).accentColor : Colors.red,
+
+                //  color: Theme.of(context).primaryColor,
+                elevation: 5.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                    color: Get.isDarkMode ? null : Colors.white,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text('Select Vendor'),
+        content: SingleChildScrollView(
+          child: Form(
+              key: paymentReportController.paymentReportFormKey.value,
+              child: Column(
+                children: [
+                  Container(
+                    width: double.maxFinite,
+                    height: 150,
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      itemCount: paymentReportController.paymentTypeList.length,
+                      itemBuilder: (BuildContext context, int index) => Obx(
+                        () => RadioListTile<PaymentType>(
+                          title: Text(paymentReportController
+                              .paymentTypeList[index].paymentType),
+                          value: paymentReportController.paymentTypeList[index],
+                          groupValue:
+                              paymentReportController.currPaymentType.value,
+                          onChanged: (PaymentType value) {
+                            paymentReportController.currPaymentType.value =
+                                value;
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Obx(() {
+                    if (addPaymentController.projectList != null) {
+                      return DropdownButtonFormField(
+                          isExpanded: true,
+                          validator: (val) => val == null
+                              ? "Project and Payment Type both are mandatory"
+                              : null,
+                          isDense: true,
+                          decoration: InputDecoration(
+                            /* enabledBorder: InputBorder.none that will remove the border and also the upper left 
+              and right cut corner  */
+                            contentPadding: EdgeInsets.only(left: 4),
+                            /* 
+              
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+              */
+                            filled: true,
+                          ),
+                          hint: Text('Select Project'),
+                          items: paymentReportController.projectList
+                              .map((projectObj) => DropdownMenuItem<Project>(
+                                  value: projectObj,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 20,
+                                        child: new Text(
+                                            projectObj.customerRelation,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                    ],
+                                  )))
+                              .toList(),
+                          onChanged: (project) {
+                            paymentReportController.currProject.value = project;
+                          });
+                    }
+                    return Text('loading...');
+                  }),
+                ],
+              )
+              // key: formKey,
+
+              ),
+        ),
+      ),
     );
   }
 }
