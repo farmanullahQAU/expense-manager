@@ -21,10 +21,30 @@ class Reports extends StatelessWidget {
               },
             ),
             InkWell(
-              child: addCard(context, Colors.red, ' Payment Report ',
+              child: addCard(context, Colors.red, ' Payent Report ',
                   Icons.account_balance_wallet),
               onTap: () {
-                Get.to(Login1());
+                {
+                  Get.defaultDialog(
+                    barrierDismissible: false,
+                    onCancel: () {
+                      Get.back();
+                    },
+                    confirmTextColor: Get.isDarkMode
+                        ? Theme.of(context).primaryColor
+                        : Colors.white,
+
+                    onConfirm: () {
+                      Get.back();
+                    },
+                    title: 'Add Payment',
+                    //payment option ui displa
+                    actions: [
+                      // Text(e.address),
+                    ],
+                    radius: 10.0,
+                  );
+                }
               },
             ),
             addCard(context, Colors.purple, 'Labor Report', Icons.work),

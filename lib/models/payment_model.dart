@@ -143,14 +143,17 @@ class PaymentType {
       };
 }
 
-class Payment<M> {
+class Payment<T> {
   String transactionType;
   Vendor vendor;
   String transactionMode;
   String paymentType;
-  M mode;
+  String mode;
   double totalAmount;
   String description;
+  String projectId;
+  Bank bank;
+  String paymentId;
 
   Payment({
     this.transactionType,
@@ -160,17 +163,39 @@ class Payment<M> {
     this.mode,
     this.description,
     this.totalAmount,
+    this.projectId,
+    this.bank,
+    this.paymentId,
   });
 
   Payment.fromMap(Map<String, dynamic> map) {
     this.vendor = Vendor.fromMap(map['vendor']);
     this.transactionMode = map['transactionMode'];
     this.paymentType = map[' paymentType'];
-    this.mode = map['mode'];
+    // this.mode is Bank ? Bank.fromMap(map['mode']) : this.mode = map['mode'];
+    /* https://stackoverflow.com/questions/55306746/how-to-use-generics-and-list-of-generics-with-json-serialization-in-dart */
+
+    this.mode = map['mode']; // consider this
     this.description = map['description'];
     this.totalAmount = map['totalAmount'];
     this.transactionType = map['transactionType'];
+    this.projectId = map['projectId'];
+    this.bank = Bank.fromMap(map['bank']);
+    this.paymentId = map['paymentId'];
   }
+
+  Map<String, dynamic> toMap() => {
+        'transactionType': transactionType,
+        'vendor': this.vendor == null ? null : vendor.toMap(),
+        'transactionMode': transactionMode,
+        'paymentType': paymentType,
+        'mode': this.mode,
+        'description': description,
+        'totalAmount': totalAmount,
+        'projectId': projectId,
+        'bank': this.bank == null ? null : bank.toMap(),
+        'paymentId': this.paymentId
+      };
 }
 
 class Vendor {

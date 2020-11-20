@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/add_project_controller/add_project_controller.dart';
 import 'package:expense_manager/controllers/authController/auth_controller.dart';
 import 'package:expense_manager/controllers/customer_controller/customer_controller.dart';
@@ -10,7 +11,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class AddProject extends GetWidget<AddProjectController> {
   TextEditingController nameController = TextEditingController();
@@ -101,9 +105,10 @@ class AddProject extends GetWidget<AddProjectController> {
                 leading: const Icon(
                   Icons.today,
                 ),
-                title: Text(controller.getStartDate == null
-                    ? 'Start Date'
-                    : '${controller.getStartDate.day}/ ${controller.getStartDate.month}/${controller.getStartDate.year}'),
+                title: controller.startDate.value == null
+                    ? Text('Start date?')
+                    : Text(
+                        DateFormat.yMMMd().format(controller.startDate.value)),
                 subtitle: Text('Date start'),
                 onTap: () async {
                   await setStartDate(context);
@@ -119,10 +124,10 @@ class AddProject extends GetWidget<AddProjectController> {
               leading: const Icon(
                 Icons.today,
               ),
-              title: controller.getEndDate == null
-                  ? Text('select end data')
-                  : Text(
-                      '${controller.getEndDate.day}/ ${controller.getEndDate.month}/${controller.getEndDate.year}'),
+              title: controller.dateEnd.value == null
+                  ? Text('End date?')
+                  : Text(DateFormat.yMMMd().format(controller.dateEnd.value)),
+              subtitle: Text('End date'),
 
               // subtitle: Text('Date End'),
               onTap: () async {
@@ -374,28 +379,40 @@ class AddProject extends GetWidget<AddProjectController> {
         ),
         Container(
             width: context.width - 0.2,
-            child: FlatButton(
-                textColor: Get.isDarkMode ? null : Colors.white,
-                child: Text('Add Project'),
-                color: Theme.of(context).primaryColor,
-                onPressed: () async {
-                  if (controller.getformKey.currentState.validate()) {
-                    controller.getformKey.currentState.save();
-                    CircularProgressIndicator();
+            child: RoundedLoadingButton(
+              color: Theme.of(context).primaryColor,
+              child: Text('Add Project', style: TextStyle(color: Colors.white)),
+              controller: controller.roundLoadingButtonController.value,
+              onPressed: () {
+                if (controller.startDate.value == null ||
+                    controller.dateEnd.value == null)
+                  Get.defaultDialog(
+                    barrierDismissible: false,
 
-                    controller.addProject(
-                        /*get current logged in Pm who added who is goint to add this project*/
-                        projectManager:
-                            Get.find<UsrController>().getCurrentUser,
-                        customer: controller.getCurrSelCustomer,
-                        projectContract: controller.getcurrProjContract,
-                        custRelationText: controller.getRelationString,
-                        custRemarksString: controller.getRemarkString,
-                        starDate: controller.getStartDate,
-                        endDate: controller.getEndDate,
-                        estimatedCost: controller.getEstCost);
-                  }
-                }))
+                    confirmTextColor: Get.isDarkMode
+                        ? Theme.of(context).primaryColor
+                        : Colors.white,
+
+                    onConfirm: () {
+                      Get.back();
+                    },
+                    title: 'Error',
+                    middleText: 'Start or end date is Empty',
+                    //payment option ui displa
+
+                    radius: 10.0,
+                  );
+
+                if (controller.getformKey.currentState.validate() &&
+                    controller.startDate.value != null &&
+                    controller.dateEnd.value != null) {
+                  if (controller.startDate.value == null)
+                    controller.getformKey.currentState.save();
+                  controller.addProject();
+                } else
+                  controller.roundLoadingButtonController.value.stop();
+              },
+            ))
       ],
     );
   }
@@ -408,21 +425,21 @@ class AddProject extends GetWidget<AddProjectController> {
     DateTime pikeDate = await showDatePicker(
         initialEntryMode: DatePickerEntryMode.input,
         context: context,
-        initialDate: controller.getStartDate ?? DateTime.now(),
+        initialDate: controller.startDate.value ?? DateTime.now(),
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5));
-    if (pikeDate != null) controller.setStarDate(pikeDate);
+    if (pikeDate != null) controller.startDate.value = pikeDate;
   }
 
   setEndDate(BuildContext context) async {
     DateTime pikeDate = await showDatePicker(
         initialEntryMode: DatePickerEntryMode.input,
         context: context,
-        initialDate: controller.getEndDate ??
+        initialDate: controller.dateEnd.value ??
             DateTime
                 .now(), //if selected time is null set current data as initial
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5));
-    if (pikeDate != null) controller.setEndDate(pikeDate);
+    if (pikeDate != null) controller.dateEnd.value = pikeDate;
   }
 }

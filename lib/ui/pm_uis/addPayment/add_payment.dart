@@ -9,14 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class AddPayment extends GetWidget<AddPaymentController> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController startDateController = TextEditingController();
   var userController = Get.put(UsrController());
 
   List<Usr> customers = new List();
@@ -41,7 +36,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
       ),
       body: Container(
         child: Form(
-          // key: controller.getformKey,
+          key: controller.getformKey,
           child: addForm(context),
         ),
         margin: EdgeInsets.all(20),
@@ -59,7 +54,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 20.0),
-            child: Text('Add Project Details'),
+            child: Text('Add Payment details'),
           ),
           addFirstRow(context),
           addSecondRow(context),
@@ -108,11 +103,10 @@ class AddPayment extends GetWidget<AddPaymentController> {
                         ));
                   }).toList(),
                   onChanged: (PaymentType paymentType) {
-                    if (paymentType.paymentType == 'Customer-Vendor' ||
-                        paymentType.paymentType == 'Pm_Vendor')
-                      showUserSelectVendorDialog(context);
-                    else
-                      controller.setcurrPaymentType = paymentType;
+                    paymentType.paymentType == 'Customer-Vendor' ||
+                            paymentType.paymentType == 'Pm_Vendor'
+                        ? showUserSelectVendorDialog(context, paymentType)
+                        : controller.setcurrPaymentType = paymentType;
                   });
             return Text('loading...');
           }),
@@ -122,8 +116,9 @@ class AddPayment extends GetWidget<AddPaymentController> {
         ),
         Flexible(
           child: Obx(() {
-            if (controller.getProjectLIst != null)
+            if (controller.getProjectLIst != null) {
               return DropdownButtonFormField(
+                  isExpanded: true,
                   validator: (val) => val == null ? "Plz select project" : null,
 
                   // isDense: true,
@@ -131,7 +126,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
                   decoration: InputDecoration(
                     /* enabledBorder: InputBorder.none that will remove the border and also the upper left 
                 and right cut corner  */
-                    contentPadding: EdgeInsets.only(left: 8),
+                    contentPadding: EdgeInsets.only(left: 4),
                     /* 
                 
                 border: OutlineInputBorder(
@@ -145,12 +140,19 @@ class AddPayment extends GetWidget<AddPaymentController> {
                       .map((projectObj) => DropdownMenuItem<Project>(
                           value: projectObj,
                           child: Column(
-                            children: [Text(projectObj.customerRelation)],
+                            children: [
+                              SizedBox(
+                                height: 20,
+                                child: new Text(projectObj.customerRelation,
+                                    overflow: TextOverflow.ellipsis),
+                              ),
+                            ],
                           )))
                       .toList(),
                   onChanged: (contract) {
                     controller.setCurrSelProj = contract;
                   });
+            }
             return Text('loading...');
           }),
         ),
@@ -170,10 +172,10 @@ class AddPayment extends GetWidget<AddPaymentController> {
 
           Flexible(
             child: TextFormField(
-              // controller: controller.estimatedCostController,
+              controller: controller.amountTextEditingController,
               validator: (val) =>
                   val.isEmpty ? "Plz enter estimated cost" : null,
-              onSaved: (val) => controller.setAmount = double.parse(val),
+              onSaved: (val) => controller.amountVal.value = double.parse(val),
               maxLength: 9,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               keyboardType: TextInputType.visiblePassword,
@@ -231,11 +233,9 @@ class AddPayment extends GetWidget<AddPaymentController> {
                             )))
                         .toList(),
                     onChanged: (PaymentMode paymentMode) {
-                      if (paymentMode.mode == 'Bank-Transfer') {
-                        showUserDialogue(context);
-                      } else {
-                        controller.setcurrPaymentMode = paymentMode;
-                      }
+                      paymentMode.mode == 'Bank-Transfer'
+                          ? showUserDialogue(context, paymentMode)
+                          : controller.setcurrPaymentMode = paymentMode;
                     });
 
               return Text('loading...');
@@ -284,7 +284,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
                           )))
                       .toList(),
                   onChanged: (tranType) {
-                    controller.setcurrPaymentMode = tranType;
+                    controller.setCurrTransactionMode = tranType;
                   });
 
             return Text('loading...');
@@ -339,12 +339,10 @@ class AddPayment extends GetWidget<AddPaymentController> {
       children: [
         TextFormField(
           validator: (val) =>
-              val.isNullOrBlank ? "Plz enter customer relation details" : null,
+              val.isNullOrBlank ? "Plz enter payment description" : null,
 
           onChanged: (value) {
-            // controller.setRelationString = value;
-
-            //  print(controller.getRelationString);
+            controller.paymentDescContString.value = value;
           },
           keyboardType: TextInputType.multiline,
           minLines: 1,
@@ -352,16 +350,16 @@ class AddPayment extends GetWidget<AddPaymentController> {
           maxLength: 200,
           // expands: true,
           textInputAction: TextInputAction.newline,
-          controller: controller.paymentDescTextEditingController,
+          controller: controller.paymentDesTextEditingController,
           decoration: InputDecoration(
               suffixIcon: Obx(() =>
-                  controller.getPaymentDescString?.length == null ||
-                          controller.getPaymentDescString == ''
+                  controller.paymentDescContString.value?.length == null ||
+                          controller.paymentDescContString.value == ''
                       ? Container(width: 0.0, height: 0.0)
                       : IconButton(
                           icon: Icon(Icons.clear),
                           onPressed: () {
-                            //   controller.remarksController.clear();
+                            controller.paymentDesTextEditingController.clear();
                           })),
               contentPadding: EdgeInsets.all(4),
 
@@ -375,16 +373,17 @@ class AddPayment extends GetWidget<AddPaymentController> {
             ),
         Container(
             width: context.width - 0.2,
-            child: FlatButton(
-                textColor: Get.isDarkMode ? null : Colors.white,
-                child: Text('Add Project'),
-                color: Theme.of(context).primaryColor,
-                onPressed: () async {
-                  if (controller.getformKey.currentState.validate()) {
-                    controller.getformKey.currentState.save();
-                    CircularProgressIndicator();
-                  }
-                }))
+            child: RoundedLoadingButton(
+              child: Text('Add Payment', style: TextStyle(color: Colors.white)),
+              controller: controller.roundLoadingAdddPaymentContr.value,
+              onPressed: () {
+                if (controller.getformKey.currentState.validate()) {
+                  controller.getformKey.currentState.save();
+                  controller.addPayment();
+                } else
+                  controller.roundLoadingAdddPaymentContr.value.stop();
+              },
+            )),
       ],
     );
   }
@@ -398,7 +397,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               FloatingActionButton(
-                  tooltip: 'Add Student',
+                  tooltip: 'add payment',
                   child: Icon(Icons.add),
                   onPressed: () {
                     // showUserDialogue(context, isUpdate, student);
@@ -411,7 +410,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
     );
   }
 
-  showUserDialogue(BuildContext context) {
+  showUserDialogue(BuildContext context, PaymentMode mode) {
     showDialog(
       //barrierDismissible: false, //enable and disable outside click
       context: context,
@@ -443,7 +442,8 @@ class AddPayment extends GetWidget<AddPaymentController> {
                     height: 200,
                     child: ListView.separated(
                       itemBuilder: (BuildContext context, int index) {
-                        Bank bank = controller.getBanAccountList[index];
+                        var bank = new Bank();
+                        bank = controller.getBanAccountList[index];
                         return Obx(() => ListTile(
                               selectedTileColor: Theme.of(context).primaryColor,
                               selected:
@@ -473,8 +473,9 @@ class AddPayment extends GetWidget<AddPaymentController> {
                               ),
                               onTap: () {
                                 controller.setAccountNoListCurrIndex = index;
-                                controller.setCurrBank =
+                                controller.currBankVal.value =
                                     controller.getBanAccountList[index];
+                                controller.currPaymentMode.value = mode;
                               },
                             ));
                       },
@@ -494,7 +495,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
     );
   }
 
-  showUserSelectVendorDialog(BuildContext context) {
+  showUserSelectVendorDialog(BuildContext context, PaymentType paymentType) {
     showDialog(
       //barrierDismissible: false, //enable and disable outside click
       context: context,
@@ -560,6 +561,9 @@ class AddPayment extends GetWidget<AddPaymentController> {
                                     controller.getVendorList[index];
                                 controller.setVendorListCurrentIndex = index;
                                 print(controller.getcurrVendor.name);
+
+                                controller.currPaymentType.value =
+                                    paymentType; /* set currPayment Type*/
                               },
                             ));
                       },

@@ -31,21 +31,22 @@ class Splash extends GetWidget<UsrController> {
       child: Scaffold(
         body: GetX(
           builder: (_) {
-            if (controller.getCurrentUser == null) {
+            if (controller.currLoggedInUsr.value == null) {
               print('login 2');
               return Login1();
             }
-            if (controller.getCurrentUser.userType == "Project manager") {
+            if (controller.currLoggedInUsr.value.userType ==
+                "Project manager") {
               return PmHomeBottomNav();
             }
-            if (controller.getCurrentUser.userType == "Customer")
+            if (controller.currLoggedInUsr.value.userType == "Customer")
               return AddCustomer();
             return Center(
               child: CircularProgressIndicator(),
             );
           },
           initState: (_) async {
-            controller.setCurrentUser = await Database().getUser(
+            controller.currLoggedInUsr.value = await Database().getUser(
                 Get.find<AuthController>().getLoggedInFirebaseUser.uid);
           },
         ),

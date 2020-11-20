@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 String handleError(dynamic error) {
-  switch (error.code) {
+  switch (error) {
     case "wrong-password":
       return "The password is invalid";
 

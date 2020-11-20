@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/authController/auth_error_handler_controller.dart';
+import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/models/project_contract_model.dart';
 import 'package:expense_manager/models/project_model.dart';
@@ -11,13 +13,18 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class AddProjectController extends GetxController {
+  var usrcontroller = Get.put(UsrController());
+  var flag = false.obs;
+  final roundLoadingButtonController = new RoundedLoadingButtonController().obs;
+
   void onInit() async {
+    flag = false.obs;
     //_customerList = Database().getAllCutomers();
     _customerList.bindStream(Database().getCutomers());
     listProjContracts.bindStream(Database().getProjectContracts());
-    pickedDate = DateTime.now().obs;
     getCurrentPm(); //to set currentPm
   }
 
@@ -34,13 +41,6 @@ class AddProjectController extends GetxController {
   final formKey = GlobalKey<FormState>().obs;
   GlobalKey<FormState> get getformKey => formKey.value;
 
-  /*--------project manager who added------*/
-
-  Rx<Usr> currentPm;
-  Usr get getCurrPm => currentPm.value;
-
-  /*--------project manager whow added------*/
-
   /*--------Refresh Controller package------*/
   Rx<RefreshController> refreshController =
       RefreshController(initialRefresh: false).obs;
@@ -49,22 +49,19 @@ class AddProjectController extends GetxController {
   /*--------Refresh Controller package------*/
 
   /*..................start date ...................*/
-  Rx<DateTime> pickedDate = DateTime.now().obs;
-  setStarDate(DateTime selected) {
-    pickedDate.value = selected;
-  }
-
-  DateTime get getStartDate => pickedDate.value;
+  var startDate = Rx<DateTime>();
   /*....................start date .......................*/
 
   /*..................end date ...................*/
-  Rx<DateTime> pickedEndDate = DateTime(DateTime.now().year + 2).obs;
-  setEndDate(DateTime selected) => pickedEndDate.value = selected;
-  DateTime get getEndDate => pickedEndDate?.value;
+  var dateEnd = Rx<DateTime>();
+
   /*....................end date .......................*/
 
 /*---------------------text editing controllers------------------------------*/
   TextEditingController relationController = TextEditingController();
+  TextEditingController startDateTextEditingController =
+      TextEditingController();
+
   RxString relationContString = RxString();
   set setRelationString(String val) => relationContString?.value = val;
   String get getRelationString => relationContString?.value;
@@ -96,7 +93,7 @@ class AddProjectController extends GetxController {
   ProjectContracts get getcurrProjContract => currProjContract.value;
   /*......................project contracts..................*/
   /*>>>>>>>>>>>>>>>>>>>> customer list >>>>>>>>>>>>>>>>>>*/
-  Rx<Usr> currSelCustomer = Rx<Usr>();
+  var currSelCustomer = Rx<Usr>();
   var _customerList = List<Usr>().obs;
   List<Usr> get getCustomerList => _customerList;
 
@@ -104,28 +101,22 @@ class AddProjectController extends GetxController {
   Usr get getCurrSelCustomer => currSelCustomer.value;
 /*>>>>>>>>>>>>>>>>>>>> customer list >>>>>>>>>>>>>>>>>>*/
 
-  addProject(
-      {Usr customer,
-      Usr projectManager,
-      ProjectContracts projectContract,
-      String custRelationText,
-      String custRemarksString,
-      DateTime starDate,
-      DateTime endDate,
-      double estimatedCost}) async {
+  addProject() async {
     try {
       var project = new Project(
           /*instance of project*/
 
-          customer: customer,
-          projectContract: projectContract,
-          customerRelation: custRelationText,
-          customerRemarks: custRemarksString,
-          estimatedCost: estimatedCost,
-          projectManager: projectManager);
+          customer: this.currSelCustomer.value,
+          projectContract: this.currProjContract.value,
+          customerRelation: this.relationContString.value,
+          customerRemarks: this.remarksString.value,
+          estimatedCost: this.estimatedCost.value,
+          projectManager: usrcontroller.currLoggedInUsr.value);
       await Database().addProjectToDb3(project);
+
       Get.snackbar("Contrages", 'Your Project is added',
           snackPosition: SnackPosition.BOTTOM);
+      this.roundLoadingButtonController.value.success();
     } catch (error) {
       print('add project error');
       print(error.toString());
@@ -161,6 +152,6 @@ class AddProjectController extends GetxController {
   getCurrentPm() async {
     Usr currPm =
         await Database().getUser(FirebaseAuth.instance.currentUser.uid);
-    this.currentPm = currPm.obs;
+    this.currSelCustomer = currPm.obs;
   }
 }

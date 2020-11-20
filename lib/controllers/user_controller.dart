@@ -3,12 +3,9 @@ import 'package:expense_manager/models/user_model.dart';
 import 'package:get/state_manager.dart';
 
 class UsrController extends GetxController {
-  var _currLoggedInUsr = Usr().obs;
+  var currLoggedInUsr = Usr().obs;
   var _userList = RxList<Usr>();
   var currentUserName = RxString();
-
-  Usr get getCurrentUser => _currLoggedInUsr.value;
-  set setCurrentUser(Usr currUsr) => this._currLoggedInUsr.value = currUsr;
 
   List<Usr> get getUserList => _userList;
 
@@ -19,6 +16,6 @@ class UsrController extends GetxController {
   // }
 
   void clear() {
-    _currLoggedInUsr.value = Usr();
+    currLoggedInUsr.value = Usr();
   }
 }

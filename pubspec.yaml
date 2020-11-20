@@ -40,6 +40,8 @@ dependencies:
   cached_network_image: 2.3.3
   shimmer: 1.1.2
   firebase_dynamic_links: 0.6.2
+  rounded_loading_button: 1.0.15
+  intl: 0.16.1
 
 
   

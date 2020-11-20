@@ -1,4 +1,5 @@
 import 'package:expense_manager/controllers/authController/auth_controller.dart';
+import 'package:expense_manager/controllers/authController/auth_error_handler_controller.dart';
 import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/models/payment_model.dart';
 import 'package:expense_manager/models/project_model.dart';
@@ -6,8 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class AddPaymentController<T> extends GetxController {
+  TextEditingController amountTextEditingController = TextEditingController();
+  TextEditingController paymentDesTextEditingController =
+      TextEditingController();
+  var paymentDescContString = RxString();
+  var amountVal = RxDouble();
+
+  final roundLoadingAdddPaymentContr = new RoundedLoadingButtonController().obs;
+
 /*____________________selected account list inde____________________*/
   RxInt accountNoListCurrentIndex = 0.obs;
   set setAccountNoListCurrIndex(int index) =>
@@ -38,7 +48,7 @@ class AddPaymentController<T> extends GetxController {
 
   /*,,,,,,,,,,,,,,,,,,,,,,,,,payment mode,,,,,,,,,,,,,,,*/
   Rx<PaymentMode> currPaymentMode = Rx<PaymentMode>();
-  set setcurrPaymentMode(val) => currPaymentMode.value = val;
+  set setcurrPaymentMode(PaymentMode val) => currPaymentMode.value = val;
   PaymentMode get getcurrPaymentMode => currPaymentMode.value;
   var paymentModeList = List<PaymentMode>().obs;
   List<PaymentMode> get getPaymentModeList => paymentModeList;
@@ -58,14 +68,6 @@ class AddPaymentController<T> extends GetxController {
 
   //set setBanAccountList(Bank bank) => banAccountList.add(bank);
 /*------------------- get and set Bank account---------------------*/
-
-/*++++++++++++++++++++++ payment description++++++++++++++++++++*/
-  TextEditingController paymentDescTextEditingController =
-      TextEditingController();
-  RxString paymentDescContString = RxString();
-  set setAddPaymentDesc(String val) => paymentDescContString?.value = val;
-  String get getPaymentDescString => paymentDescContString?.value;
-/*++++++++++++++++++++++ payment description++++++++++++++++++++*/
 
 /*:::::::::::::::::::::::::payment Type List ::::::::::::::::::::::::::-*/
   var paymentTypeList = List<PaymentType>().obs;
@@ -108,11 +110,6 @@ class AddPaymentController<T> extends GetxController {
   Bank get getCurrBank => currBankVal.value;
 /*<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Bank >>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-  TextEditingController amountTextEditingController = TextEditingController();
-  var amountVal = RxDouble();
-  set setAmount(double val) => amountVal.value = val;
-  double get getPaymentAmount => amountVal?.value;
-
   void onInit() {
     _projectList.bindStream(Database()
         .getOnPmAllProjects(authController.getLoggedInFirebaseUser.uid));
@@ -126,38 +123,40 @@ class AddPaymentController<T> extends GetxController {
   }
 
   addPayment() async {
-    String tranType = this.getCurrTransaction.transactionType;
     var payment = new Payment(
-        transactionType: tranType,
-        vendor: this.getcurrVendor,
+        projectId: this.getCurrSelProj.id,
+        transactionType: this.currTransactionType.value.transactionType,
+        vendor: this.currVendor.value,
         transactionMode: this.getCurrTransactionMode.transactionMode,
         paymentType: this.getcurrPaymentType.paymentType,
-        mode: this.getcurrPaymentMode ?? this.currBankVal,
-        description: this.getPaymentDescString,
-        totalAmount: this.getPaymentAmount);
+        mode: this.currPaymentMode.value.mode,
+        description: this.paymentDescContString.value,
+        totalAmount: this.amountVal.value,
+        bank: this.currBankVal.value);
 
-    //       try {
-
-    //   await Database().addProjectToDb3(project);
-    //   Get.snackbar("Contrages", 'Your Project is added',
-    //       snackPosition: SnackPosition.BOTTOM);
-    // } catch (error) {
-    //   print('add project error');
-    //   print(error.toString());
-    //   String errorMessage = handleError(error);
-    //   Get.dialog(AlertDialog(
-    //     title: Text('Error!'),
-    //     content: Text(errorMessage),
-    //     actions: [
-    //       FlatButton(
-    //         //  textColor: Color(0xFF6200EE),
-    //         onPressed: () {
-    //           Get.back();
-    //         },
-    //         child: Text('Cancel'),
-    //       ),
-    //     ],
-    //   ));
-    // }
+    try {
+      await Database().addPaymentToDB(payment);
+      this.roundLoadingAdddPaymentContr.value.success();
+      Get.snackbar("Contrages", 'Payment added successfully',
+          snackPosition: SnackPosition.BOTTOM);
+    } catch (error) {
+      print('add payment error');
+      print(error.toString());
+      String errorMessage = handleError(error);
+      Get.dialog(AlertDialog(
+        title: Text('Error!'),
+        content: Text(errorMessage),
+        actions: [
+          FlatButton(
+            //  textColor: Color(0xFF6200EE),
+            onPressed: () {
+              Get.back();
+            },
+            child: Text('Cancel'),
+          ),
+        ],
+      ));
+      this.roundLoadingAdddPaymentContr.value.stop();
+    }
   }
 }

@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/authController/auth_error_handler_controller.dart';
-import 'package:expense_manager/controllers/error_handling_controller.dart';
-import 'package:expense_manager/controllers/paymentController/add_paymentController.dart';
 import 'package:expense_manager/models/payment_model.dart';
 import 'package:expense_manager/models/project_contract_model.dart';
 import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/models/user_model.dart';
-import 'package:get/get.dart';
 
 class Database {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -14,6 +11,8 @@ class Database {
       FirebaseFirestore.instance.collection('projects');
 
   CollectionReference usrs = FirebaseFirestore.instance.collection("users");
+  CollectionReference addPayment =
+      FirebaseFirestore.instance.collection("payments");
 
   createNewUser(Usr usr) async {
 // create user with custom user id
@@ -283,8 +282,9 @@ class Database {
         .add(project.toMap());
   }
 
-  // addPaymentToDB(Payment payment) async {
-  //    var documentReference = await projec.doc(payment.p).collection("payments")
-
-  // }
+  addPaymentToDB(Payment payment) async {
+    var documentReference = addPayment.doc();
+    payment.paymentId = documentReference.id;
+    await addPayment.doc(documentReference.id).set(payment.toMap());
+  }
 }
