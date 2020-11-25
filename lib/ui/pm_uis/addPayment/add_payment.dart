@@ -388,28 +388,6 @@ class AddPayment extends GetWidget<AddPaymentController> {
     );
   }
 
-  Widget projectDialog(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              FloatingActionButton(
-                  tooltip: 'add payment',
-                  child: Icon(Icons.add),
-                  onPressed: () {
-                    // showUserDialogue(context, isUpdate, student);
-                  }),
-            ],
-          ),
-          // showUserDialogue(context)
-        ],
-      ),
-    );
-  }
-
   showUserDialogue(BuildContext context, PaymentMode mode) {
     showDialog(
       //barrierDismissible: false, //enable and disable outside click
@@ -436,14 +414,16 @@ class AddPayment extends GetWidget<AddPaymentController> {
             // key: formKey,
             child: Obx(
               () {
-                if (controller.getBanAccountList != null) {
+                if (controller.banAccountList != null) {}
+
+                if (controller.banAccountList != null) {
                   return Container(
                     width: 200,
                     height: 200,
                     child: ListView.separated(
                       itemBuilder: (BuildContext context, int index) {
-                        var bank = new Bank();
-                        bank = controller.getBanAccountList[index];
+                        Bank bank = controller.banAccountList[index];
+
                         return Obx(() => ListTile(
                               selectedTileColor: Theme.of(context).primaryColor,
                               selected:
@@ -452,7 +432,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
                               leading: CachedNetworkImage(
                                 placeholder: (BuildContext context, _) =>
                                     CircularProgressIndicator(),
-                                imageUrl: bank.logoUrl.toString(),
+                                imageUrl: bank.logoUrl,
                                 errorWidget: (context, url, error) =>
                                     Text("logo..."),
                                 imageBuilder: (context, imageProvider) =>
@@ -474,19 +454,22 @@ class AddPayment extends GetWidget<AddPaymentController> {
                               onTap: () {
                                 controller.setAccountNoListCurrIndex = index;
                                 controller.currBankVal.value =
-                                    controller.getBanAccountList[index];
+                                    controller.banAccountList[index];
                                 controller.currPaymentMode.value = mode;
                               },
                             ));
                       },
-                      itemCount: controller.getBanAccountList.length,
+                      itemCount: controller.banAccountList.length,
                       separatorBuilder: (BuildContext context, int index) {
                         return Divider();
                       },
                     ),
                   );
+                } else {
+                  print('no bank account found');
+
+                  return Text('loading.....');
                 }
-                return Text('loading.....');
               },
             ),
           ),

@@ -3,13 +3,16 @@ import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/models/user_model.dart';
 import 'package:expense_manager/ui/add_customer.dart';
+import 'package:expense_manager/ui/pm_uis/pm_home.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 
+import '../pm_home_controller.dart';
 import 'auth_error_handler_controller.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
@@ -50,6 +53,8 @@ class AuthController extends GetxController {
   }
 
   var userController = Get.put(UsrController());
+  var pmHomeTabNavController = Get.put(PmHomeTabNavController());
+
   FirebaseAuth auth = FirebaseAuth.instance;
   var _firebaseLoggedInuser = Rx<User>();
   User get getLoggedInFirebaseUser => _firebaseLoggedInuser?.value;
@@ -109,26 +114,21 @@ class AuthController extends GetxController {
   void login(String email, String password) async {
     try {
       Get.defaultDialog(
-          title: "Wait plz...",
-          radius: 2.0,
+          title: " ",
+          radius: 0.0,
           barrierDismissible: false,
           content: Center(
-            child: CircularProgressIndicator(),
-          ));
+              child: SpinKitFadingCircle(
+            color: Colors.blue,
+            size: 50.0,
+          )));
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       Get.back(); /* if user is logged in successfully then first dialogue will clodse */
-      Get.defaultDialog(
-          radius: 2.0,
-          barrierDismissible: false,
-          title: 'Login',
-          content: Text('Successfully logged in'));
-      /*-----------------------------*/
 
-      Get.back();
     } on FirebaseAuthException catch (error) {
       print('login error');
       print(error.toString());
@@ -159,7 +159,9 @@ class AuthController extends GetxController {
     try {
       await auth.signOut();
 
-      userController.clear(); //to remove logged in user from cache locally
+      userController.clear();
+      pmHomeTabNavController.clear();
+      //to remove logged in user from cache locally
       Get.back();
     } on FirebaseAuthException catch (err) {
       Get.snackbar('Error', err.toString());

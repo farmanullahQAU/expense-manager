@@ -42,7 +42,10 @@ dependencies:
   firebase_dynamic_links: 0.6.2
   rounded_loading_button: 1.0.15
   intl: 0.16.1
-
+  rflutter_alert: 1.1.0
+  flutter_spinkit: 4.1.2+1
+  multi_image_picker: 4.7.14
+  carousel_pro: 1.0.0
 
   
   

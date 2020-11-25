@@ -1,4 +1,6 @@
+import 'package:expense_manager/ui/Reports/payment_report.dart';
 import 'package:expense_manager/ui/admin_ui/login1.dart';
+import 'package:expense_manager/ui/pm_uis/bankAccounts/add_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,17 +38,19 @@ class AddNew extends GetWidget {
               },
             ),
             InkWell(
-              child: addCard(context, Colors.red, ' Add Labor',
-                  Icons.account_balance_wallet),
+              child: addCard(context, Colors.red, ' Add Bank Account',
+                  Icons.account_balance),
               onTap: () {
-                //  Get.to(Login1());
+                Get.toNamed('addBankAccountUi');
               },
             ),
             addCard(context, Colors.purple, 'Add Contracts', Icons.work),
             addCard(
                 context, Colors.deepOrangeAccent, 'Add other', Icons.subway),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Get.to(PaymentReport());
+              },
               child: addCard(
                 context,
                 Colors.amber,

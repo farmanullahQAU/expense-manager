@@ -1,7 +1,6 @@
 import 'package:expense_manager/controllers/pm_hom_botom_Nav_controller.dart';
 import 'package:expense_manager/controllers/pm_home_controller.dart';
 import 'package:expense_manager/controllers/authController/auth_controller.dart';
-import 'package:expense_manager/controllers/payment_tab_controller.dart';
 import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/ui/add_customer.dart';
@@ -35,11 +34,9 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
               ),
             ),
             ListTile(
-              onTap: () {
-                //  Get.to(Upload());
-              },
-              leading: Icon(Icons.message),
-              title: Text('Messages'),
+              onTap: () {},
+              leading: Icon(Icons.add_a_photo),
+              title: Text('Upload Images'),
             ),
             ListTile(
               leading: Icon(Icons.account_circle),
@@ -85,7 +82,7 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.person_add),
           onPressed: () {
-            Get.toNamed('addCustomer');
+            Get.toNamed('uploadPictureUi');
             // Get.defaultDialog(title: 'Add new user', actions: [AddCustomer()]);
           }),
     );
@@ -102,8 +99,6 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
   ];
   @override
   Widget build(BuildContext context) {
-    final paymentTabController = Get.put(PaymentTabController());
-
     return DefaultTabController(
       length: _tabs.length,
       child: NestedScrollView(
@@ -140,7 +135,7 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
-                  title: Obx(() => Text(paymentTabController.getTitle)),
+                  title: Obx(() => Text(controller.tabTitle.value)),
                   background: Image.network(
                     "https://propakistani.pk/wp-content/uploads/2020/08/Construction.jpg",
                     fit: BoxFit.cover,
@@ -150,8 +145,7 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
               delegate: _SliverAppBarDelegate(
                 TabBar(
                   onTap: (int index) {
-                    print(_tabs[index]['name'].toString());
-                    paymentTabController.setTitle = _tabs[index]['name'];
+                    controller.tabTitle.value = _tabs[index]['name'];
                   },
                   labelColor: Theme.of(context).accentColor,
                   unselectedLabelColor: Colors.grey,
@@ -167,16 +161,10 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
           ];
         },
         body: TabBarView(
+          /* tabB bar view */
           controller: _tabController,
           physics: BouncingScrollPhysics(),
-          children: [
-            AddNew(),
-
-            //  Icon(Icons.directions_transit),
-            Reports(),
-            //PaymentChart(),
-            LineChartSample2()
-          ],
+          children: [AddNew(), Reports(), LineChartSample2()],
         ),
       ),
     );

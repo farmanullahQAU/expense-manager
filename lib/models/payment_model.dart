@@ -78,6 +78,8 @@
 //   }
 // }
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class TransactionsType {
   String transactionType;
   TransactionsType({this.transactionType});
@@ -93,25 +95,31 @@ class TransactionMode {
       : this.transactionMode = map['transactionMode'];
 }
 
+enum logoUrls { regular, installment }
+
 class Bank {
   String bankName;
-  String branch;
   String accountNo;
   String logoUrl;
+  //DocumentReference documentReference;
 
-  Bank({this.bankName, this.branch, this.accountNo, this.logoUrl});
+  Bank({
+    this.bankName,
+    this.accountNo,
+    this.logoUrl,
+  });
 
   Bank.fromMap(Map<String, dynamic> map) {
     this.bankName = map['bankName'];
-    this.branch = map[' branch'];
     this.accountNo = map['accountNo'];
     this.logoUrl = map['logoUrl'];
+    // this.documentReference = map['documentReference'];
   }
 
   Map<String, dynamic> toMap() => {
         'bankName': bankName,
-        'branch': branch,
         'accountNo': accountNo,
+        'logoUrl': logoUrl,
       };
 }
 
@@ -169,7 +177,7 @@ class Payment<T> {
   });
 
   Payment.fromMap(Map<String, dynamic> map) {
-    this.vendor = Vendor.fromMap(map['vendor']);
+    this.vendor = map['vendor'] != null ? Vendor.fromMap(map['vendor']) : null;
     this.transactionMode = map['transactionMode'];
     this.paymentType = map[' paymentType'];
     // this.mode is Bank ? Bank.fromMap(map['mode']) : this.mode = map['mode'];
@@ -180,7 +188,7 @@ class Payment<T> {
     this.totalAmount = map['totalAmount'];
     this.transactionType = map['transactionType'];
     this.projectId = map['projectId'];
-    this.bank = Bank.fromMap(map['bank']);
+    this.bank = map['bank'] != null ? Bank.fromMap(map['bank']) : null;
     this.paymentId = map['paymentId'];
   }
 

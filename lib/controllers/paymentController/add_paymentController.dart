@@ -63,7 +63,7 @@ class AddPaymentController<T> extends GetxController {
 
 /*------------------- get and set Bank account-----------------------*/
   var banAccountList = List<Bank>().obs;
-  List<Bank> get getBanAccountList => banAccountList;
+  // List<Bank> get getBanAccountList => banAccountList;
 
   //set setBanAccountList(Bank bank) => banAccountList.add(bank);
 /*------------------- get and set Bank account---------------------*/

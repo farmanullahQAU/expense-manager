@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/authController/auth_error_handler_controller.dart';
 import 'package:expense_manager/models/payment_model.dart';
@@ -201,6 +203,18 @@ class Database {
     });
   }
 
+  Future<bool> isAccountExist(String uId, String bankName) async {
+    final QuerySnapshot result = await firestore
+        .collection('users')
+        .doc(uId)
+        .collection('bank_accounts')
+        .where('bankName', isEqualTo: bankName)
+        .limit(1)
+        .get();
+    final List<QueryDocumentSnapshot> documents = result.docs;
+    return documents.length == 1;
+  }
+
   Stream<List<Usr>> getCutomers() {
     return firestore
         .collection('users')
@@ -220,6 +234,28 @@ class Database {
         customerList.add(Usr.fromMap(queryDocumentSnapshot.data()));
       });
       return customerList;
+    });
+  }
+
+  Stream<List<dynamic>> getPayments(String projId) {
+    return firestore
+        .collection('payments')
+        .where('projectId', isEqualTo: projId)
+        .snapshots()
+        .map((querySnapshot) {
+      if (querySnapshot.docs.isEmpty) {
+        print('no Payments exists');
+      }
+
+      List<Payment> paymentList = List();
+      querySnapshot.docs.forEach((queryDocumentSnapshot) {
+        print(queryDocumentSnapshot.id);
+        if (queryDocumentSnapshot.exists) {
+          print('we found ');
+        }
+        paymentList.add(Payment.fromMap(queryDocumentSnapshot.data()));
+      });
+      return paymentList;
     });
   }
 
@@ -286,5 +322,13 @@ class Database {
     var documentReference = addPayment.doc();
     payment.paymentId = documentReference.id;
     await addPayment.doc(documentReference.id).set(payment.toMap());
+  }
+
+  addBankAccountToDB(Bank bank, String uid) async {
+    return FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection('bank_accounts')
+        .add(bank.toMap());
   }
 }

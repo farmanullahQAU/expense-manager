@@ -9,6 +9,7 @@ import 'package:expense_manager/ui/pm_uis/pm_home.dart';
 
 import 'package:expense_manager/ui/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
 class Root extends GetWidget {
@@ -42,8 +43,9 @@ class Splash extends GetWidget<UsrController> {
             if (controller.currLoggedInUsr.value.userType == "Customer")
               return AddCustomer();
             return Center(
-              child: CircularProgressIndicator(),
-            );
+                child: SpinKitFadingCircle(
+              color: Theme.of(context).primaryColor,
+            ));
           },
           initState: (_) async {
             controller.currLoggedInUsr.value = await Database().getUser(
