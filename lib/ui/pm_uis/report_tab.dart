@@ -24,8 +24,8 @@ class Reports extends GetWidget {
           crossAxisCount: context.isLandscape ? 3 : 2,
           children: [
             InkWell(
-              child: addCard(context, Colors.green, 'Vendor Report',
-                  Icons.store_mall_directory),
+              child:
+                  addCard(context, Colors.green, 'Vendor Report', Icons.person),
               onTap: () {
                 //  Get.toNamed('signUpView');
               },
@@ -34,7 +34,7 @@ class Reports extends GetWidget {
               child: addCard(context, Colors.red, ' Payment Report ',
                   Icons.account_balance_wallet),
               onTap: () {
-                showSelectDialog(context);
+                showSelectPaymentAndProjectDialog(context);
               },
             ),
             addCard(context, Colors.purple, 'Labor Report', Icons.work),
@@ -55,9 +55,13 @@ class Reports extends GetWidget {
 
   addCard(BuildContext context, Color color, String title, IconData icon) {
     return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
       borderOnForeground: true,
       semanticContainer: false,
-      margin: EdgeInsets.all(1),
+      margin: EdgeInsets.all(5),
       child: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -73,7 +77,7 @@ class Reports extends GetWidget {
     );
   }
 
-  showSelectDialog(BuildContext context) {
+  showSelectPaymentAndProjectDialog(BuildContext context) {
     showDialog(
       useSafeArea: true,
       barrierDismissible: false, //enable and disable outside click

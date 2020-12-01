@@ -1,10 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expense_manager/controllers/pm_hom_botom_Nav_controller.dart';
 import 'package:expense_manager/controllers/pm_home_controller.dart';
 import 'package:expense_manager/controllers/authController/auth_controller.dart';
+import 'package:expense_manager/controllers/profileController/profile_controller.dart';
 import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/db_services/database.dart';
+import 'package:expense_manager/ui/pm_uis/report_tab.dart';
 import 'package:expense_manager/ui/add_customer.dart';
-import 'package:expense_manager/ui/pm_uis/reports_tab_.dart';
 import 'package:expense_manager/ui/sliver.dart';
 
 import 'package:flutter/material.dart';
@@ -12,10 +14,12 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 
 import 'add_new_tab.dart';
-import 'add_project.dart';
 import 'vendor_chart.dart';
 
 class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
+  var usrController = Get.put(UsrController());
+  var profileController = Get.put(ProfileController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,12 +28,79 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(),
-              child: Text(
-                'Drawer Header',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              // child: Text(
+              //   'Drawer Header',
+              //   style: TextStyle(
+              //     color: Colors.white,
+              //     fontSize: 24,
+              //   ),
+              // ),
+
+              child: Obx(
+                () => Stack(
+                  children: [
+                    SingleChildScrollView(
+                        child: Column(
+                      children: [
+                        Container(
+                          child: Stack(
+                            children: [
+                              usrController.currLoggedInUsr.value.photoUrl !=
+                                      null
+                                  ? Obx(
+                                      () => Material(
+                                        child: CachedNetworkImage(
+                                          width: 100,
+                                          height: 100,
+                                          imageUrl: usrController
+                                              .currLoggedInUsr.value.photoUrl,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Center(
+                                            child: Container(
+                                                width: 100,
+                                                height: 100,
+                                                padding: EdgeInsets.all(10),
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2.0,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation(
+                                                          Theme.of(context)
+                                                              .primaryColor),
+                                                )),
+                                          ),
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(125.0)),
+                                        clipBehavior: Clip.hardEdge,
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.account_circle,
+                                      size: 100,
+                                      // color: Colors.grey
+                                    ),
+                              IconButton(
+                                  onPressed: () {
+                                    profileController.choseImage();
+                                  },
+                                  padding: EdgeInsets.only(top: 20),
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.grey,
+                                  iconSize: 40,
+                                  icon: Icon(Icons.camera_alt,
+                                      color: Colors.white54.withOpacity(0.4))),
+                            ],
+                          ),
+                          width: 105,
+                          margin: EdgeInsets.all(10),
+                        ),
+                      ],
+                    )),
+                  ],
                 ),
               ),
             ),
@@ -66,10 +137,8 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
               label: 'Add Project',
             ),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.school,
-              ),
-              label: 'School',
+              icon: Icon(Icons.message),
+              label: 'Messages',
             ),
           ],
           currentIndex: controller.getBottomNavSeleIndex,
@@ -80,9 +149,9 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.person_add),
+          child: Icon(Icons.business),
           onPressed: () {
-            Get.toNamed('uploadPictureUi');
+            Get.toNamed('addProject');
             // Get.defaultDialog(title: 'Add new user', actions: [AddCustomer()]);
           }),
     );
@@ -106,11 +175,6 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
           return <Widget>[
             SliverAppBar(
               actions: [
-                IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      Get.toNamed('addProject');
-                    }),
                 IconButton(
                     icon: Icon(Icons.add_to_home_screen),
                     onPressed: () {

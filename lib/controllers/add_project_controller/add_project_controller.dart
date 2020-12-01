@@ -103,7 +103,7 @@ class AddProjectController extends GetxController {
 
   addProject() async {
     try {
-      var project = new Project(
+      /* var project = new Project(
           /*instance of project*/
 
           customer: this.currSelCustomer.value,
@@ -112,7 +112,19 @@ class AddProjectController extends GetxController {
           customerRemarks: this.remarksString.value,
           estimatedCost: this.estimatedCost.value,
           projectManager: usrcontroller.currLoggedInUsr.value);
-      await Database().addProjectToDb3(project);
+          */
+
+      var project = new Project(
+          /*instance of project*/
+
+          customer: this.currSelCustomer.value,
+          projectContract: this.currProjContract.value,
+          customerRelation: this.relationContString.value,
+          customerRemarks: this.remarksString.value,
+          estimatedCost: this.estimatedCost.value,
+          projectPmIds: [usrcontroller.currLoggedInUsr.value.id]);
+
+      await Database().addProjectToDb4(project);
 
       Get.snackbar("Contrages", 'Your Project is added',
           snackPosition: SnackPosition.BOTTOM);

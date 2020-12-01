@@ -11,12 +11,15 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../pm_home_controller.dart';
 import 'auth_error_handler_controller.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 class AuthController extends GetxController {
+  final roundLoadingLoginContr = new RoundedLoadingButtonController().obs;
+
   void initDynamicLinks() async {
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData dynamicLink) async {
@@ -113,23 +116,15 @@ class AuthController extends GetxController {
 
   void login(String email, String password) async {
     try {
-      Get.defaultDialog(
-          title: " ",
-          radius: 0.0,
-          barrierDismissible: false,
-          content: Center(
-              child: SpinKitFadingCircle(
-            color: Colors.blue,
-            size: 50.0,
-          )));
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      Get.back(); /* if user is logged in successfully then first dialogue will clodse */
+      // Get.back(); /* if user is logged in successfully then first dialogue will clodse */
 
     } on FirebaseAuthException catch (error) {
+      this.roundLoadingLoginContr.value.stop();
       print('login error');
       print(error.toString());
       String erroMessage = handleError(error);

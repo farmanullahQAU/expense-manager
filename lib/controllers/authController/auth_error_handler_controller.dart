@@ -20,8 +20,13 @@ String handleError(dynamic error) {
 
     case "ERROR_WRONG_PASSWORD":
       return "Your password is wrong.";
+    case "firebase_auth/unknown":
+      return "Please check your internet connection.";
 
     case "user-not-found":
+      return "User with this email doesn't exist.";
+
+    case " firebase_auth/user-not-found":
       return "User with this email doesn't exist.";
 
     case "ERROR_USER_DISABLED":

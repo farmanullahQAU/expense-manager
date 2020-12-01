@@ -8,6 +8,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:850570292034:android:c47e9c2845e87156f576db",
+        "android_client_info": {
+          "package_name": "com.example.expenseManager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "850570292034-votstif6r206fnd5cfff9errmmd7bhvb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9c1qcST3wsgtGRU1pmypN64Xsfe8FwjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "850570292034-votstif6r206fnd5cfff9errmmd7bhvb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:850570292034:android:2a3273f5a82bb10bf576db",
         "android_client_info": {
           "package_name": "com.example.expense_manager"

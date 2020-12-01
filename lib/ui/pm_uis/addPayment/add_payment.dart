@@ -116,7 +116,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
         ),
         Flexible(
           child: Obx(() {
-            if (controller != null) {
+            if (controller.projectList != null) {
               return DropdownButtonFormField(
                   isExpanded: true,
                   validator: (val) => val == null ? "Plz select project" : null,
@@ -430,6 +430,8 @@ class AddPayment extends GetWidget<AddPaymentController> {
                                   index == controller.getAccountNoListCurrIndex,
 
                               leading: CachedNetworkImage(
+                                width: 50,
+                                height: 50,
                                 placeholder: (BuildContext context, _) =>
                                     CircularProgressIndicator(),
                                 imageUrl: bank.logoUrl,

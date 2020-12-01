@@ -40,6 +40,8 @@ class Usr {
   String userType;
   String address;
   String phone;
+  String photoUrl;
+  String chatWith;
 
   Usr(
       {this.name,
@@ -47,7 +49,9 @@ class Usr {
       this.email,
       this.userType,
       this.address,
-      this.phone});
+      this.phone,
+      this.photoUrl,
+      this.chatWith});
 
   Usr.fromMap(Map<String, dynamic> map) {
     this.email = map['email'];
@@ -56,6 +60,8 @@ class Usr {
     this.userType = map['userType'];
     this.address = map['address'];
     this.phone = map['phone'];
+    this.photoUrl = map['photoUrl'];
+    this.chatWith = map['chatWith'];
   }
 
   Map<String, dynamic> toMap() => {
@@ -64,7 +70,9 @@ class Usr {
         'email': this.email,
         'userType': this.userType,
         'address': this.address,
-        'phone': this.phone
+        'phone': this.phone,
+        'photoUrl': this.photoUrl ?? "",
+        'chatWith': this.chatWith ?? "",
       };
 }
 

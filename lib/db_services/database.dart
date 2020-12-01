@@ -259,6 +259,7 @@ class Database {
     });
   }
 
+/*
   getOnPmAllProjects(String uid) {
     return firestore
         .collection('users')
@@ -270,6 +271,24 @@ class Database {
       querySnapshot.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
         print('current pm all projects id');
         projects.add(Project.fromMap(queryDocumentSnapshot.data()));
+      });
+      return projects;
+    });
+  }
+  */
+  getOnPmAllProjects(String uid) {
+    return firestore
+        .collection('Projects')
+        .where('projectPmIds', arrayContains: uid)
+        .snapshots()
+        .map((querySnapshot) {
+      List<Project> projects = List();
+      querySnapshot.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+        print('current pm all projects id');
+        projects.add(Project.fromMap(queryDocumentSnapshot.data()));
+      });
+      projects.forEach((element) {
+        print(element.estimatedCost);
       });
       return projects;
     });
@@ -301,7 +320,7 @@ class Database {
   //       .set(project.toMap());
   // }
 
-  addProjectToDb3(Project project) async {
+  /* addProjectToDb3(Project project) async {
     var documentReferenceId =
         FirebaseFirestore.instance.collection('Projects').doc().id;
     project.id = documentReferenceId;
@@ -317,6 +336,12 @@ class Database {
         .collection('pm_projects')
         .add(project.toMap());
   }
+  */
+
+  addProjectToDb4(Project project) async {
+    var documentReferenceId =
+        FirebaseFirestore.instance.collection('Projects').add(project.toMap());
+  }
 
   addPaymentToDB(Payment payment) async {
     var documentReference = addPayment.doc();
@@ -330,5 +355,20 @@ class Database {
         .doc(uid)
         .collection('bank_accounts')
         .add(bank.toMap());
+  }
+
+  getAllUsers() {
+    try {
+      return firestore.collection("users").snapshots().map((event) {
+        List<Usr> usrList = List();
+
+        event.docs.forEach((element) {
+          usrList.add(Usr.fromMap(element.data()));
+        });
+        return usrList;
+      });
+    } catch (error) {
+      handleError(error);
+    }
   }
 }

@@ -16,9 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
-class Login1 extends GetWidget {
-  final AuthController authController = Get.put(AuthController());
+class Login1 extends GetWidget<AuthController> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -33,26 +33,31 @@ class Login1 extends GetWidget {
         body: Stack(
           children: [
             Container(
-              width: context.width,
-              height: context.isPortrait
-                  ? context.height * 0.4
-                  : context.height * 0.3,
-              decoration: BoxDecoration(
-                boxShadow: const <BoxShadow>[
-                  BoxShadow(
-                    offset: Offset(0, 20),
-                    color: Color(0x66000000),
-                    blurRadius: 10,
-                    spreadRadius: 2.0,
-                  )
-                ],
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: const Radius.circular(60),
-                  bottomRight: const Radius.circular(60),
+                width: context.width,
+                height: context.height,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [Colors.blue, Colors.green]))
+                //       ? context.height * 0.4
+                //       : context.height * 0.3,
+                //   decoration: BoxDecoration(
+                //     boxShadow: const <BoxShadow>[
+                //       BoxShadow(
+                //         offset: Offset(0, 20),
+                //         color: Color(0x66000000),
+                //         blurRadius: 10,
+                //         spreadRadius: 2.0,
+                //       )
+                //     ],
+                //     color: Theme.of(context).primaryColor,
+                //     borderRadius: BorderRadius.only(
+                //       bottomLeft: const Radius.circular(60),
+                //       bottomRight: const Radius.circular(60),
+                //     ),
+                //   ),
                 ),
-              ),
-            ),
             ListView(
               children: [
                 _buildLogo(context),
@@ -71,12 +76,12 @@ class Login1 extends GetWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 2),
           child: Text(
             'LOGIN',
             style: TextStyle(
-              //  fontSize: MediaQuery.of(context).size.height / 25,
               fontWeight: FontWeight.bold,
+              fontSize: MediaQuery.of(context).size.height / 25,
               color:
                   Get.isDarkMode ? Theme.of(context).accentColor : Colors.white,
             ),
@@ -114,17 +119,10 @@ class Login1 extends GetWidget {
                       children: <Widget>[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "Login",
-                              style: TextStyle(
-                                  // fontSize: MediaQuery.of(context).size.height / 30,
-                                  ),
-                            ),
-                          ],
+                          children: <Widget>[],
                         ),
                         Form(
-                          key: authController.getLoginformKey,
+                          key: controller.getLoginformKey,
                           child: Column(
                             children: [
                               _buildEmailRow(),
@@ -132,9 +130,9 @@ class Login1 extends GetWidget {
                             ],
                           ),
                         ),
-                        _buildForgetPasswordButton(),
+                        //  _buildForgetPasswordButton(),
                         _buildLoginButton(context),
-                        _buildOrRow(),
+                        //  _buildOrRow(),
                         // _buildSocialBtnRow(),
                       ],
                     ),
@@ -155,7 +153,7 @@ class Login1 extends GetWidget {
   //   );
   // }
 
-  Widget _buildOrRow() {
+  /*Widget _buildOrRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -171,13 +169,34 @@ class Login1 extends GetWidget {
       ],
     );
   }
+  */
 
   Widget _buildLoginButton(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(bottom: 20),
+            width: 150,
+            margin: EdgeInsets.only(top: 50),
+            child: RoundedLoadingButton(
+              width: 150,
+              child: Text('Login',
+                  style: TextStyle(
+                      color: Get.isDarkMode
+                          ? Theme.of(context).accentColor
+                          : Colors.white)),
+              controller: controller.roundLoadingLoginContr.value,
+              onPressed: () {
+                if (controller.getLoginformKey.currentState.validate()) {
+                  controller.getLoginformKey.currentState.save();
+                  controller.login(
+                      emailController.text, passwordController.text);
+                } else
+                  controller.roundLoadingLoginContr.value.stop();
+              },
+            ))
+        /* Container(
+          margin: EdgeInsets.only(top: 50),
           child: RaisedButton(
             //  color: Get.isDarkMode ? Theme.of(context).accentColor : Colors.teal,
             color: Theme.of(context).primaryColor,
@@ -203,11 +222,12 @@ class Login1 extends GetWidget {
             ),
           ),
         )
+        */
       ],
     );
   }
 
-  Widget _buildForgetPasswordButton() {
+  /* Widget _buildForgetPasswordButton() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,6 +239,7 @@ class Login1 extends GetWidget {
       ],
     );
   }
+  */
 
   Widget _buildEmailRow() {
     return TextFormField(

@@ -16,10 +16,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       initialBinding: HomeBinding(),
-      /* if we have multiple controller and we want to access 
-      access a controller from another page we use Get.put(controller name ) */
-
       defaultTransition: Transition.zoom,
       title: 'Flutter Demo',
       initialRoute: '/root',
