@@ -2,7 +2,6 @@ import 'package:expense_manager/routes/routers.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-
 import 'controllers/bindings/home_binding.dart';
 
 void main() async {

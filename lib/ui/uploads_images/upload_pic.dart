@@ -1,9 +1,6 @@
-import 'package:carousel_pro/carousel_pro.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/errorHandler.dart';
 import 'package:expense_manager/controllers/uploadImages/upload_images_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
@@ -127,7 +124,7 @@ class UploadPictures extends GetWidget<UploadImagesController> {
                 height: 5,
               ),
               Expanded(
-                child: buildGridView(),
+                child: buildGridView(context),
               )
             ],
           ),
@@ -136,16 +133,33 @@ class UploadPictures extends GetWidget<UploadImagesController> {
     );
   }
 
-  Widget buildGridView() {
+  Widget buildGridView(context) {
     return Obx(
       () => GridView.count(
         crossAxisCount: 3,
         children: List.generate(controller.images.length, (index) {
           Asset asset = controller.images[index];
-          return AssetThumb(
-            asset: asset,
-            width: 300,
-            height: 300,
+
+          return Padding(
+            padding: const EdgeInsets.all(5),
+            child: Stack(
+              children: [
+                AssetThumb(
+                  asset: asset,
+                  width: 300,
+                  height: 300,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+              ],
+            ),
           );
         }),
       ),

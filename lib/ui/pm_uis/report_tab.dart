@@ -3,10 +3,7 @@ import 'package:expense_manager/controllers/add_project_controller/add_project_c
 import 'package:expense_manager/controllers/paymentController/add_paymentController.dart';
 import 'package:expense_manager/models/payment_model.dart';
 import 'package:expense_manager/models/project_model.dart';
-import 'package:expense_manager/ui/Reports/payment_report.dart';
-import 'package:expense_manager/ui/admin_ui/login1.dart';
-import 'package:expense_manager/ui/pm_uis/add_project.dart';
-import 'package:expense_manager/ui/sliver.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';

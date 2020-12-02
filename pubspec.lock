@@ -260,6 +260,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.2"
+  firebase_messaging:
+    dependency: "direct main"
+    description:
+      name: firebase_messaging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.0.3"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -401,6 +408,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.16.1"
+  intl_phone_number_input:
+    dependency: "direct main"
+    description:
+      name: intl_phone_number_input
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.2+2"
   js:
     dependency: transitive
     description:
@@ -422,13 +436,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.5.0"
-  logger:
+  libphonenumber:
     dependency: transitive
     description:
-      name: logger
+      name: libphonenumber
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.4"
+    version: "1.0.2"
   logging:
     dependency: transitive
     description:
@@ -597,13 +611,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.4+1"
-  rename:
-    dependency: "direct main"
-    description:
-      name: rename
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.0"
   rflutter_alert:
     dependency: "direct main"
     description:

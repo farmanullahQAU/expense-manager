@@ -1,6 +1,4 @@
-import 'package:expense_manager/controllers/pm_home_controller.dart';
 import 'package:expense_manager/controllers/authController/auth_controller.dart';
-import 'package:expense_manager/controllers/user_controller.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,8 +6,6 @@ import 'package:get/state_manager.dart';
 
 class SliverTabView extends GetWidget<AuthController> {
   List<String> _tabs = ['One', 'Two', 'Three'];
-  final TextEditingController _todoController = TextEditingController();
-  final UsrController _studentController = Get.put(UsrController());
 
   //admin home
 

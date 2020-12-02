@@ -3,12 +3,10 @@ import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/models/user_model.dart';
 import 'package:expense_manager/ui/add_customer.dart';
-import 'package:expense_manager/ui/pm_uis/pm_home.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';

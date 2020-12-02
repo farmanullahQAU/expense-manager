@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/models/user_model.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SelectUsrController extends GetxController {

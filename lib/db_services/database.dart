@@ -6,6 +6,7 @@ import 'package:expense_manager/models/payment_model.dart';
 import 'package:expense_manager/models/project_contract_model.dart';
 import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/models/user_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Database {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -294,32 +295,6 @@ class Database {
     });
   }
 
-  //this function adds project inside the user collection with differnt id of project document id
-/*
-  addProjectToDb2(Project project) async {
-    var documentReference = await projec.add(project.toMap());
-    var dos = await documentReference
-        .collection('proj_pm')
-        .add(project.projectManager.toMap());
-    var pmProjDoc = usrs
-        .doc(project.projectManager.id)
-        .collection('pm_projects')
-        .add(project.toMap());
-  }
-  */
-
-  // addProjectToDb3(Project project) async {
-  //   var documentReference = await projec.add(project.toMap());
-  //   var dos = await documentReference
-  //       .collection('proj_pm')
-  //       .add(project.projectManager.toMap());
-  //   var pmProjDoc = usrs
-  //       .doc(project.projectManager.id)
-  //       .collection('pm_projects')
-  //       .doc(documentReference.id)
-  //       .set(project.toMap());
-  // }
-
   /* addProjectToDb3(Project project) async {
     var documentReferenceId =
         FirebaseFirestore.instance.collection('Projects').doc().id;
@@ -340,7 +315,13 @@ class Database {
 
   addProjectToDb4(Project project) async {
     var documentReferenceId =
-        FirebaseFirestore.instance.collection('Projects').add(project.toMap());
+        FirebaseFirestore.instance.collection('Projects').doc().id;
+    project.id = documentReferenceId;
+
+    await FirebaseFirestore.instance
+        .collection('Projects')
+        .doc(project.id)
+        .set(project.toMap());
   }
 
   addPaymentToDB(Payment payment) async {

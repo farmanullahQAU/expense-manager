@@ -5,7 +5,6 @@ class Images {
   DateTime date;
   String projectId;
   DocumentReference reference;
-
   Images({this.imageUrl, this.date, this.projectId});
   Images.fromMap(Map<String, dynamic> map, {this.reference}) {
     this.imageUrl = map['imageUrl'];

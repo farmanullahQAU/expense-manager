@@ -16,6 +16,7 @@ import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SearchUsr extends GetWidget {
+  var usrController = Get.put(UsrController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -33,6 +34,67 @@ class SearchUsr extends GetWidget {
       ),
       body: slideToUnlockPage(context),
     ));
+  }
+
+  Widget slideToUnlockPage(context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        usrController.currLoggedInUsr.value.photoUrl != null
+            ? Material(
+                child: CachedNetworkImage(
+                  width: 150,
+                  height: 150,
+                  imageUrl: usrController.currLoggedInUsr.value.photoUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Center(
+                    child: Container(
+                        width: 150,
+                        height: 150,
+                        padding: EdgeInsets.all(10),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          valueColor: AlwaysStoppedAnimation(
+                              Theme.of(context).primaryColor),
+                        )),
+                  ),
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(125.0)),
+                clipBehavior: Clip.hardEdge,
+              )
+            : Icon(
+                Icons.chat,
+                size: 150,
+                // color: Colors.grey
+              ),
+        Center(
+          child: Opacity(
+            opacity: 0.8,
+            child: Shimmer.fromColors(
+              loop: 4,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                  ),
+                  const Text(
+                    'CHAT MODULE',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ],
+              ),
+              baseColor: Colors.black12,
+              highlightColor: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -175,81 +237,4 @@ class SelectUsr extends SearchDelegate {
       )
     ];
   }
-}
-
-Widget slideToUnlockPage(context) {
-  return Container(
-    width: Get.context.width,
-    height: Get.context.height,
-    child: Stack(
-      fit: StackFit.expand,
-      children: [
-        CircleAvatar(
-          backgroundColor: Colors.blue,
-          backgroundImage: AssetImage('images/chatBackLogo.png'),
-        ),
-        Positioned(
-            bottom: Get.context.height * 0.4,
-            left: 0.0,
-            right: 0.0,
-            child: Center(
-              child: Opacity(
-                opacity: 0.8,
-                child: Shimmer.fromColors(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 4.0),
-                      ),
-                      const Text(
-                        'CHAT MODULE',
-                        style: TextStyle(
-                          fontSize: 19.0,
-                        ),
-                      )
-                    ],
-                  ),
-                  baseColor: Colors.black12,
-                  highlightColor: Colors.white,
-                ),
-              ),
-            )),
-        // Image.asset(
-        //   'images/chatBackground.jpg',
-        //   fit: BoxFit.cover,
-        // ),
-        // Positioned(
-        //   top: 48.0,
-        //   right: 0.0,
-        //   left: 0.0,
-        //   child: Center(
-        //     child: Column(
-        //       children: <Widget>[
-        //         Text(
-        //           '${hour < 10 ? '0$hour' : '$hour'}:${minute < 10 ? '0$minute' : '$minute'}',
-        //           style: TextStyle(
-        //             fontSize: 60.0,
-        //             color: Colors.white,
-        //           ),
-        //         ),
-        //         const Padding(
-        //           padding: EdgeInsets.symmetric(vertical: 4.0),
-        //         ),
-        //         Text(
-        //           '${days[day - 1]}, ${months[month - 1]} $dayInMonth',
-        //           style: TextStyle(fontSize: 24.0, color: Colors.white),
-        //         )
-        //       ],
-        //     ),
-        //   ),
-        // ),
-      ],
-    ),
-    // decoration: BoxDecoration(
-    //     gradient: LinearGradient(
-    //         begin: Alignment.topRight,
-    //         end: Alignment.bottomLeft,
-    //         colors: [Colors.blue, Colors.green]))
-  );
 }

@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/ReportsController/payment_report_controller.dart';
-import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/models/payment_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 
 class PaymentReport extends GetWidget<PaymentReportController> {

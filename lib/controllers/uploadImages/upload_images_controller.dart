@@ -96,19 +96,23 @@ class UploadImagesController extends GetxController {
 
     for (var imageFile in images) {
       postImage(imageFile, context).then((downloadUrl) {
-        //  imageUrls.add(downloadUrl.toString());
-        //  if (imageUrls.length == images.length)
-        var image = new Images(
-            imageUrl: downloadUrl,
-            date: DateTime.now(),
-            projectId: this.currProject.value.id);
-        //    String documnetID = DateTime.now().millisecondsSinceEpoch.toString();
-        FirebaseFirestore.instance
-            .collection('projects')
-            .doc(this.currProject.value.id)
-            .collection('Pictures')
-            .add(image.toMap())
-            .then((value) {});
+        imageUrls.add(downloadUrl.toString());
+        if (imageUrls.length == images.length) {
+          var image = new Images(
+              imageUrl: downloadUrl,
+              date: DateTime.now(),
+              projectId: this.currProject.value.id);
+          //    String documnetID = DateTime.now().millisecondsSinceEpoch.toString();
+          FirebaseFirestore.instance
+              .collection('Projects')
+              .doc(this.currProject.value.id)
+              .collection('Pictures')
+              .add(image.toMap())
+              .then((value) {
+            print('uploaded');
+            Get.back(); //close dialogue
+          });
+        }
       }).catchError((err) {
         errorController.handleStorageError(err);
         UploadPictures().errorDialogue(context);
@@ -146,11 +150,9 @@ class UploadImagesController extends GetxController {
 
   Future<dynamic> postImage(Asset imageFile, context) async {
     try {
-      // String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      StorageReference reference = FirebaseStorage.instance
-          .ref()
-          .child('projectImages')
-          .child(imageFile.name);
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      StorageReference reference =
+          FirebaseStorage.instance.ref().child('projectImages').child(fileName);
 
       StorageUploadTask uploadTask = reference
           .putData((await imageFile.getByteData()).buffer.asUint8List());
@@ -171,7 +173,7 @@ class UploadImagesController extends GetxController {
 
       StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
       print(storageTaskSnapshot.ref.getDownloadURL());
-      Get.back();
+      //  Get.back();
       return storageTaskSnapshot.ref.getDownloadURL();
     } catch (err) {
       errorController.errorString.value =
