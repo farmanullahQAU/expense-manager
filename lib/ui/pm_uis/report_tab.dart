@@ -1,16 +1,17 @@
 import 'package:expense_manager/controllers/ReportsController/payment_report_controller.dart';
-import 'package:expense_manager/controllers/add_project_controller/add_project_controller.dart';
-import 'package:expense_manager/controllers/paymentController/add_paymentController.dart';
+import 'package:expense_manager/controllers/ReportsController/project_report_controller.dart';
+import 'package:expense_manager/controllers/select_project_controller.dart';
 import 'package:expense_manager/models/payment_model.dart';
 import 'package:expense_manager/models/project_model.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class Reports extends GetWidget {
   var paymentReportController = Get.put(PaymentReportController());
-  var addPaymentController = Get.put(AddPaymentController());
+  var projectReportController = Get.put(ProjectReportController());
+
+  var addPaymentController = Get.put(SelectProjectController());
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +19,13 @@ class Reports extends GetWidget {
         margin: EdgeInsets.all(20),
         // color: Get.isDarkMode ? Colors.grey[700] : Colors.greenAccent,
         child: GridView.count(
-          crossAxisCount: context.isLandscape ? 3 : 2,
+          crossAxisCount: context.isLandscape ? 2 : 3,
           children: [
             InkWell(
-              child:
-                  addCard(context, Colors.green, 'Vendor Report', Icons.person),
+              child: addCard(
+                  context, Colors.green, 'Project Report', Icons.person),
               onTap: () {
-                //  Get.toNamed('signUpView');
+                projectReportDialogue(context);
               },
             ),
             InkWell(
@@ -42,7 +43,7 @@ class Reports extends GetWidget {
               child: addCard(
                 context,
                 Colors.amber,
-                'Add Report',
+                'Vendor Report',
                 Icons.polymer,
               ),
             ),
@@ -63,12 +64,15 @@ class Reports extends GetWidget {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            color: Get.isDarkMode ? Theme.of(context).accentColor : color,
-            size: context.isLandscape ? 50 : 70,
+          Flexible(
+            child: Icon(
+              icon,
+              color: Get.isDarkMode ? Theme.of(context).accentColor : color,
+              size: context.isLandscape ? 40 : 40,
+            ),
           ),
-          Text(title)
+          Text(title,
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))
         ],
       )),
     );
@@ -196,6 +200,117 @@ class Reports extends GetWidget {
                           });
                     }
                     return Text('loading...');
+                  }),
+                ],
+              )),
+        ),
+      ),
+    );
+  }
+
+  projectReportDialogue(BuildContext context) {
+    showDialog(
+      useSafeArea: true,
+      barrierDismissible: false, //enable and disable outside click
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        actions: <Widget>[
+          Row(
+            children: [
+              RaisedButton(
+                color: Theme.of(context).primaryColor,
+                elevation: 5.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                onPressed: () {
+                  if (projectReportController
+                      .projectReportFormKey.value.currentState
+                      .validate()) {
+                    projectReportController
+                        .projectReportFormKey.value.currentState
+                        .save();
+                    Get.back();
+                    Get.toNamed(
+                        'projectReportUi'); //naviagate to project report ui
+                  }
+                },
+                child: Text(
+                  "Ok",
+                ),
+              ),
+              RaisedButton(
+                color:
+                    Get.isDarkMode ? Theme.of(context).accentColor : Colors.red,
+
+                //  color: Theme.of(context).primaryColor,
+                elevation: 5.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                    color: Get.isDarkMode ? null : Colors.white,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text('Your Projects'),
+        content: SingleChildScrollView(
+          child: Form(
+              key: projectReportController.projectReportFormKey.value,
+              child: Column(
+                children: [
+                  Obx(() {
+                    if (projectReportController.projectList != null) {
+                      return DropdownButtonFormField(
+                          isExpanded: true,
+                          validator: (val) =>
+                              val == null ? "Please select project" : null,
+                          isDense: true,
+                          decoration: InputDecoration(
+                            /* enabledBorder: InputBorder.none that will remove the border and also the upper left 
+              and right cut corner  */
+                            contentPadding: EdgeInsets.only(left: 4),
+                            /* 
+              
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+              */
+                            filled: true,
+                          ),
+                          hint: Text('Select Project'),
+                          items: projectReportController.projectList
+                              .map((projectObj) => DropdownMenuItem<Project>(
+                                  value: projectObj,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 20,
+                                        child: new Text(
+                                            projectObj.customerRelation,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                    ],
+                                  )))
+                              .toList(),
+                          onChanged: (project) {
+                            projectReportController.currProject.value = project;
+                          });
+                    }
+                    return Center(
+                        child: CircularProgressIndicator(
+                            //strokeWidt: 4.0,
+                            ));
                   }),
                 ],
               )),

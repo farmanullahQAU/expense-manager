@@ -49,10 +49,10 @@ import 'package:expense_manager/models/user_model.dart';
 }
 */
 class Project {
-  Timestamp starDate;
-  Timestamp endDate;
+  String starDate;
+  String endDate;
   String id;
-  double estimatedCost;
+  String estimatedCost;
   String customerRelation;
   String customerRemarks;
   Usr customer;

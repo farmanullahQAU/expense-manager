@@ -36,7 +36,6 @@ class UploadImagesController extends GetxController {
     numberOfImages.value = 0;
     images.value = [];
 
-    print('uploadImage controller');
 
     projectList.bindStream(
         Database().getOnPmAllProjects(FirebaseAuth.instance.currentUser.uid));

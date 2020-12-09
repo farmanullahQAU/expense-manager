@@ -7,6 +7,7 @@ import 'package:expense_manager/models/project_contract_model.dart';
 import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/models/user_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:expense_manager/models/labor_model.dart';
 
 class Database {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -288,10 +289,24 @@ class Database {
         print('current pm all projects id');
         projects.add(Project.fromMap(queryDocumentSnapshot.data()));
       });
-      projects.forEach((element) {
-        print(element.estimatedCost);
-      });
+
       return projects;
+    });
+  }
+
+  getSingleProject(String uid) {
+    return firestore
+        .collection('Projects')
+        .where('projectPmIds', arrayContains: uid)
+        .limit(1)
+        .snapshots()
+        .map((querySnapshot) {
+      var project = Project();
+      querySnapshot.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+        project = Project.fromMap(queryDocumentSnapshot.data());
+      });
+
+      return project;
     });
   }
 
@@ -351,5 +366,34 @@ class Database {
     } catch (error) {
       handleError(error);
     }
+  }
+
+  getLaborTypes() {
+    try {
+      return firestore
+          .collection('LaborTypes')
+          .snapshots()
+          .map((querySnapshot) {
+        var contractList = List<LaborTypes>();
+
+        querySnapshot.docs.forEach((queryDocumentSnapshot) {
+          contractList.add(LaborTypes.fromMap(queryDocumentSnapshot.data()));
+        });
+        return contractList;
+      });
+    } on FirebaseException catch (err) {
+      handleError(err);
+    }
+  }
+
+  addLaborToDb(Labor labor) async {
+    print('values');
+    print(labor.name);
+    print(labor.address);
+
+    print(labor.paymentType);
+    print(labor.phone);
+    print(labor.amount);
+    await FirebaseFirestore.instance.collection("Labors").add(labor.toMap());
   }
 }

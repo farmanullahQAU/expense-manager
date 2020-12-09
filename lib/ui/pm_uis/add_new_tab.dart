@@ -1,15 +1,16 @@
 import 'package:expense_manager/controllers/uploadImages/upload_images_controller.dart';
 import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/ui/Reports/payment_report.dart';
-import 'package:expense_manager/ui/admin_ui/login1.dart';
-import 'package:expense_manager/ui/pm_uis/bankAccounts/add_account.dart';
+import 'package:expense_manager/ui/Labor/add_labor.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'addPayment/add_payment.dart';
+import 'package:expense_manager/controllers/select_project_controller.dart';
 
 class AddNew extends GetWidget {
-  var uploadPictureController = Get.put(UploadImagesController());
+  var selectProjectController = Get.put(SelectProjectController());
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,22 +22,10 @@ class AddNew extends GetWidget {
             InkWell(
               child: addCard(context, Colors.green, 'Payment', Icons.payment),
               onTap: () {
-                // Get.defaultDialog(
-                //   barrierDismissible: true,
-                //   onCancel: () {},
-                //   confirmTextColor: Get.isDarkMode
-                //       ? Theme.of(context).primaryColor
-                //       : Colors.white,
-
-                //   onConfirm: () {},
-                //   title: 'Add Payment',
-                //   //payment option ui displa
-                //   actions: [
-                //     AddPayment(),
-                //   ],
-                //   radius: 10.0,
-                // );
-                Get.toNamed('addPaymentUi');
+                selectProjectController.currentProject.value == null
+                    /* if the current project is not null then user will be directed to ui */
+                    ? showSelectProjectDialog(context, '/addPaymentUi')
+                    : Get.toNamed('addPaymentUi');
               },
             ),
             InkWell(
@@ -59,7 +48,10 @@ class AddNew extends GetWidget {
               child: addCard(context, Colors.deepOrangeAccent, 'Picture',
                   Icons.add_a_photo),
               onTap: () {
-                showSelectProjectDialog(context);
+                selectProjectController.currentProject.value == null
+                    ? showSelectProjectDialog(context, 'uploadPictureUi')
+                    : Get.toNamed('uploadPictureUi');
+                //  showSelectProjectDialog(context);
               },
             ),
             InkWell(
@@ -71,6 +63,31 @@ class AddNew extends GetWidget {
                 Colors.amber,
                 'Material',
                 Icons.shop_two,
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                selectProjectController.currentProject.value == null
+                    /* if the current project is not null then user will be directed to ui */
+                    ? showSelectProjectDialog(context, '/addPaymentUi')
+                    : Get.toNamed('addLaborUi');
+              },
+              child: addCard(
+                context,
+                Colors.blue,
+                'Labor',
+                Icons.person_add,
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Get.to(PaymentReport());
+              },
+              child: addCard(
+                context,
+                Colors.blue,
+                'Message',
+                Icons.chat,
               ),
             ),
           ],
@@ -94,7 +111,7 @@ class AddNew extends GetWidget {
             child: Icon(
               icon,
               color: Get.isDarkMode ? Theme.of(context).accentColor : color,
-              size: context.isLandscape ? 40 : 40,
+              size: context.isLandscape ? 20 : 40,
             ),
           ),
           Text(title)
@@ -103,7 +120,7 @@ class AddNew extends GetWidget {
     );
   }
 
-  showSelectProjectDialog(BuildContext context) {
+  showSelectProjectDialog(BuildContext context, String routeName) {
     showDialog(
       useSafeArea: true,
       barrierDismissible: false, //enable and disable outside click
@@ -119,15 +136,14 @@ class AddNew extends GetWidget {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 onPressed: () {
-                  if (uploadPictureController
-                          .uploadPicFormKey.value.currentState
-                          .validate() &&
-                      uploadPictureController.currProject.value != null) {
-                    uploadPictureController.uploadPicFormKey.value.currentState
+                  if (selectProjectController
+                      .selectProjectFormKey.value.currentState
+                      .validate()) {
+                    selectProjectController
+                        .selectProjectFormKey.value.currentState
                         .save();
                     Get.back();
-                    Get.toNamed(
-                        'uploadPictureUi'); //navigate to upload picuture ui
+                    Get.toNamed(routeName); //navigate to upload picuture ui
                   }
                 },
                 child: Text(
@@ -161,11 +177,11 @@ class AddNew extends GetWidget {
         title: Text('Projects Pannel'),
         content: SingleChildScrollView(
           child: Form(
-              key: uploadPictureController.uploadPicFormKey.value,
+              key: selectProjectController.selectProjectFormKey.value,
               child: Column(
                 children: [
                   Obx(() {
-                    if (uploadPictureController.projectList != null) {
+                    if (selectProjectController.projectList != null) {
                       return DropdownButtonFormField(
                           isExpanded: true,
                           validator: (val) => val == null
@@ -185,7 +201,7 @@ class AddNew extends GetWidget {
                             filled: true,
                           ),
                           hint: Text('Select Project'),
-                          items: uploadPictureController.projectList
+                          items: selectProjectController.projectList
                               .map((projectObj) => DropdownMenuItem<Project>(
                                   value: projectObj,
                                   child: Column(
@@ -200,7 +216,8 @@ class AddNew extends GetWidget {
                                   )))
                               .toList(),
                           onChanged: (project) {
-                            uploadPictureController.currProject.value = project;
+                            selectProjectController.currentProject.value =
+                                project;
                           });
                     }
                     return Text('loading...');

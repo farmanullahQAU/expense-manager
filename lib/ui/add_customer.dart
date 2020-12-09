@@ -42,91 +42,85 @@ class AddCustomer extends GetWidget {
 
   Widget _buildContainer(BuildContext context) {
     return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            height: 400,
-            width: 300,
-            child: ListView(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      child: Container(
+        height: 400,
+        width: 300,
+        child: ListView(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "Register",
-                        ),
-                      ],
+                    Text(
+                      "Register",
                     ),
                   ],
                 ),
-                TextFormField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.person,
-                      ),
-                      labelText: 'Name'),
-                ),
-                TextFormField(
-                  controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.person,
-                      ),
-                      labelText: 'Email'),
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  controller: addresController,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.description,
-                      ),
-                      labelText: 'address'),
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  controller: phoneController,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.description,
-                      ),
-                      labelText: 'phone'),
-                ),
-                TextFormField(
-                  obscureText: true,
-                  keyboardType: TextInputType.visiblePassword,
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.description,
-                      ),
-                      labelText: 'password'),
-                ),
-                Row(
-                  children: [
-                    FlatButton(
-                        onPressed: () {
-                          _authController.createUser(
-                              name: nameController.text,
-                              email: emailController.text,
-                              password: passwordController.text,
-                              adrs: addresController.text,
-                              ph: phoneController.text,
-                              usrType: "Customer");
-                        },
-                        child: Text('signup'))
-                  ],
-                )
               ],
             ),
-          ),
-        ],
+            TextFormField(
+              controller: nameController,
+              decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.person,
+                  ),
+                  labelText: 'Name'),
+            ),
+            TextFormField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  filled: true,
+                  prefixIcon: Icon(
+                    Icons.email,
+                  ),
+                  labelText: 'Email'),
+            ),
+            TextFormField(
+              keyboardType: TextInputType.visiblePassword,
+              controller: addresController,
+              decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.description,
+                  ),
+                  labelText: 'address'),
+            ),
+            TextFormField(
+              keyboardType: TextInputType.visiblePassword,
+              controller: phoneController,
+              decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.phone), labelText: 'phone'),
+            ),
+            TextFormField(
+              obscureText: true,
+              keyboardType: TextInputType.visiblePassword,
+              controller: passwordController,
+              decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.lock,
+                  ),
+                  labelText: 'password'),
+            ),
+            Row(
+              children: [
+                FlatButton(
+                    onPressed: () {
+                      _authController.createUser(
+                          name: nameController.text,
+                          email: emailController.text,
+                          password: passwordController.text,
+                          adrs: addresController.text,
+                          ph: phoneController.text,
+                          usrType: "Customer");
+                    },
+                    child: Text('signup'))
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

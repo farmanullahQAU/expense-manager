@@ -4,21 +4,21 @@ import 'package:expense_manager/controllers/pm_home_controller.dart';
 import 'package:expense_manager/controllers/authController/auth_controller.dart';
 import 'package:expense_manager/controllers/profileController/profile_controller.dart';
 import 'package:expense_manager/controllers/user_controller.dart';
-import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/ui/pm_uis/report_tab.dart';
-import 'package:expense_manager/ui/add_customer.dart';
-import 'package:expense_manager/ui/sliver.dart';
-
+import 'package:expense_manager/models/project_model.dart';
+import 'package:expense_manager/controllers/select_project_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 
 import 'add_new_tab.dart';
 import 'vendor_chart.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
   var usrController = Get.put(UsrController());
   var profileController = Get.put(ProfileController());
+  var selectProjectController = Get.put(SelectProjectController());
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +98,8 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
                           width: 105,
                           margin: EdgeInsets.all(10),
                         ),
+                        Text(usrController.currLoggedInUsr.value.email,
+                            style: TextStyle(color: Colors.white))
                       ],
                     )),
                   ],
@@ -160,6 +162,7 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
 
 class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
   TabController _tabController;
+  var selectProjectController = Get.find<SelectProjectController>();
 
   List<Map<String, dynamic>> _tabs = [
     {'name': 'Add new', 'Icon': Icon(Icons.add_box)},
@@ -175,18 +178,52 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
           return <Widget>[
             SliverAppBar(
               actions: [
-                IconButton(
-                    icon: Icon(Icons.add_to_home_screen),
-                    onPressed: () {
-                      Get.to(SliverTabView());
-                    }),
-                IconButton(
-                    icon: Icon(Icons.theaters),
-                    onPressed: () {
-                      Get.isDarkMode
-                          ? Get.changeTheme(ThemeData.light())
-                          : Get.changeTheme(ThemeData.dark());
-                    }),
+                Obx(() {
+                  if (selectProjectController.currentProject.value != null) {
+                    return Row(
+                      children: [
+                        Text(
+                          selectProjectController
+                              .currentProject.value.customer.email,
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.check_box_outlined),
+                          onPressed: () {
+                            changeProjectDialog(context, 'Project Changed');
+                          },
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Row(
+                      children: [
+                        Text('Select Project'),
+                        IconButton(
+                          icon: Icon(Icons.check_box_outline_blank_rounded),
+                          onPressed: () {
+                            changeProjectDialog(context, "Project Selected");
+                          },
+                        ),
+                      ],
+                    );
+                  }
+                }),
+                // Obx(
+                //   () {
+                //     if (Get.find<SelectProjectController>()
+                //             .currentProject
+                //             .value !=
+                //         null) {
+                //       return IconButton(
+                //           icon: Icon(Icons.change_history),
+                //           onPressed: () {
+                //             changeProjectDialog(context);
+                //           });
+                //     } else {
+                //       return Container(width: 0.0, height: 0.0);
+                //     }
+                //   },
+                // ),
                 IconButton(
                     icon: Icon(Icons.exit_to_app),
                     onPressed: () {
@@ -194,11 +231,11 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                     }),
               ],
               forceElevated: innerBoxIsScrolled,
-              expandedHeight: 100.0,
+              expandedHeight: 150.0,
               floating: false,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: true,
+                  // centerTitle: true,
                   title: Obx(() => Text(controller.tabTitle.value)),
                   background: Image.network(
                     "https://propakistani.pk/wp-content/uploads/2020/08/Construction.jpg",
@@ -229,6 +266,116 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
           controller: _tabController,
           physics: BouncingScrollPhysics(),
           children: [AddNew(), Reports(), LineChartSample2()],
+        ),
+      ),
+    );
+  }
+
+  changeProjectDialog(BuildContext context, String message) {
+    showDialog(
+      useSafeArea: true,
+      barrierDismissible: false, //enable and disable outside click
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        actions: <Widget>[
+          Row(
+            children: [
+              RaisedButton(
+                color: Theme.of(context).primaryColor,
+                elevation: 5.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                onPressed: () {
+                  if (selectProjectController
+                      .selectProjectFormKey.value.currentState
+                      .validate()) {
+                    selectProjectController
+                        .selectProjectFormKey.value.currentState
+                        .save();
+                    Fluttertoast.showToast(msg: message);
+                    Get.back();
+                    //navigate to upload picuture ui
+                  }
+                },
+                child: Text(
+                  "Ok",
+                ),
+              ),
+              RaisedButton(
+                color:
+                    Get.isDarkMode ? Theme.of(context).accentColor : Colors.red,
+
+                //  color: Theme.of(context).primaryColor,
+                elevation: 5.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                    color: Get.isDarkMode ? null : Colors.white,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text('Projects Pannel'),
+        content: SingleChildScrollView(
+          child: Form(
+              key: selectProjectController.selectProjectFormKey.value,
+              child: Column(
+                children: [
+                  Obx(() {
+                    if (selectProjectController.projectList != null) {
+                      return DropdownButtonFormField(
+                          isExpanded: true,
+                          validator: (val) => val == null
+                              ? "Select project to perform action  "
+                              : null,
+                          isDense: true,
+                          decoration: InputDecoration(
+                            /* enabledBorder: InputBorder.none that will remove the border and also the upper left 
+              and right cut corner  */
+                            contentPadding: EdgeInsets.only(left: 4),
+                            /* 
+              
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+              */
+                            filled: true,
+                          ),
+                          hint: Text('Select Project'),
+                          items: selectProjectController.projectList
+                              .map((projectObj) => DropdownMenuItem<Project>(
+                                  value: projectObj,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 20,
+                                        child: new Text(
+                                            projectObj.customerRelation,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                    ],
+                                  )))
+                              .toList(),
+                          onChanged: (project) {
+                            selectProjectController.currentProject.value =
+                                project;
+                          });
+                    }
+                    return Text('loading...');
+                  }),
+                ],
+              )),
         ),
       ),
     );

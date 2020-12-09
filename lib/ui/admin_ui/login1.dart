@@ -1,21 +1,7 @@
 import 'package:expense_manager/controllers/authController/auth_controller.dart';
-import 'package:expense_manager/controllers/user_controller.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:expense_manager/controllers/add_project_controller/add_project_controller.dart';
-import 'package:expense_manager/controllers/authController/auth_controller.dart';
-import 'package:expense_manager/controllers/customer_controller/customer_controller.dart';
-
-import 'package:expense_manager/controllers/user_controller.dart';
-import 'package:expense_manager/models/project_contract_model.dart';
-import 'package:expense_manager/models/user_model.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class Login1 extends GetWidget<AuthController> {
@@ -262,7 +248,7 @@ class Login1 extends GetWidget<AuthController> {
         validator: (val) => val.isNullOrBlank ? "Enter Password Please" : null,
         onSaved: (val) => passwordController.text = val,
         controller: passwordController,
-        keyboardType: TextInputType.text,
+        keyboardType: TextInputType.visiblePassword,
         obscureText: true,
         decoration: InputDecoration(
           prefixIcon: Icon(

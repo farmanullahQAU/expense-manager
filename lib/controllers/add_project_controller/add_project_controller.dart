@@ -47,14 +47,9 @@ class AddProjectController extends GetxController {
 
   /*--------Refresh Controller package------*/
 
-  /*..................start date ...................*/
-  var startDate = Rx<DateTime>();
-  /*....................start date .......................*/
+  var startDate = RxString();
 
-  /*..................end date ...................*/
-  var dateEnd = Rx<DateTime>();
-
-  /*....................end date .......................*/
+  var dateEnd = RxString();
 
 /*---------------------text editing controllers------------------------------*/
   TextEditingController relationController = TextEditingController();
@@ -77,9 +72,7 @@ class AddProjectController extends GetxController {
 
 /*--------------------- estimated cost  ------------------------------*/
   TextEditingController estimatedCostController = TextEditingController();
-  RxDouble estimatedCost = RxDouble();
-  set setEstCost(double val) => estimatedCost?.value = val;
-  double get getEstCost => estimatedCost?.value;
+  var estimatedCost = RxString();
 
 /*----------------------------estimated cost--------------------------*/
 
@@ -102,20 +95,10 @@ class AddProjectController extends GetxController {
 
   addProject() async {
     try {
-      /* var project = new Project(
-          /*instance of project*/
-
-          customer: this.currSelCustomer.value,
-          projectContract: this.currProjContract.value,
-          customerRelation: this.relationContString.value,
-          customerRemarks: this.remarksString.value,
-          estimatedCost: this.estimatedCost.value,
-          projectManager: usrcontroller.currLoggedInUsr.value);
-          */
-
       var project = new Project(
           /*instance of project*/
-
+          starDate: this.startDate.value,
+          endDate: this.dateEnd.value,
           customer: this.currSelCustomer.value,
           projectContract: this.currProjContract.value,
           customerRelation: this.relationContString.value,
@@ -129,8 +112,9 @@ class AddProjectController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
       this.roundLoadingButtonController.value.success();
     } catch (error) {
-      print('add project error');
-      print(error.toString());
+      print(error);
+      this.roundLoadingButtonController.value.stop();
+
       String errorMessage = handleError(error);
       Get.dialog(AlertDialog(
         title: Text('Error!'),
