@@ -50,7 +50,7 @@ class RouterClass {
     ),
     GetPage(
       binding: HomeBinding(),
-      name: '/paymenrReportUi',
+      name: '/paymentReportUi',
       page: () => PaymentReport(),
     ),
     GetPage(

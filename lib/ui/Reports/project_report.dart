@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/ReportsController/project_report_controller.dart';
+import 'package:expense_manager/controllers/select_project_controller.dart';
+
 import 'package:expense_manager/models/payment_model.dart';
 import 'package:expense_manager/models/project_model.dart';
 
@@ -7,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProjectReprot extends GetWidget<ProjectReportController> {
+  var selectedProj = Get.find<SelectProjectController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,10 +19,9 @@ class ProjectReprot extends GetWidget<ProjectReportController> {
       body: Container(
         width: context.width,
         child: StreamBuilder<QuerySnapshot>(
-            // stream: Database().getPayments(controller.currProject.value.id),
             stream: FirebaseFirestore.instance
                 .collection('Projects')
-                .where("id", isEqualTo: controller.currProject.value.id)
+                .where("id", isEqualTo: selectedProj.currentProject.value.id)
                 .limit(1)
                 .snapshots(),
             builder:

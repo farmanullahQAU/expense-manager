@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Reports extends GetWidget {
-  var paymentReportController = Get.put(PaymentReportController());
-  var projectReportController = Get.put(ProjectReportController());
+  // var paymentReportController = Get.find<PaymentReportController>();
+  var projectReportController = Get.find<ProjectReportController>();
 
-  var addPaymentController = Get.put(SelectProjectController());
+  var selectedProjCont = Get.find<SelectProjectController>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +25,23 @@ class Reports extends GetWidget {
               child: addCard(
                   context, Colors.green, 'Project Report', Icons.person),
               onTap: () {
-                projectReportDialogue(context);
+                selectedProjCont.currentProject.value == null
+                    ? showSelectProjectDialog(context,
+                        routeName: "projectReportUi")
+                    : Get.toNamed('projectReportUi');
               },
             ),
             InkWell(
               child: addCard(context, Colors.red, ' Payment Report ',
                   Icons.account_balance_wallet),
               onTap: () {
-                showSelectPaymentAndProjectDialog(context);
+                // selectedProjCont.currentProject.value == null
+                //     ? showSelectProjectDialog(context, routeName: "")
+                //     : selectPaymentTypeDialog(context);
+                selectedProjCont.currentProject.value == null
+                    ? showSelectProjectDialog(context,
+                        routeName: "paymentReportUi")
+                    : Get.toNamed('paymentReportUi');
               },
             ),
             addCard(context, Colors.purple, 'Labor Report', Icons.work),
@@ -78,7 +87,11 @@ class Reports extends GetWidget {
     );
   }
 
-  showSelectPaymentAndProjectDialog(BuildContext context) {
+  /* 
+ //payment type with listTile
+ 
+ 
+ selectPaymentTypeDialog(BuildContext context) {
     showDialog(
       useSafeArea: true,
       barrierDismissible: false, //enable and disable outside click
@@ -133,7 +146,7 @@ class Reports extends GetWidget {
           ),
         ],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: Text('Select Vendor'),
+        title: Text('Select Payment'),
         content: SingleChildScrollView(
           child: Form(
               key: paymentReportController.paymentReportFormKey.value,
@@ -160,55 +173,15 @@ class Reports extends GetWidget {
                       ),
                     ),
                   ),
-                  Obx(() {
-                    if (addPaymentController.projectList != null) {
-                      return DropdownButtonFormField(
-                          isExpanded: true,
-                          validator: (val) => val == null
-                              ? "Project and Payment Type both are mandatory"
-                              : null,
-                          isDense: true,
-                          decoration: InputDecoration(
-                            /* enabledBorder: InputBorder.none that will remove the border and also the upper left 
-              and right cut corner  */
-                            contentPadding: EdgeInsets.only(left: 4),
-                            /* 
-              
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
-              */
-                            filled: true,
-                          ),
-                          hint: Text('Select Project'),
-                          items: paymentReportController.projectList
-                              .map((projectObj) => DropdownMenuItem<Project>(
-                                  value: projectObj,
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 20,
-                                        child: new Text(
-                                            projectObj.customerRelation,
-                                            overflow: TextOverflow.ellipsis),
-                                      ),
-                                    ],
-                                  )))
-                              .toList(),
-                          onChanged: (project) {
-                            paymentReportController.currProject.value = project;
-                          });
-                    }
-                    return Text('loading...');
-                  }),
                 ],
               )),
         ),
       ),
     );
   }
+  */
 
-  projectReportDialogue(BuildContext context) {
+  showSelectProjectDialog(BuildContext context, {String routeName}) {
     showDialog(
       useSafeArea: true,
       barrierDismissible: false, //enable and disable outside click
@@ -224,15 +197,14 @@ class Reports extends GetWidget {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 onPressed: () {
-                  if (projectReportController
-                      .projectReportFormKey.value.currentState
+                  if (selectedProjCont.selectProjectFormKey.value.currentState
                       .validate()) {
-                    projectReportController
-                        .projectReportFormKey.value.currentState
+                    selectedProjCont.selectProjectFormKey.value.currentState
                         .save();
                     Get.back();
-                    Get.toNamed(
-                        'projectReportUi'); //naviagate to project report ui
+
+                    if (routeName != "") Get.toNamed(routeName);
+                    //navigate to upload picuture ui
                   }
                 },
                 child: Text(
@@ -263,14 +235,14 @@ class Reports extends GetWidget {
           ),
         ],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: Text('Your Projects'),
+        title: Text('Projects Pannel'),
         content: SingleChildScrollView(
           child: Form(
-              key: projectReportController.projectReportFormKey.value,
+              key: selectedProjCont.selectProjectFormKey.value,
               child: Column(
                 children: [
                   Obx(() {
-                    if (projectReportController.projectList != null) {
+                    if (selectedProjCont.projectList != null) {
                       return DropdownButtonFormField(
                           isExpanded: true,
                           validator: (val) =>
@@ -289,7 +261,7 @@ class Reports extends GetWidget {
                             filled: true,
                           ),
                           hint: Text('Select Project'),
-                          items: projectReportController.projectList
+                          items: selectedProjCont.projectList
                               .map((projectObj) => DropdownMenuItem<Project>(
                                   value: projectObj,
                                   child: Column(
@@ -304,13 +276,10 @@ class Reports extends GetWidget {
                                   )))
                               .toList(),
                           onChanged: (project) {
-                            projectReportController.currProject.value = project;
+                            selectedProjCont.currentProject.value = project;
                           });
                     }
-                    return Center(
-                        child: CircularProgressIndicator(
-                            //strokeWidt: 4.0,
-                            ));
+                    return Text('loading...');
                   }),
                 ],
               )),

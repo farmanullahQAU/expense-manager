@@ -517,7 +517,17 @@ class AddLabor extends GetWidget<AddLaborController> {
                   if (controller.contractDetailsFormKey.value.currentState
                       .validate()) {
                     controller.contractDetailsFormKey.value.currentState.save();
+                    //set payment type
                     controller.currPaymentType.value = paymentType;
+                    //contract object
+                    var contract = LaborContract(
+                        contractName: controller.contractName.value,
+                        description: controller.contractDesc.value);
+                    //set contract object
+                    controller.contract.value = contract;
+                    controller.contractDetailsTextController.value.clear();
+                    controller.contractNameTextController.value.clear();
+                    Get.back();
                   }
                 },
                 child: Text(
@@ -536,7 +546,6 @@ class AddLabor extends GetWidget<AddLaborController> {
                 onPressed: () {
                   controller.contract.value = null;
                   controller.currPaymentType.value = "Daily-Wage-Base";
-
                   Get.back();
                 },
                 child: Text(
@@ -565,8 +574,7 @@ class AddLabor extends GetWidget<AddLaborController> {
                     /* set contract object value when user clicks of ok */
                     /*set contract name*/
                     onSaved: (contractName) =>
-                        controller.contract.value.contractName =
-                            controller.contractNameTextController.value.text,
+                        controller.contractName.value = contractName,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                         contentPadding: EdgeInsets.all(4),
@@ -583,8 +591,7 @@ class AddLabor extends GetWidget<AddLaborController> {
                           val.isEmpty ? "Please enter contract details" : null,
                       onSaved: (contractDetails) =>
                           /* set description */
-                          controller.contract.value.description = controller
-                              .contractDetailsTextController.value.text,
+                          controller.contractDesc.value = contractDetails,
                       maxLength: 100,
                       maxLines: 3,
                       keyboardType: TextInputType.multiline,

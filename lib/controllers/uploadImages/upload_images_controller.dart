@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/errorHandler.dart';
+import 'package:expense_manager/controllers/select_project_controller.dart';
+
 import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/models/image_model.dart';
 import 'package:expense_manager/models/project_model.dart';
@@ -17,6 +19,7 @@ import 'dart:async';
 
 class UploadImagesController extends GetxController {
   var errorController = Get.put(ErrorController());
+  var slectedProjecCont = Get.find<SelectProjectController>();
 
   var fetchImages = List<NetworkImage>().obs;
   var images = List<Asset>().obs;
@@ -27,7 +30,6 @@ class UploadImagesController extends GetxController {
   var isUploading = false.obs;
   var numberOfImages = RxInt();
   var projectList = List<Project>().obs;
-  var currProject = Project().obs;
   var uploadPicFormKey = GlobalKey<FormState>().obs;
   var progress = RxDouble();
 
@@ -35,7 +37,6 @@ class UploadImagesController extends GetxController {
   void onInit() async {
     numberOfImages.value = 0;
     images.value = [];
-
 
     projectList.bindStream(
         Database().getOnPmAllProjects(FirebaseAuth.instance.currentUser.uid));
@@ -100,11 +101,11 @@ class UploadImagesController extends GetxController {
           var image = new Images(
               imageUrl: downloadUrl,
               date: DateTime.now(),
-              projectId: this.currProject.value.id);
+              projectId: slectedProjecCont.currentProject.value.id);
           //    String documnetID = DateTime.now().millisecondsSinceEpoch.toString();
           FirebaseFirestore.instance
               .collection('Projects')
-              .doc(this.currProject.value.id)
+              .doc(slectedProjecCont.currentProject.value.id)
               .collection('Pictures')
               .add(image.toMap())
               .then((value) {

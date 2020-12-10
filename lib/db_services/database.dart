@@ -310,6 +310,51 @@ class Database {
     });
   }
 
+  getppppp() {
+    return FirebaseFirestore.instance
+        .collection('payments')
+        //  .where('mode', isEqualTo: 'Cash')
+        .snapshots()
+        .map((event) {
+      var payments = List<Payment>();
+
+      event.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+        payments.add(Payment.fromMap(queryDocumentSnapshot.data()));
+      });
+      return payments;
+    });
+  }
+
+  getAllCashPayments() {
+    return FirebaseFirestore.instance
+        .collection('payments')
+        .where('mode', isEqualTo: 'Cash')
+        .snapshots()
+        .map((event) {
+      var payments = List<Payment>();
+
+      event.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+        payments.add(Payment.fromMap(queryDocumentSnapshot.data()));
+      });
+      return payments;
+    });
+  }
+
+  getAllBankPayments() {
+    return FirebaseFirestore.instance
+        .collection('payments')
+        .where('mode', isEqualTo: 'Bank-Transfer')
+        .snapshots()
+        .map((event) {
+      var payments = List<Payment>();
+
+      event.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+        payments.add(Payment.fromMap(queryDocumentSnapshot.data()));
+      });
+      return payments;
+    });
+  }
+
   /* addProjectToDb3(Project project) async {
     var documentReferenceId =
         FirebaseFirestore.instance.collection('Projects').doc().id;

@@ -1,6 +1,7 @@
 import 'package:expense_manager/controllers/authController/auth_controller.dart';
 import 'package:expense_manager/controllers/authController/auth_error_handler_controller.dart';
 import 'package:expense_manager/controllers/select_project_controller.dart';
+import 'package:expense_manager/controllers/user_controller.dart';
 
 import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/models/payment_model.dart';
@@ -45,6 +46,7 @@ class AddPaymentController<T> extends GetxController {
 
   RxInt vendorListCurrentIndex = 0.obs;
   var currBankVal = Rx<Bank>();
+
   @override
   void onInit() {
     banAccountList.bindStream(
@@ -66,7 +68,8 @@ class AddPaymentController<T> extends GetxController {
         mode: this.currPaymentMode.value.mode,
         description: this.paymentDescContString.value,
         totalAmount: this.amountVal.value,
-        bank: this.currBankVal.value);
+        bank: this.currBankVal.value,
+        projectManager: Get.find<UsrController>().currLoggedInUsr.value);
 
     try {
       await Database().addPaymentToDB(payment);

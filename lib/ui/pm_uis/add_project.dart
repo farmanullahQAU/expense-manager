@@ -17,7 +17,6 @@ class AddProject extends GetWidget<AddProjectController> {
   TextEditingController emailController = TextEditingController();
 
   TextEditingController phoneController = TextEditingController();
-  TextEditingController startDateController = TextEditingController();
 
   List<Usr> customers = new List();
 
@@ -112,21 +111,23 @@ class AddProject extends GetWidget<AddProjectController> {
         SizedBox(
           width: isLandscap(context) ? 10 : 5,
         ),
-        Flexible(
-          child: ListTile(
-              contentPadding: EdgeInsets.only(left: 4.0),
-              leading: const Icon(
-                Icons.today,
-              ),
-              title: controller.dateEnd.value == null
-                  ? Text('End date?')
-                  : Text(controller.dateEnd.value),
-              subtitle: Text('End date'),
+        Obx(
+          () => Flexible(
+            child: ListTile(
+                contentPadding: EdgeInsets.only(left: 4.0),
+                leading: const Icon(
+                  Icons.today,
+                ),
+                title: controller.endDate.value == null
+                    ? Text('End date?')
+                    : Text(controller.endDate.value),
+                subtitle: Text('End date'),
 
-              // subtitle: Text('Date End'),
-              onTap: () {
-                setEndDate(context);
-              }),
+                // subtitle: Text('Date End'),
+                onTap: () {
+                  setEndDate(context);
+                }),
+          ),
         ),
       ],
     );
@@ -390,7 +391,7 @@ class AddProject extends GetWidget<AddProjectController> {
               controller: controller.roundLoadingButtonController.value,
               onPressed: () {
                 if (controller.startDate.value == null ||
-                    controller.dateEnd.value == null)
+                    controller.endDate.value == null)
                   Get.defaultDialog(
                     barrierDismissible: false,
 
@@ -410,7 +411,7 @@ class AddProject extends GetWidget<AddProjectController> {
 
                 if (controller.getformKey.currentState.validate() &&
                     controller.startDate.value != null &&
-                    controller.dateEnd.value != null) {
+                    controller.endDate.value != null) {
                   controller.getformKey.currentState.save();
                   controller.addProject();
                 } else
@@ -440,12 +441,10 @@ class AddProject extends GetWidget<AddProjectController> {
     DateTime pikeDate = await showDatePicker(
         initialEntryMode: DatePickerEntryMode.input,
         context: context,
-        initialDate: controller.dateEnd.value ??
-            DateTime
-                .now(), //if selected time is null set current data as initial
+        initialDate: controller.endDate.value ?? DateTime.now(),
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5));
     if (pikeDate != null)
-      controller.dateEnd.value = DateFormat.yMMMd().format(pikeDate);
+      controller.endDate.value = DateFormat.yMMMd().format(pikeDate);
   }
 }

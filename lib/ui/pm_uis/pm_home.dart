@@ -18,7 +18,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
   var usrController = Get.put(UsrController());
   var profileController = Get.put(ProfileController());
-  var selectProjectController = Get.put(SelectProjectController());
+  var selectProjectController = Get.find<SelectProjectController>();
 
   @override
   Widget build(BuildContext context) {

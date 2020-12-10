@@ -81,7 +81,7 @@ class AddNew extends GetWidget {
             ),
             InkWell(
               onTap: () {
-                Get.to(PaymentReport());
+                Get.toNamed('addLaborUi');
               },
               child: addCard(
                 context,
@@ -184,9 +184,8 @@ class AddNew extends GetWidget {
                     if (selectProjectController.projectList != null) {
                       return DropdownButtonFormField(
                           isExpanded: true,
-                          validator: (val) => val == null
-                              ? "Please select project to upload picture"
-                              : null,
+                          validator: (val) =>
+                              val == null ? "Please select project" : null,
                           isDense: true,
                           decoration: InputDecoration(
                             /* enabledBorder: InputBorder.none that will remove the border and also the upper left 

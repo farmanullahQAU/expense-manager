@@ -21,7 +21,9 @@ class AddLaborController extends GetxController {
   var name = RxString();
   var phone = RxString();
   var amount = RxDouble();
-  var contractDetails = RxString();
+  var contractName = RxString();
+  var contractDesc = RxString();
+
   var contract = Rx<LaborContract>();
 
   var paymentTypes = ['Contract-Base', 'Daily-Wage-Base'].obs;

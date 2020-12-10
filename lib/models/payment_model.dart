@@ -79,6 +79,7 @@
 // }
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expense_manager/models/user_model.dart';
 
 class TransactionsType {
   String transactionType;
@@ -162,19 +163,20 @@ class Payment<T> {
   String projectId;
   Bank bank;
   String paymentId;
+  Usr projectManager;
 
-  Payment({
-    this.transactionType,
-    this.vendor,
-    this.transactionMode,
-    this.paymentType,
-    this.mode,
-    this.description,
-    this.totalAmount,
-    this.projectId,
-    this.bank,
-    this.paymentId,
-  });
+  Payment(
+      {this.transactionType,
+      this.vendor,
+      this.transactionMode,
+      this.paymentType,
+      this.mode,
+      this.description,
+      this.totalAmount,
+      this.projectId,
+      this.bank,
+      this.paymentId,
+      this.projectManager});
 
   Payment.fromMap(Map<String, dynamic> map) {
     this.vendor = map['vendor'] != null ? Vendor.fromMap(map['vendor']) : null;
@@ -190,6 +192,8 @@ class Payment<T> {
     this.projectId = map['projectId'];
     this.bank = map['bank'] != null ? Bank.fromMap(map['bank']) : null;
     this.paymentId = map['paymentId'];
+    this.projectManager = Usr.fromMap(map['projectManager']);
+    this.paymentType = map['paymentType'];
   }
 
   Map<String, dynamic> toMap() => {
@@ -202,7 +206,8 @@ class Payment<T> {
         'totalAmount': totalAmount,
         'projectId': projectId,
         'bank': this.bank == null ? null : bank.toMap(),
-        'paymentId': this.paymentId
+        'paymentId': this.paymentId,
+        'projectManager': this.projectManager.toMap(),
       };
 }
 

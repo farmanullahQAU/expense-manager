@@ -49,12 +49,10 @@ class AddProjectController extends GetxController {
 
   var startDate = RxString();
 
-  var dateEnd = RxString();
+  var endDate = RxString();
 
 /*---------------------text editing controllers------------------------------*/
   TextEditingController relationController = TextEditingController();
-  TextEditingController startDateTextEditingController =
-      TextEditingController();
 
   RxString relationContString = RxString();
   set setRelationString(String val) => relationContString?.value = val;
@@ -98,7 +96,7 @@ class AddProjectController extends GetxController {
       var project = new Project(
           /*instance of project*/
           starDate: this.startDate.value,
-          endDate: this.dateEnd.value,
+          endDate: this.endDate.value,
           customer: this.currSelCustomer.value,
           projectContract: this.currProjContract.value,
           customerRelation: this.relationContString.value,

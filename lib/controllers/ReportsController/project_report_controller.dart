@@ -6,17 +6,14 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:expense_manager/db_services/database.dart';
 
 class ProjectReportController extends GetxController {
-  var currProject = Project().obs;
-  var projectList = List<Project>().obs;
   var paymentReportFormKey = GlobalKey<FormState>().obs;
   var auth = FirebaseAuth.instance;
   final roundLoadingPaymentReportContr =
       new RoundedLoadingButtonController().obs;
-  var projectReportFormKey = GlobalKey<FormState>().obs;
 
-  @override
-  void onInit() async {
-    projectList.bindStream(
-        Database().getOnPmAllProjects(FirebaseAuth.instance.currentUser.uid));
-  }
+  // @override
+  // void onInit() async {
+  //   projectList.bindStream(
+  //       Database().getOnPmAllProjects(FirebaseAuth.instance.currentUser.uid));
+  // }
 }

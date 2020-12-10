@@ -72,7 +72,7 @@ class Project {
 
   Project.fromMap(Map<String, dynamic> map) {
     this.starDate = map['starDate'];
-    this.endDate = map[' endDate'];
+    this.endDate = map['endDate'];
     this.id = map['id'];
     this.estimatedCost = map['estimatedCost'];
     this.customerRelation = map['customerRelation'];

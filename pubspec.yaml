@@ -52,6 +52,8 @@ dependencies:
   animations: 1.1.2
   firebase_messaging: 7.0.3
   intl_phone_number_input: 0.5.2+2
+  editable: 1.1.3
+  
 
   
 

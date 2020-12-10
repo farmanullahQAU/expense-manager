@@ -2,11 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/uploadImages/upload_images_controller.dart';
 import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/models/image_model.dart';
+import 'package:expense_manager/controllers/select_project_controller.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class FetchImages extends GetWidget<UploadImagesController> {
+  var slectedProjecCont = Get.find<SelectProjectController>();
+
   var currUser = Get.put(UsrController());
   @override
   Widget build(BuildContext context) {
@@ -15,7 +19,7 @@ class FetchImages extends GetWidget<UploadImagesController> {
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection("Projects")
-            .doc(controller.currProject.value.id)
+            .doc(slectedProjecCont.currentProject.value.id)
             .collection("Pictures")
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
