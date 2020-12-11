@@ -1,13 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:editable/editable.dart';
+import 'dart:io';
+
 import 'package:expense_manager/controllers/ReportsController/payment_report_controller.dart';
-import 'package:expense_manager/models/payment_model.dart';
-import 'package:expense_manager/db_services/database.dart';
+import 'package:expense_manager/controllers/ReportsController/pdf_viewer_controller.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PaymentReport extends GetWidget<PaymentReportController> {
+  // savePdf() async {
+  //   final file = File("example.pdf");
+  //   await file.writeAsBytes(pdf.save());
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,11 +50,22 @@ class PaymentReport extends GetWidget<PaymentReportController> {
                         ? paymentCash()
                         : controller.currFilterOption.value == "Bank-Transfer"
                             ? paymentBankTransfered()
-                            : addTable1(),
+                            : controller.currFilterOption.value == "Installment"
+                                ? installmentPayment()
+                                : controller.currFilterOption.value == "Regular"
+                                    ? regularPayments()
+                                    : addTable1(),
                   ],
                 )),
               ),
             ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.picture_as_pdf),
+        onPressed: () {
+          controller.createPdf();
+          controller.createPdf();
+        },
+      ),
     );
   }
 
@@ -97,8 +112,15 @@ class PaymentReport extends GetWidget<PaymentReportController> {
 
   DataTable paymentCash() {
     return DataTable(
+      sortColumnIndex: 0,
+      sortAscending: controller.sort.value,
       columns: [
         DataColumn(
+            onSort: (columnIndex, ascending) {
+              controller.sort = controller.sort.toggle();
+
+              controller.onSortColum(columnIndex, ascending);
+            },
             label: Text('Transaction-Type'),
             tooltip: 'Transaction type of the payment.'),
         DataColumn(
@@ -141,8 +163,17 @@ class PaymentReport extends GetWidget<PaymentReportController> {
 
   DataTable paymentBankTransfered() {
     return DataTable(
+      sortColumnIndex: 0,
+      sortAscending: controller.sort.value,
       columns: [
-        DataColumn(label: Text('Bank'), tooltip: 'Bank Name'),
+        DataColumn(
+            onSort: (columnIndex, ascending) {
+              controller.sort = controller.sort.toggle();
+
+              controller.onSortColum(columnIndex, ascending);
+            },
+            label: Text('Bank'),
+            tooltip: 'Bank Name'),
         DataColumn(label: Text('Account#'), tooltip: 'Account Number'),
         DataColumn(
             label: Text('Transaction-Type'),
@@ -160,6 +191,80 @@ class PaymentReport extends GetWidget<PaymentReportController> {
           .map((data) => DataRow(cells: [
                 DataCell(Text(data.bank.bankName)),
                 DataCell(Text(data.bank.accountNo)),
+                DataCell(Text(data.transactionType)),
+                DataCell(Text(data.transactionMode)),
+                DataCell(Text(data.paymentType)),
+                DataCell(Text(data.mode)),
+                DataCell(Text(data.totalAmount.toString())),
+                DataCell(Text(data.paymentId.substring(0, 3))),
+                DataCell(Text(data.projectManager.name)),
+                DataCell(Text(data.projectManager.phone)),
+              ]))
+          .toList(),
+    );
+  }
+
+  DataTable installmentPayment() {
+    return DataTable(
+      sortColumnIndex: 0,
+      sortAscending: controller.sort.value,
+      columns: [
+        DataColumn(
+            onSort: (columnIndex, ascending) {
+              controller.sort = controller.sort.toggle();
+
+              controller.onSortColum(columnIndex, ascending);
+            },
+            label: Text('Transaction-Type'),
+            tooltip: 'Transaction type of the payment.'),
+        DataColumn(
+            label: Text('Transaction-Mode'), tooltip: 'Transaction Mode'),
+        DataColumn(label: Text('Payment-Type'), tooltip: 'Payment Type'),
+        DataColumn(label: Text('Mode'), tooltip: 'Payment Mode'),
+        DataColumn(label: Text('Total-Amount'), tooltip: 'Total Amount'),
+        DataColumn(label: Text('payment-Id'), tooltip: 'Payment Id'),
+        DataColumn(label: Text('Added-by'), tooltip: 'Added by '),
+        DataColumn(label: Text('PM-Phone'), tooltip: 'Project manager Phone'),
+      ],
+      rows: controller.allPaymentModeBank
+          .map((data) => DataRow(cells: [
+                DataCell(Text(data.transactionType)),
+                DataCell(Text(data.transactionMode)),
+                DataCell(Text(data.paymentType)),
+                DataCell(Text(data.mode)),
+                DataCell(Text(data.totalAmount.toString())),
+                DataCell(Text(data.paymentId.substring(0, 3))),
+                DataCell(Text(data.projectManager.name)),
+                DataCell(Text(data.projectManager.phone)),
+              ]))
+          .toList(),
+    );
+  }
+
+  DataTable regularPayments() {
+    return DataTable(
+      sortColumnIndex: 0,
+      sortAscending: controller.sort.value,
+      columns: [
+        DataColumn(
+            onSort: (columnIndex, ascending) {
+              controller.sort = controller.sort.toggle();
+
+              controller.onSortColum(columnIndex, ascending);
+            },
+            label: Text('Transaction-Type'),
+            tooltip: 'Transaction type of the payment.'),
+        DataColumn(
+            label: Text('Transaction-Mode'), tooltip: 'Transaction Mode'),
+        DataColumn(label: Text('Payment-Type'), tooltip: 'Payment Type'),
+        DataColumn(label: Text('Mode'), tooltip: 'Payment Mode'),
+        DataColumn(label: Text('Total-Amount'), tooltip: 'Total Amount'),
+        DataColumn(label: Text('payment-Id'), tooltip: 'Payment Id'),
+        DataColumn(label: Text('Added-by'), tooltip: 'Added by '),
+        DataColumn(label: Text('PM-Phone'), tooltip: 'Project manager Phone'),
+      ],
+      rows: controller.allPaymentModeBank
+          .map((data) => DataRow(cells: [
                 DataCell(Text(data.transactionType)),
                 DataCell(Text(data.transactionMode)),
                 DataCell(Text(data.paymentType)),
