@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:expense_manager/controllers/ReportsController/payment_report_controller.dart';
-import 'package:expense_manager/controllers/ReportsController/pdf_viewer_controller.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

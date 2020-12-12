@@ -71,8 +71,6 @@ class UploadImagesController extends GetxController {
       // backgroundColor:
       //     Theme.of(context).backgroundColor,
       content: Container(
-        width: 40,
-        height: 40,
         child: SpinKitFadingCircle(
           color: Theme.of(context).primaryColor,
         ),
