@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expense_manager/controllers/paymentController/add_paymentController.dart';
-import 'package:expense_manager/controllers/add_labor_controller.dart';
+import 'package:expense_manager/controllers/LaborControllers/add_labor_controller.dart';
+import 'package:expense_manager/controllers/select_project_controller.dart';
+
 import 'package:expense_manager/models/labor_model.dart';
 
 import 'package:flutter/material.dart';
@@ -274,9 +276,6 @@ class AddLabor extends GetWidget<AddLaborController> {
                       } else {
                         controller.currPaymentType.value = "Daily-Wage-Base";
                         controller.contract.value = null;
-
-                        //   controller.currPaymentType.value="Daily_Wage_base";
-
                       }
                     });
 
@@ -522,6 +521,10 @@ class AddLabor extends GetWidget<AddLaborController> {
                     //contract object
                     var contract = LaborContract(
                         contractName: controller.contractName.value,
+                        projectId: Get.find<SelectProjectController>()
+                            .currentProject
+                            .value
+                            .id,
                         description: controller.contractDesc.value);
                     //set contract object
                     controller.contract.value = contract;

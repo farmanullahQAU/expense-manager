@@ -1,22 +1,26 @@
 import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import 'package:expense_manager/controllers/ReportsController/payment_report_controller.dart';
+import 'package:expense_manager/controllers/ReportsController/pdf_viewer_controller.dart';
 
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-class PdfViewer extends GetWidget {
+class PdfViewer extends GetWidget<PdfViewrController> {
   var paymentReportController = Get.find<PaymentReportController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('FlutterPluginPDFViewer'),
+          title: Obx(
+            () => (Text(controller.appBarTitle.value)),
+          ),
         ),
-        body: Obx(() => paymentReportController.isLoading.value == true
+        body: Obx(() => controller.isLoading.value == true
             ? Center(child: CircularProgressIndicator())
             : PDFViewer(
-                document: Get.arguments,
+                document: controller.document.value,
                 zoomSteps: 1,
+                showPicker: false,
 
                 //   lazyLoad: false,
                 //  uncomment below line to scroll vertically

@@ -136,18 +136,6 @@ class AddPayment extends GetWidget<AddPaymentController> {
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               keyboardType: TextInputType.visiblePassword,
               decoration: InputDecoration(
-
-                  // isDense: true,
-
-                  // enabledBorder: InputBorder.none,
-                  // border: InputBorder.none,
-
-                  /*  prefixIconConstraints: BoxConstraints(
-                    minHeight: context.isLandscape ? 200 : 5,
-                    minWidth: context.isLandscape ? 200 : 5,
-                  ),
-                  controll the input filed width and height 
-                  */
                   contentPadding: EdgeInsets.all(4),
                   filled: true,
                   prefixIcon: Icon(
@@ -194,7 +182,8 @@ class AddPayment extends GetWidget<AddPaymentController> {
                       if (paymentMode.mode == 'Bank-Transfer') {
                         showUserDialogue(context, paymentMode);
                       } else {
-                        controller.currPaymentMode.value.mode = "Cash";
+                        controller.currPaymentModeString.value =
+                            "Cash"; //check it out
 
                         controller.currBankVal.value = null;
                       }
@@ -304,6 +293,7 @@ class AddPayment extends GetWidget<AddPaymentController> {
             onChanged: (value) {
               controller.paymentDescContString.value = value;
             },
+            onSaved: (val) => controller.paymentDescContString.value = val,
             keyboardType: TextInputType.multiline,
             minLines: 1,
             maxLines: 12,
@@ -312,9 +302,8 @@ class AddPayment extends GetWidget<AddPaymentController> {
             textInputAction: TextInputAction.newline,
             controller: controller.paymentDesTextEditingController,
             decoration: InputDecoration(
-                suffixIcon: Obx(() =>
-                    controller.paymentDescContString.value?.length == null ||
-                            controller.paymentDescContString.value == ''
+                suffixIcon:
+                    Obx(() => controller.paymentDescContString.value == ""
                         ? Container(width: 0.0, height: 0.0)
                         : IconButton(
                             icon: Icon(Icons.clear),

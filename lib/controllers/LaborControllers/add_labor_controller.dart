@@ -10,6 +10,7 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 class AddLaborController extends GetxController {
   var contractDetailsTextController = TextEditingController().obs;
   var contractNameTextController = TextEditingController().obs;
+  var selectedProjectController = Get.find<SelectProjectController>();
 
   TextEditingController amountTextEditingController = TextEditingController();
   final phoneNumberTextController = TextEditingController().obs;
@@ -24,7 +25,7 @@ class AddLaborController extends GetxController {
   var contractName = RxString();
   var contractDesc = RxString();
 
-  var contract = Rx<LaborContract>();
+  var contract = LaborContract().obs;
 
   var paymentTypes = ['Contract-Base', 'Daily-Wage-Base'].obs;
 
@@ -46,22 +47,13 @@ class AddLaborController extends GetxController {
     laborTypes.bindStream(Database().getLaborTypes());
   }
 
-  // void getPhoneNumber(String phoneNumber, String dialCode) async {
-  //   PhoneNumber number =
-  //       await PhoneNumber.getRegionInfoFromPhoneNumber(phoneNumber, dialCode);
-
-  //   this.number.value = number;
-  //   print(this.number.toString());
-  // }
-
-  /* @override
-  void dispose() {
-    phoneNumberTextController.value?.dispose();
-    super.dispose();
-  }
-  */
-
   addLabor() async {
+    if (this.contract.value != null)
+      this.contract.value.amount = this.amount.value;
+    else {
+      this.contract.value = null;
+    }
+
     var laborObj = Labor(
         laborProjectIds: [
           Get.find<SelectProjectController>().currentProject.value.id
@@ -72,7 +64,7 @@ class AddLaborController extends GetxController {
         amount: this.amount.value,
         phone: this.number.value.phoneNumber,
         address: this.address.value,
-        contract: this.contract.value);
+        contract: this.contract.value != null ? [this.contract.value] : null);
 
     try {
       await Database().addLaborToDb(laborObj);
@@ -85,7 +77,7 @@ class AddLaborController extends GetxController {
       //  String errorMessage = handleError(error);
       Get.dialog(AlertDialog(
         title: Text('Error!'),
-        content: Text(error),
+        content: Text(error.toString()),
         actions: [
           FlatButton(
             //  textColor: Color(0xFF6200EE),

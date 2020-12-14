@@ -56,6 +56,20 @@ class Reports extends GetWidget {
                 Icons.polymer,
               ),
             ),
+            InkWell(
+              onTap: () {
+                selectedProjCont.currentProject.value == null
+                    ? showSelectProjectDialog(context,
+                        routeName: "laborReportUi")
+                    : Get.toNamed('laborReportUi');
+              },
+              child: addCard(
+                context,
+                Colors.blue,
+                'Labor Report',
+                Icons.person,
+              ),
+            ),
           ],
         ));
   }
@@ -204,7 +218,6 @@ class Reports extends GetWidget {
                     Get.back();
 
                     if (routeName != "") Get.toNamed(routeName);
-                    //navigate to upload picuture ui
                   }
                 },
                 child: Text(

@@ -69,7 +69,7 @@ class AddNew extends GetWidget {
               onTap: () {
                 selectProjectController.currentProject.value == null
                     /* if the current project is not null then user will be directed to ui */
-                    ? showSelectProjectDialog(context, '/addPaymentUi')
+                    ? showSelectProjectDialog(context, '/addLaborUi')
                     : Get.toNamed('addLaborUi');
               },
               child: addCard(
@@ -81,7 +81,7 @@ class AddNew extends GetWidget {
             ),
             InkWell(
               onTap: () {
-                Get.toNamed('addLaborUi');
+                //  Get.toNamed('addLaborUi');
               },
               child: addCard(
                 context,

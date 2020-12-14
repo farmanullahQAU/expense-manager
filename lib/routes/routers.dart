@@ -14,6 +14,7 @@ import 'package:expense_manager/ui/pm_uis/pm_home.dart';
 import 'package:expense_manager/ui/uploads_images/upload_pic.dart';
 import 'package:expense_manager/utils/root.dart';
 import 'package:expense_manager/ui/Reports/pdf_viewer.dart';
+import 'package:expense_manager/ui/Reports/labor_report.dart';
 
 import 'package:get/get.dart';
 
@@ -83,6 +84,11 @@ class RouterClass {
       binding: HomeBinding(),
       name: '/pdfViewerUi',
       page: () => PdfViewer(),
+    ),
+    GetPage(
+      binding: HomeBinding(),
+      name: '/laborReportUi',
+      page: () => LabotReport(),
     ),
   ];
 }

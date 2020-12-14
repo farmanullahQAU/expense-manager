@@ -29,6 +29,7 @@ class AddPaymentController<T> extends GetxController {
   var transactionModeList = List<TransactionMode>().obs;
 
   Rx<PaymentMode> currPaymentMode = Rx<PaymentMode>();
+  var currPaymentModeString = RxString();
   var paymentModeList = List<PaymentMode>().obs;
 
   var authController = Get.put(AuthController());
@@ -65,7 +66,7 @@ class AddPaymentController<T> extends GetxController {
         vendor: this.currVendor.value,
         transactionMode: this.currTransactionMode.value.transactionMode,
         paymentType: this.currPaymentType.value.paymentType,
-        mode: this.currPaymentMode.value.mode,
+        mode: this.currPaymentModeString.value,
         description: this.paymentDescContString.value,
         totalAmount: this.amountVal.value,
         bank: this.currBankVal.value,

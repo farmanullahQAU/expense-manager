@@ -8,6 +8,7 @@ import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/models/user_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:expense_manager/models/labor_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Database {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -310,10 +311,10 @@ class Database {
     });
   }
 
-  getppppp() {
+  getppppp(String projectId) {
     return FirebaseFirestore.instance
         .collection('payments')
-        //  .where('mode', isEqualTo: 'Cash')
+        .where('projectId', isEqualTo: projectId)
         .snapshots()
         .map((event) {
       var payments = List<Payment>();
@@ -325,9 +326,72 @@ class Database {
     });
   }
 
-  getAllCashPayments() {
+  getAllWager(String projectId) {
+    return FirebaseFirestore.instance
+        .collection('Labors')
+        .where('laborProjectIds', arrayContains: projectId)
+        .where("paymentType", isEqualTo: "Daily-Wage-Base")
+        .snapshots()
+        .map((event) {
+      var labor = List<Labor>();
+
+      event.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+        labor.add(Labor.fromSnapShot(queryDocumentSnapshot));
+      });
+      return labor;
+    }).handleError((error) => Fluttertoast.showToast(msg: error.toString()));
+  }
+
+  getAllContractLabors(String projectId) {
+    return FirebaseFirestore.instance
+        .collection('Labors')
+        .where('laborProjectIds', arrayContains: projectId)
+        .where("paymentType", isEqualTo: "Contract-Base")
+        .snapshots()
+        .map((event) {
+      var labor = List<Labor>();
+
+      event.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+        labor.add(Labor.fromSnapShot(queryDocumentSnapshot));
+      });
+      return labor;
+    }).handleError((error) => Fluttertoast.showToast(msg: error.toString()));
+  }
+
+  getAllLabors(String projectId) {
+    return FirebaseFirestore.instance
+        .collection('Labors')
+        .where('laborProjectIds', arrayContains: projectId)
+        .snapshots()
+        .map((event) {
+      var labor = List<Labor>();
+
+      event.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+        labor.add(Labor.fromSnapShot(queryDocumentSnapshot));
+      });
+      return labor;
+    }); //.handleError((error) => Fluttertoast.showToast(msg: error.toString()));
+  }
+
+  // getAllContractLabors(String projectI) {
+  //   return FirebaseFirestore.instance
+  //       .collection('Labors')
+  //       .where("contract", arrayContains: {"projectId": projectI})
+  //       .snapshots()
+  //       .map((event) {
+  //         var labor = List<Labor>();
+
+  //         event.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+  //           labor.add(Labor.fromMap(queryDocumentSnapshot.data()));
+  //         });
+  //         return labor;
+  //       });
+  // }
+
+  getAllCashPayments(String projectId) {
     return FirebaseFirestore.instance
         .collection('payments')
+        .where('projectId', isEqualTo: projectId)
         .where('mode', isEqualTo: 'Cash')
         .snapshots()
         .map((event) {
@@ -340,9 +404,10 @@ class Database {
     });
   }
 
-  getAllBankPayments() {
+  getAllBankPayments(String projectId) {
     return FirebaseFirestore.instance
         .collection('payments')
+        .where('projectId', isEqualTo: projectId)
         .where('mode', isEqualTo: 'Bank-Transfer')
         .snapshots()
         .map((event) {
@@ -432,13 +497,6 @@ class Database {
   }
 
   addLaborToDb(Labor labor) async {
-    print('values');
-    print(labor.name);
-    print(labor.address);
-
-    print(labor.paymentType);
-    print(labor.phone);
-    print(labor.amount);
     await FirebaseFirestore.instance.collection("Labors").add(labor.toMap());
   }
 }
