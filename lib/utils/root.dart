@@ -39,6 +39,10 @@ class Splash extends GetWidget<UsrController> {
     return SafeArea(
       child: Scaffold(
         body: GetX(
+          initState: (_) async {
+            controller.currentUsr.value = await Database()
+                .getUser(authController.firebaseLoggedInuser.value.uid);
+          },
           builder: (_) {
             if (authController.firebaseLoggedInuser.value == null) {
               print('login 2');
@@ -84,10 +88,6 @@ class Splash extends GetWidget<UsrController> {
                 ),
               ),
             );
-          },
-          initState: (_) async {
-            controller.currentUsr.value = await Database()
-                .getUser(authController.firebaseLoggedInuser.value.uid);
           },
         ),
       ),

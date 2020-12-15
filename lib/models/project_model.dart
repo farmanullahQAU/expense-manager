@@ -95,7 +95,7 @@ class Project {
         'estimatedCost': this.estimatedCost,
         'customerRelation': this.customerRelation,
         'customer': this.customer.toMap(),
-        'projectContract': this.projectContract.topMap(),
+        'projectContract': this.projectContract.toMap(),
         'projectPmIds': this.projectPmIds,
         // 'projectPmIds': this.projectPmIds.toList(),
       };

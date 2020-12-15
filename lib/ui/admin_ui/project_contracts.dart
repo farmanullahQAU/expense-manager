@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_manager/controllers/Admin/projectContractController.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expense_manager/models/project_contract_model.dart';
 
-class ProjectContracts extends GetWidget<ProjectContractController> {
+class ProjectContractsUi extends GetWidget<ProjectContractController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,16 +26,19 @@ class ProjectContracts extends GetWidget<ProjectContractController> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('DESCRIPTION'),
-                          Text(
-                            controller.allProjectContracts[i].contractDesc,
-                            style:
-                                TextStyle(color: Colors.black.withOpacity(0.6)),
-                          ),
-                        ],
+                      child: Form(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('DESCRIPTION'),
+
+                            Text(
+                                controller.allProjectContracts[i].contractDesc),
+
+                            // style:
+                            //     TextStyle(color: Colors.black.withOpacity(0.6)),
+                          ],
+                        ),
                       ),
                     ),
                     ButtonBar(
@@ -41,7 +46,12 @@ class ProjectContracts extends GetWidget<ProjectContractController> {
                       children: [
                         FlatButton(
                           onPressed: () {
-                            // Perform some action
+                            controller.contractDesEditingController.value.text =
+                                controller.allProjectContracts[i].contractDesc;
+                            controller.isUpdate.value = true;
+                            controller.reference.value =
+                                controller.allProjectContracts[i].reference;
+                            adminAddCategoryDialog(context);
                           },
                           child: Icon(Icons.edit),
                         ),
@@ -62,16 +72,12 @@ class ProjectContracts extends GetWidget<ProjectContractController> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-
-
-
-        },
+        onPressed: () {},
       ),
     );
   }
 
-   adminAddCategoryDialog(BuildContext context, String routeName) {
+  adminAddCategoryDialog(BuildContext context) {
     showDialog(
       useSafeArea: true,
       barrierDismissible: false, //enable and disable outside click
@@ -81,26 +87,30 @@ class ProjectContracts extends GetWidget<ProjectContractController> {
           Row(
             children: [
               RaisedButton(
-                color: Theme.of(context).primaryColor,
-                elevation: 5.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                onPressed: () {
-                  if (selectProjectController
-                      .selectProjectFormKey.value.currentState
-                      .validate()) {
-                    selectProjectController
-                        .selectProjectFormKey.value.currentState
-                        .save();
-                    Get.back();
-                    Get.toNamed(routeName); //navigate to upload picuture ui
-                  }
-                },
-                child: Text(
-                  "Ok",
-                ),
-              ),
+                  child: Text('Ok'),
+                  color: Theme.of(context).primaryColor,
+                  elevation: 5.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  onPressed: () async {
+                    if (controller.addContractFormKey.value.currentState
+                        .validate()) {
+                      controller.addContractFormKey.value.currentState.save();
+
+                      if (controller.isUpdate.value == true) {
+                        var contract = new ProjectContracts(
+                            contractName: controller.contractNameString.value,
+                            contractDesc: controller.contractDesString.value);
+
+                        controller.projectContractObj.value = contract;
+                        await controller.updateContrac();
+                        controller.reSet();
+                      }
+                      Get.back();
+                      //  Get.toNamed(routeName); //navigate to upload picuture ui
+                    }
+                  }),
               RaisedButton(
                 color:
                     Get.isDarkMode ? Theme.of(context).accentColor : Colors.red,
@@ -125,20 +135,43 @@ class ProjectContracts extends GetWidget<ProjectContractController> {
           ),
         ],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: Text('Projects Pannel'),
+        title: Obx(() => controller.isUpdate.value == true
+            ? Text('Update Contract')
+            : Text('Add Contract')),
         content: SingleChildScrollView(
           child: Form(
-              key: selectProjectController.selectProjectFormKey.value,
+              key: controller.addContractFormKey.value,
               child: Column(
                 children: [
-                  Obx(() {
-                    if (selectProjectController.projectList != null) {
-                      return TextFormField(
-
-                          );
-                    }
-                    return Text('loading...');
-                  }),
+                  TextFormField(
+                    controller: controller.contractNameEditingController.value,
+                    validator: (val) =>
+                        val.isEmpty ? "Plz enter contract name" : null,
+                    onSaved: (val) => controller.contractNameString.value = val,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      filled: true,
+                      contentPadding: EdgeInsets.all(4),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: TextFormField(
+                      controller: controller.contractDesEditingController.value,
+                      validator: (val) =>
+                          val.isEmpty ? "Plz enter contract description" : null,
+                      onSaved: (val) =>
+                          controller.contractDesString.value = val,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 10,
+                      decoration: InputDecoration(
+                        labelText: 'description',
+                        filled: true,
+                        contentPadding: EdgeInsets.all(4),
+                      ),
+                    ),
+                  ),
                 ],
               )),
         ),

@@ -94,7 +94,7 @@ class RouterClass {
     GetPage(
       binding: HomeBinding(),
       name: '/projectContractUi',
-      page: () => ProjectContracts(),
+      page: () => ProjectContractsUi(),
     ),
   ];
 }

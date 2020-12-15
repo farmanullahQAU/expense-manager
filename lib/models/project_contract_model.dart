@@ -10,7 +10,7 @@ class ProjectContracts {
     this.contractDesc = map['contractDesc'];
   }
 
-  Map<String, dynamic> topMap() => {
+  Map<String, dynamic> toMap() => {
         'contractName': this.contractName,
         'contractDesc': this.contractDesc,
       };
