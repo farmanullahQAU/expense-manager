@@ -10,37 +10,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:expense_manager/models/user_model.dart';
 
 class Root extends GetWidget {
+  var authController = Get.find<AuthController>();
+
   @override
   Widget build(BuildContext context) {
-    return GetX(builder: (_) {
-      if (Get.find<AuthController>().getLoggedInFirebaseUser?.uid != null) {
-        return Splash();
-      }
-      print('loglin');
-      return Login1();
-    });
+    return GetX(
+      builder: (_) {
+        if (authController.firebaseLoggedInuser.value != null) {
+          return Splash();
+        } else {
+          print('login page');
+          return Login1();
+        }
+      },
+    );
   }
 }
 
 class Splash extends GetWidget<UsrController> {
+  var authController = Get.find<AuthController>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: GetX(
           builder: (_) {
-            if (controller.currLoggedInUsr.value == null) {
+            if (authController.firebaseLoggedInuser.value == null) {
               print('login 2');
               return Login1();
             }
-            if (controller.currLoggedInUsr.value.userType ==
-                "Project manager") {
+            if (controller.currentUsr.value.userType == "Project manager") {
+              controller.usrType.value = controller.currentUsr.value.userType;
               return PmHomeBottomNav();
             }
-            if (controller.currLoggedInUsr.value.userType == "Customer")
-              return AddCustomer();
+            if (controller.currentUsr.value.userType == "Admin") {
+              controller.usrType.value = controller.currentUsr.value.userType;
+
+              return PmHomeBottomNav();
+            }
             return Center(
               //     child: SpinKitFadingCircle(
               //       size: ,
@@ -74,8 +86,8 @@ class Splash extends GetWidget<UsrController> {
             );
           },
           initState: (_) async {
-            controller.currLoggedInUsr.value = await Database().getUser(
-                Get.find<AuthController>().getLoggedInFirebaseUser.uid);
+            controller.currentUsr.value = await Database()
+                .getUser(authController.firebaseLoggedInuser.value.uid);
           },
         ),
       ),

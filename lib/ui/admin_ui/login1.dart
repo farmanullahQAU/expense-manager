@@ -108,7 +108,7 @@ class Login1 extends GetWidget<AuthController> {
                           children: <Widget>[],
                         ),
                         Form(
-                          key: controller.getLoginformKey,
+                          key: controller.loginFormKey.value,
                           child: Column(
                             children: [
                               _buildEmailRow(),
@@ -173,8 +173,8 @@ class Login1 extends GetWidget<AuthController> {
                           : Colors.white)),
               controller: controller.roundLoadingLoginContr.value,
               onPressed: () {
-                if (controller.getLoginformKey.currentState.validate()) {
-                  controller.getLoginformKey.currentState.save();
+                if (controller.loginFormKey.value.currentState.validate()) {
+                  controller.loginFormKey.value.currentState.save();
                   controller.login(
                       emailController.text, passwordController.text);
                 } else

@@ -106,18 +106,30 @@ class LaborReportController extends GetxController {
   }
 
   createPdf() async {
+    //convert list of laborContract to ContractList
+
     pdf.addPage(pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         build: (context) => [
               pw.Header(child: pw.Text('WAGERS REPORT')),
               pw.Table.fromTextArray(context: context, data: <List<String>>[
-                <String>["Name", "Phone", "Address", "Type", "Amount"],
+                <String>[
+                  "Name",
+                  "Phone",
+                  "Address",
+                  "Type",
+                  "Amount",
+                  "Days-Worked",
+                  "Amount-Payable"
+                ],
                 ...this.allWagers.map((labor) => [
                       labor.name,
                       labor.phone,
                       labor.address,
                       labor.laborType,
                       labor.amount.toString(),
+                      labor.daysWorked.toString(),
+                      labor.totalWage
                     ])
               ]),
               pw.Header(child: pw.Text('CONTRACT LABOR REPORT')),
@@ -135,8 +147,23 @@ class LaborReportController extends GetxController {
                       labor.address,
                       labor.laborType,
                       labor.amount.toString(),
-                    ])
-              ])
+                    ]),
+              ]),
+              // pw.Header(
+              //     child: pw.Text(
+              //         'ALL CONTRACTS OF PROJECT ${selectProjectController.currentProject.value.id.substring(0, 5)}')),
+              // pw.Table.fromTextArray(context: context, data: <List<dynamic>>[
+              //   <String>[
+              //     "Contract-Name",
+              //     "Contract-Amount",
+              //     "ProjectId",
+              //   ],
+              //   ...this
+              //       .allContractors
+              //       .map((contract) => contract.contract.map((e) {
+              //             return [e.contractName, e.amount];
+              //           }).toList()),
+              // ])
             ]));
 
     //   final String dir = (await getApplicationDocumentsDirectory()).path;

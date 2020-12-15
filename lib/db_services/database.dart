@@ -91,11 +91,11 @@ class Database {
   getProjectContracts() {
     try {
       return firestore.collection('contracts').snapshots().map((querySnapshot) {
-        List<ProjectContracts> contractList = List();
+        var contractList = List<ProjectContracts>();
 
         querySnapshot.docs.forEach((queryDocumentSnapshot) {
           contractList
-              .add(ProjectContracts.fromMap(queryDocumentSnapshot.data()));
+              .add(ProjectContracts.fromSnapshot(queryDocumentSnapshot));
         });
         return contractList;
       });
@@ -289,6 +289,17 @@ class Database {
       querySnapshot.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
         print('current pm all projects id');
         projects.add(Project.fromMap(queryDocumentSnapshot.data()));
+      });
+
+      return projects;
+    });
+  }
+
+  getAdminAllProjects() {
+    return firestore.collection('Projects').snapshots().map((querySnapshot) {
+      List<Project> projects = List();
+      querySnapshot.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+        projects.add(Project.fromSnapShot(queryDocumentSnapshot));
       });
 
       return projects;

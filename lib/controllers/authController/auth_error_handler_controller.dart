@@ -1,7 +1,7 @@
 String handleError(dynamic error) {
-  switch (error) {
+  switch (error.code) {
     case "wrong-password":
-      return "The password is invalid";
+      return "Invalid Password";
 
     case "permission-denied":
       return "The caller does not have permission to execute the specified operation";
@@ -34,7 +34,6 @@ String handleError(dynamic error) {
 
     case "ERROR_OPERATION_NOT_ALLOWED":
       return "Signing in with Email and Password is not enabled.";
-      break;
     default:
       return "An undefined Error happened.";
   }

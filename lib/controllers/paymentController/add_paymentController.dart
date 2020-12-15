@@ -10,8 +10,10 @@ import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddPaymentController<T> extends GetxController {
+  final auth = FirebaseAuth.instance.currentUser;
   TextEditingController amountTextEditingController = TextEditingController();
   TextEditingController paymentDesTextEditingController =
       TextEditingController();
@@ -50,8 +52,7 @@ class AddPaymentController<T> extends GetxController {
 
   @override
   void onInit() {
-    banAccountList.bindStream(
-        Database().getBankAccounts(authController.getLoggedInFirebaseUser.uid));
+    banAccountList.bindStream(Database().getBankAccounts(auth.uid));
     paymentModeList.bindStream(Database().getPaymentModes());
     transactionTypeList.bindStream(Database().getPaymentTransactionType());
     transactionModeList.bindStream(Database().getTransactionMode());
@@ -70,7 +71,7 @@ class AddPaymentController<T> extends GetxController {
         description: this.paymentDescContString.value,
         totalAmount: this.amountVal.value,
         bank: this.currBankVal.value,
-        projectManager: Get.find<UsrController>().currLoggedInUsr.value);
+        projectManager: Get.find<UsrController>().currentUsr.value);
 
     try {
       await Database().addPaymentToDB(payment);

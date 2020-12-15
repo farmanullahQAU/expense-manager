@@ -102,7 +102,7 @@ class AddProjectController extends GetxController {
           customerRelation: this.relationContString.value,
           customerRemarks: this.remarksString.value,
           estimatedCost: this.estimatedCost.value,
-          projectPmIds: [usrcontroller.currLoggedInUsr.value.id]);
+          projectPmIds: [usrcontroller.currentUsr.value.id]);
 
       await Database().addProjectToDb4(project);
 

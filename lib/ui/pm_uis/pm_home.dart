@@ -48,15 +48,14 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
                         Container(
                           child: Stack(
                             children: [
-                              usrController.currLoggedInUsr.value.photoUrl !=
-                                      null
+                              usrController.currentUsr.value.photoUrl != null
                                   ? Obx(
                                       () => Material(
                                         child: CachedNetworkImage(
                                           width: 100,
                                           height: 100,
                                           imageUrl: usrController
-                                              .currLoggedInUsr.value.photoUrl,
+                                              .currentUsr.value.photoUrl,
                                           fit: BoxFit.cover,
                                           placeholder: (context, url) => Center(
                                             child: Container(
@@ -98,7 +97,7 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
                           width: 105,
                           margin: EdgeInsets.all(10),
                         ),
-                        Text(usrController.currLoggedInUsr.value.email,
+                        Text(usrController.currentUsr.value.email,
                             style: TextStyle(color: Colors.white))
                       ],
                     )),
@@ -127,28 +126,30 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
             .elementAt(controller.getBottomNavSeleIndex),
       ),
       bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          selectedFontSize: 15,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.business),
-              label: 'Add Project',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.message),
-              label: 'Messages',
-            ),
-          ],
-          currentIndex: controller.getBottomNavSeleIndex,
-          onTap: (int index) {
-            //  print(controller.getBottomNavSeleIndex);
-            controller.setBottomNavSeleIndex = index;
-          },
-        ),
+        () => usrController.currentUsr.value.userType == "Admin"
+            ? Container(width: 0.0, height: 0.0)
+            : BottomNavigationBar(
+                selectedFontSize: 15,
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.business),
+                    label: 'Add Project',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.message),
+                    label: 'Messages',
+                  ),
+                ],
+                currentIndex: controller.getBottomNavSeleIndex,
+                onTap: (int index) {
+                  //  print(controller.getBottomNavSeleIndex);
+                  controller.setBottomNavSeleIndex = index;
+                },
+              ),
       ),
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.business),

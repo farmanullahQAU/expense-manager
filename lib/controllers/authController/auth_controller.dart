@@ -18,50 +18,48 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 class AuthController extends GetxController {
   final roundLoadingLoginContr = new RoundedLoadingButtonController().obs;
 
-  void initDynamicLinks() async {
-    FirebaseDynamicLinks.instance.onLink(
-        onSuccess: (PendingDynamicLinkData dynamicLink) async {
-      final Uri deepLink = dynamicLink?.link;
-      var actionCode = deepLink.queryParameters['oobCode'];
+  // void initDynamicLinks() async {
+  //   FirebaseDynamicLinks.instance.onLink(
+  //       onSuccess: (PendingDynamicLinkData dynamicLink) async {
+  //     final Uri deepLink = dynamicLink?.link;
+  //     var actionCode = deepLink.queryParameters['oobCode'];
 
-      try {
-        await auth.checkActionCode(actionCode);
-        await auth.applyActionCode(actionCode);
+  //     try {
+  //       await auth.checkActionCode(actionCode);
+  //       await auth.applyActionCode(actionCode);
 
-        // If successful, reload the user:
-        auth.currentUser.reload();
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'invalid-action-code') {
-          print('The code is invalid.');
-        }
-      }
+  //       // If successful, reload the user:
+  //       auth.currentUser.reload();
+  //     } on FirebaseAuthException catch (e) {
+  //       if (e.code == 'invalid-action-code') {
+  //         print('The code is invalid.');
+  //       }
+  //     }
 
-      if (deepLink != null) {
-        Get.to(AddCustomer());
-      }
-    }, onError: (OnLinkErrorException e) async {
-      print('onLinkError');
-      print(e.message);
-    });
+  //     if (deepLink != null) {
+  //       Get.to(AddCustomer());
+  //     }
+  //   }, onError: (OnLinkErrorException e) async {
+  //     print('onLinkError');
+  //     print(e.message);
+  //   });
 
-    final PendingDynamicLinkData data =
-        await FirebaseDynamicLinks.instance.getInitialLink();
-    final Uri deepLink = data?.link;
+  //   final PendingDynamicLinkData data =
+  //       await FirebaseDynamicLinks.instance.getInitialLink();
+  //   final Uri deepLink = data?.link;
 
-    if (deepLink != null) {
-      // Navigator.pushNamed(context, deepLink.path);
-    }
-  }
+  //   if (deepLink != null) {
+  //     // Navigator.pushNamed(context, deepLink.path);
+  //   }
+  // }
 
   var userController = Get.put(UsrController());
   var pmHomeTabNavController = Get.put(PmHomeTabNavController());
 
   FirebaseAuth auth = FirebaseAuth.instance;
-  var _firebaseLoggedInuser = Rx<User>();
-  User get getLoggedInFirebaseUser => _firebaseLoggedInuser?.value;
+  var firebaseLoggedInuser = Rx<User>();
   /*---------------------------login form key------------------*/
   final loginFormKey = GlobalKey<FormState>().obs;
-  GlobalKey<FormState> get getLoginformKey => loginFormKey.value;
   /*-------------------------login form key--------------------*/
   // Rx<Usr> currentUsr;
   // set setCurrentUsr(val) => currentUsr.value = val;
@@ -74,7 +72,7 @@ class AuthController extends GetxController {
   @override
   void onInit() async {
     print('AuthCnrl...... called');
-    _firebaseLoggedInuser.bindStream(auth.authStateChanges());
+    firebaseLoggedInuser.bindStream(auth.authStateChanges());
   }
 
   void createUser(

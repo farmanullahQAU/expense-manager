@@ -37,7 +37,7 @@ class ProfileController extends GetxController {
     var storageReference = FirebaseStorage.instance
         .ref()
         .child('profileImages')
-        .child(userController.currLoggedInUsr.value.id);
+        .child(userController.currentUsr.value.id);
     var storageUploadTask = storageReference.putFile(this.image.value);
     storageUploadTask.onComplete.then((value) {
       StorageTaskSnapshot storageTaskSnapshot;
@@ -47,10 +47,10 @@ class ProfileController extends GetxController {
           this.photoUrl.value = value;
           FirebaseFirestore.instance
               .collection("users")
-              .doc(this.userController.currLoggedInUsr.value.id)
+              .doc(this.userController.currentUsr.value.id)
               .update({'photoUrl': this.photoUrl.value}).then((value) {
             Fluttertoast.showToast(msg: 'Updated successfully');
-            userController.currLoggedInUsr.value.photoUrl =
+            userController.currentUsr.value.photoUrl =
                 this.photoUrl.value; //update locally
             // userController.currLoggedInUsr.refresh();
           });

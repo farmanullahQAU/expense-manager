@@ -12,6 +12,7 @@ import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/controllers/LaborControllers/add_labor_controller.dart';
 import 'package:expense_manager/controllers/ReportsController/labor_report_controller.dart';
 import 'package:expense_manager/controllers/ReportsController/pdf_viewer_controller.dart';
+import 'package:expense_manager/controllers/Admin/projectContractController.dart';
 
 import 'package:get/instance_manager.dart';
 
@@ -50,6 +51,7 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => AddLaborController());
     Get.lazyPut(() => LaborReportController());
     Get.lazyPut(() => PdfViewrController());
+    Get.lazyPut(() => ProjectContractController());
 
     /* Get.put<AuthController>(AuthController(), permanent: true);
        when we use this put approach then when we run our program each controller will be initilize

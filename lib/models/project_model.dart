@@ -58,6 +58,7 @@ class Project {
   Usr customer;
   ProjectContracts projectContract;
   List<String> projectPmIds;
+  DocumentReference reference;
 
   Project(
       {this.starDate,
@@ -70,7 +71,7 @@ class Project {
       this.projectContract,
       this.projectPmIds});
 
-  Project.fromMap(Map<String, dynamic> map) {
+  Project.fromMap(Map<String, dynamic> map, {this.reference}) {
     this.starDate = map['starDate'];
     this.endDate = map['endDate'];
     this.id = map['id'];
@@ -83,6 +84,9 @@ class Project {
     List<String> pmIdsList = pmIds.cast<String>();
     this.projectPmIds = pmIdsList;
   }
+
+  Project.fromSnapShot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   Map<String, dynamic> toMap() => {
         'starDate': this.starDate,

@@ -10,10 +10,13 @@ class SelectProjectController extends GetxController {
 
   var projectList = List<Project>().obs;
   var selectProjectFormKey = GlobalKey<FormState>().obs;
+  var projectListAdmin = List<Project>().obs;
 
   @override
   void onInit() async {
     projectList.bindStream(
         Database().getOnPmAllProjects(FirebaseAuth.instance.currentUser.uid));
+
+    projectListAdmin.bindStream(Database().getAdminAllProjects());
   }
 }

@@ -1,14 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProjectContracts {
   String contractName;
-  String contractDes;
-  ProjectContracts({this.contractName, this.contractDes});
-  ProjectContracts.fromMap(Map<String, dynamic> map) {
+  String contractDesc;
+  DocumentReference reference;
+  ProjectContracts({this.contractName, this.contractDesc});
+  ProjectContracts.fromMap(Map<String, dynamic> map, {this.reference}) {
     this.contractName = map['contractName'];
-    this.contractDes = map['contractDes'];
+    this.contractDesc = map['contractDesc'];
   }
 
   Map<String, dynamic> topMap() => {
         'contractName': this.contractName,
-        'contractDes': this.contractDes,
+        'contractDesc': this.contractDesc,
       };
+
+  ProjectContracts.fromSnapshot(DocumentSnapshot documentSnapshot)
+      : this.fromMap(documentSnapshot.data(),
+            reference: documentSnapshot.reference);
 }

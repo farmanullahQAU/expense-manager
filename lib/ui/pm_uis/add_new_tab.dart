@@ -2,6 +2,8 @@ import 'package:expense_manager/controllers/uploadImages/upload_images_controlle
 import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/ui/Reports/payment_report.dart';
 import 'package:expense_manager/ui/Labor/add_labor.dart';
+import 'package:expense_manager/controllers/user_controller.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +12,7 @@ import 'package:expense_manager/controllers/select_project_controller.dart';
 
 class AddNew extends GetWidget {
   var selectProjectController = Get.put(SelectProjectController());
+  var usrController = Get.find<UsrController>();
 
   @override
   Widget build(BuildContext context) {
@@ -19,77 +22,154 @@ class AddNew extends GetWidget {
         child: GridView.count(
           crossAxisCount: context.isLandscape ? 2 : 3,
           children: [
-            InkWell(
-              child: addCard(context, Colors.green, 'Payment', Icons.payment),
-              onTap: () {
-                selectProjectController.currentProject.value == null
-                    /* if the current project is not null then user will be directed to ui */
-                    ? showSelectProjectDialog(context, '/addPaymentUi')
-                    : Get.toNamed('addPaymentUi');
-              },
+            Obx(() => usrController.currentUsr.value.userType == "Admin"
+                ? InkWell(
+                    child: addCard(context, Colors.orange, 'Material-Category',
+                        Icons.payment),
+                    onTap: () {
+                      selectProjectController.currentProject.value == null
+                          /* if the current project is not null then user will be directed to ui */
+                          ? showSelectProjectDialog(context, '/addPaymentUi')
+                          : Get.toNamed('addPaymentUi');
+                    },
+                  )
+                : InkWell(
+                    child:
+                        addCard(context, Colors.pink, 'Payment', Icons.payment),
+                    onTap: () {
+                      selectProjectController.currentProject.value == null
+                          /* if the current project is not null then user will be directed to ui */
+                          ? showSelectProjectDialog(context, '/addPaymentUi')
+                          : Get.toNamed('addPaymentUi');
+                    },
+                  )),
+            Obx(
+              () => usrController.currentUsr.value.userType == "Admin"
+                  ? InkWell(
+                      child: addCard(context, Colors.red, 'Labor-Category',
+                          Icons.account_box),
+                      onTap: () {
+                        //  Get.toNamed('addBankAccountUi');
+                      },
+                    )
+                  : InkWell(
+                      child: addCard(
+                          context, Colors.red, ' Account', Icons.account_box),
+                      onTap: () {
+                        Get.toNamed('addBankAccountUi');
+                      },
+                    ),
             ),
-            InkWell(
-              child:
-                  addCard(context, Colors.red, ' Account', Icons.account_box),
-              onTap: () {
-                Get.toNamed('addBankAccountUi');
-              },
+            Obx(
+              () => usrController.currentUsr.value.userType == "Admin"
+                  ? InkWell(
+                      child: addCard(context, Theme.of(context).primaryColor,
+                          'Project-Manager', Icons.person_add),
+                      onTap: () {
+                        //  Get.toNamed('addCustomer');
+                      },
+                    )
+                  : InkWell(
+                      child: addCard(context, Theme.of(context).primaryColor,
+                          'Customer', Icons.person_add),
+                      onTap: () {
+                        Get.toNamed('addCustomer');
+                      },
+                    ),
             ),
-            InkWell(
-              child: addCard(context, Theme.of(context).primaryColor,
-                  'Customer', Icons.person_add),
-              onTap: () {
-                Get.toNamed('addCustomer');
-              },
+            Obx(() => usrController.currentUsr.value.userType == "Admin"
+                ? InkWell(
+                    child: addCard(context, Theme.of(context).primaryColor,
+                        'Project-Contract', Icons.person_add),
+                    onTap: () {
+                      Get.toNamed('projectContractUi');
+                    },
+                  )
+                : InkWell(
+                    child: addCard(context, Theme.of(context).primaryColor,
+                        'Vendor', Icons.people),
+                    onTap: () {
+                      //   Get.toNamed('addCustomer');
+                    },
+                  )),
+            Obx(() => usrController.currentUsr.value.userType == "Admin"
+                ? InkWell(
+                    child: addCard(context, Colors.deepOrangeAccent, 'Picture',
+                        Icons.photo),
+                    onTap: () {
+                      selectProjectController.currentProject.value == null
+                          ? showSelectProjectDialog(context, 'uploadPictureUi')
+                          : Get.toNamed('uploadPictureUi');
+                      //  showSelectProjectDialog(context);
+                    },
+                  )
+                : InkWell(
+                    child: addCard(context, Colors.deepOrangeAccent, 'Picture',
+                        Icons.add_a_photo),
+                    onTap: () {
+                      selectProjectController.currentProject.value == null
+                          ? showSelectProjectDialog(context, 'uploadPictureUi')
+                          : Get.toNamed('uploadPictureUi');
+                      //  showSelectProjectDialog(context);
+                    },
+                  )),
+            // InkWell(
+            //   child: addCard(context, Colors.deepOrangeAccent, 'Picture',
+            //       Icons.add_a_photo),
+            //   onTap: () {
+            //     selectProjectController.currentProject.value == null
+            //         ? showSelectProjectDialog(context, 'uploadPictureUi')
+            //         : Get.toNamed('uploadPictureUi');
+            //     //  showSelectProjectDialog(context);
+            //   },
+            // ),
+            Obx(
+              () => usrController.currentUsr.value.userType == "Admin"
+                  ? InkWell(
+                      onTap: () {
+                        //    Get.to(PaymentReport());
+                      },
+                      child: addCard(
+                        context,
+                        Colors.blueAccent,
+                        'Message',
+                        Icons.message,
+                      ),
+                    )
+                  : InkWell(
+                      onTap: () {
+                        //      Get.to(PaymentReport());
+                      },
+                      child: addCard(
+                        context,
+                        Colors.amber,
+                        'Material',
+                        Icons.shop_two,
+                      ),
+                    ),
             ),
-            addCard(context, Theme.of(context).primaryColor, 'Vendor',
-                Icons.people),
-            InkWell(
-              child: addCard(context, Colors.deepOrangeAccent, 'Picture',
-                  Icons.add_a_photo),
-              onTap: () {
-                selectProjectController.currentProject.value == null
-                    ? showSelectProjectDialog(context, 'uploadPictureUi')
-                    : Get.toNamed('uploadPictureUi');
-                //  showSelectProjectDialog(context);
-              },
+//just to to aligin the last labor card to center
+            Obx(
+              () => usrController.currentUsr.value.userType == "Admin"
+                  ? Container(width: 0.0, height: 0.0)
+                  : InkWell(),
             ),
-            InkWell(
-              onTap: () {
-                Get.to(PaymentReport());
-              },
-              child: addCard(
-                context,
-                Colors.amber,
-                'Material',
-                Icons.shop_two,
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                selectProjectController.currentProject.value == null
-                    /* if the current project is not null then user will be directed to ui */
-                    ? showSelectProjectDialog(context, '/addLaborUi')
-                    : Get.toNamed('addLaborUi');
-              },
-              child: addCard(
-                context,
-                Colors.blue,
-                'Labor',
-                Icons.person_add,
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                //  Get.toNamed('addLaborUi');
-              },
-              child: addCard(
-                context,
-                Colors.blue,
-                'Message',
-                Icons.chat,
-              ),
-            ),
+            Obx(() => usrController.currentUsr.value.userType == "Admin"
+                ? Container(width: 0.0, height: 0.0)
+                : InkWell(
+                    onTap: () {
+                      selectProjectController.currentProject.value == null
+                          /* if the current project is not null then user will be directed to ui */
+                          ? showSelectProjectDialog(context, '/addLaborUi')
+                          : Get.toNamed('addLaborUi');
+                    },
+                    child: addCard(
+                      context,
+                      Colors.blue,
+                      'Labor',
+                      Icons.person_add,
+                    ),
+                  )),
           ],
         ));
   }
@@ -114,7 +194,12 @@ class AddNew extends GetWidget {
               size: context.isLandscape ? 20 : 40,
             ),
           ),
-          Text(title)
+          Text(
+            title,
+            style: GoogleFonts.lobsterTwo(
+              textStyle: TextStyle(color: Colors.blue, letterSpacing: .2),
+            ),
+          )
         ],
       )),
     );

@@ -15,6 +15,7 @@ import 'package:expense_manager/ui/uploads_images/upload_pic.dart';
 import 'package:expense_manager/utils/root.dart';
 import 'package:expense_manager/ui/Reports/pdf_viewer.dart';
 import 'package:expense_manager/ui/Reports/labor_report.dart';
+import 'package:expense_manager/ui/admin_ui/project_contracts.dart';
 
 import 'package:get/get.dart';
 
@@ -89,6 +90,11 @@ class RouterClass {
       binding: HomeBinding(),
       name: '/laborReportUi',
       page: () => LabotReport(),
+    ),
+    GetPage(
+      binding: HomeBinding(),
+      name: '/projectContractUi',
+      page: () => ProjectContracts(),
     ),
   ];
 }

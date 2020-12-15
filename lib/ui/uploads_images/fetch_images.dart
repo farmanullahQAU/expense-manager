@@ -65,7 +65,7 @@ class FetchImages extends GetWidget<UploadImagesController> {
                                 ],
                               ),
                               subtitle: Text(
-                                currUser.currLoggedInUsr.value.name,
+                                currUser.currentUsr.value.name,
                                 style: TextStyle(
                                     color: Colors.black.withOpacity(0.6)),
                               ),

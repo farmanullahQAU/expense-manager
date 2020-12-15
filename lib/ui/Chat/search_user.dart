@@ -40,12 +40,12 @@ class SearchUsr extends GetWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        usrController.currLoggedInUsr.value.photoUrl != null
+        usrController.currentUsr.value.photoUrl != null
             ? Material(
                 child: CachedNetworkImage(
                   width: 150,
                   height: 150,
-                  imageUrl: usrController.currLoggedInUsr.value.photoUrl,
+                  imageUrl: usrController.currentUsr.value.photoUrl,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Center(
                     child: Container(
@@ -212,7 +212,7 @@ class SelectUsr extends SearchDelegate {
                           //set receiver and sender in  controller
                           sendMessageController.receiver.value = receivers;
                           sendMessageController.sender.value =
-                              usrController.currLoggedInUsr.value;
+                              usrController.currentUsr.value;
 
                           Get.toNamed('/sendMessageUi');
 
