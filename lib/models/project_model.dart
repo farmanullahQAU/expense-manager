@@ -58,10 +58,15 @@ class Project {
   Usr customer;
   ProjectContracts projectContract;
   List<String> projectPmIds;
+  String currExpenses;
+  String totalWageAmount;
+
   DocumentReference reference;
 
   Project(
       {this.starDate,
+      this.totalWageAmount,
+      this.currExpenses,
       this.endDate,
       this.customerRelation,
       this.customerRemarks,
@@ -72,6 +77,8 @@ class Project {
       this.projectPmIds});
 
   Project.fromMap(Map<String, dynamic> map, {this.reference}) {
+    this.currExpenses = map['currExpenses'];
+    this.totalWageAmount = map['totalWageAmount'];
     this.starDate = map['starDate'];
     this.endDate = map['endDate'];
     this.id = map['id'];
@@ -97,6 +104,10 @@ class Project {
         'customer': this.customer.toMap(),
         'projectContract': this.projectContract.toMap(),
         'projectPmIds': this.projectPmIds,
+        'totalWageAmount':
+            this.totalWageAmount == null ? "No Wage yet" : this.totalWageAmount,
+        'currExpenses':
+            this.currExpenses == null ? "No Expenses yet" : this.currExpenses
         // 'projectPmIds': this.projectPmIds.toList(),
       };
 }

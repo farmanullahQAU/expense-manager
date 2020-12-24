@@ -57,6 +57,13 @@ class Splash extends GetWidget<UsrController> {
 
               return PmHomeBottomNav();
             }
+
+
+            if (controller.currentUsr.value.userType == "Customer") {
+              controller.usrType.value = controller.currentUsr.value.userType;
+
+              return PmHomeBottomNav();
+            }
             return Center(
               //     child: SpinKitFadingCircle(
               //       size: ,

@@ -72,7 +72,7 @@ class Database {
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((queryDocumentSnapshot) {
-          projectList.add(Project.fromMap(queryDocumentSnapshot.data()));
+          projectList.add(Project.fromSnapShot(queryDocumentSnapshot));
         });
         projectList.forEach((element) {
           print(element.estimatedCost.toString());
@@ -285,10 +285,9 @@ class Database {
         .where('projectPmIds', arrayContains: uid)
         .snapshots()
         .map((querySnapshot) {
-      List<Project> projects = List();
+      var projects = List<Project>();
       querySnapshot.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
-        print('current pm all projects id');
-        projects.add(Project.fromMap(queryDocumentSnapshot.data()));
+        projects.add(Project.fromSnapShot(queryDocumentSnapshot));
       });
 
       return projects;
@@ -297,13 +296,29 @@ class Database {
 
   getAdminAllProjects() {
     return firestore.collection('Projects').snapshots().map((querySnapshot) {
-      List<Project> projects = List();
+      var projects = List<Project>();
       querySnapshot.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
         projects.add(Project.fromSnapShot(queryDocumentSnapshot));
       });
 
       return projects;
     });
+  }
+
+  getCustomerAllProjects(String customerId) {
+    return firestore
+        .collection('Projects')
+        .where('customer', isEqualTo: {'id': customerId})
+        .snapshots()
+        .map((querySnapshot) {
+          var projects = List<Project>();
+          querySnapshot.docs
+              .forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+            projects.add(Project.fromSnapShot(queryDocumentSnapshot));
+          });
+
+          return projects;
+        });
   }
 
   getSingleProject(String uid) {
@@ -315,7 +330,7 @@ class Database {
         .map((querySnapshot) {
       var project = Project();
       querySnapshot.docs.forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
-        project = Project.fromMap(queryDocumentSnapshot.data());
+        project = Project.fromSnapShot(queryDocumentSnapshot);
       });
 
       return project;
@@ -459,6 +474,16 @@ class Database {
         .doc(project.id)
         .set(project.toMap());
   }
+/*this will add a project with new id different to document id */
+  // addProjectToDb(Project project) async {
+  //   var documentReferenceId =
+  //       FirebaseFirestore.instance.collection('Projects').doc().id;
+  //   project.id = documentReferenceId;
+
+  //   await FirebaseFirestore.instance
+  //       .collection('Projects')
+  //       .add(project.toMap());
+  // }
 
   addPaymentToDB(Payment payment) async {
     var documentReference = addPayment.doc();

@@ -48,6 +48,10 @@ class ProjectContractsUi extends GetWidget<ProjectContractController> {
                           onPressed: () {
                             controller.contractDesEditingController.value.text =
                                 controller.allProjectContracts[i].contractDesc;
+
+                            controller
+                                    .contractNameEditingController.value.text =
+                                controller.allProjectContracts[i].contractDesc;
                             controller.isUpdate.value = true;
                             controller.reference.value =
                                 controller.allProjectContracts[i].reference;
@@ -57,6 +61,24 @@ class ProjectContractsUi extends GetWidget<ProjectContractController> {
                         ),
                         FlatButton(
                           onPressed: () {
+                            controller.reference.value =
+                                controller.allProjectContracts[i].reference;
+                            Get.defaultDialog(
+                                barrierDismissible: false,
+                                title: 'Confirm',
+                                middleText: "Are you sure to delete?",
+                                cancelTextColor: Get.isDarkMode
+                                    ? Theme.of(context).primaryColor
+                                    : Colors.red,
+                                onCancel: () {
+                                  Get.back();
+                                },
+                                confirmTextColor: Colors.white,
+                                textConfirm: 'OK',
+                                onConfirm: () {
+                                  controller.deleteContract();
+                                });
+
                             // Perform some action
                           },
                           child: const Icon(Icons.delete),
@@ -72,7 +94,10 @@ class ProjectContractsUi extends GetWidget<ProjectContractController> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          controller.isUpdate.value = false;
+          adminAddCategoryDialog(context);
+        },
       ),
     );
   }
@@ -106,6 +131,12 @@ class ProjectContractsUi extends GetWidget<ProjectContractController> {
                         controller.projectContractObj.value = contract;
                         await controller.updateContrac();
                         controller.reSet();
+                      } else {
+                        var newContract = ProjectContracts(
+                            contractName: controller.contractDesString.value,
+                            contractDesc: controller.contractDesString.value);
+                        controller.projectContractObj.value = newContract;
+                        controller.addNewContract();
                       }
                       Get.back();
                       //  Get.toNamed(routeName); //navigate to upload picuture ui

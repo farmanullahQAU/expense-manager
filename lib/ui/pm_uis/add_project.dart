@@ -430,7 +430,9 @@ class AddProject extends GetWidget<AddProjectController> {
     DateTime pikeDate = await showDatePicker(
         initialEntryMode: DatePickerEntryMode.input,
         context: context,
-        initialDate: controller.startDate.value ?? DateTime.now(),
+        initialDate: controller.startDate.value == null
+            ? DateTime.now()
+            : DateFormat.yMMMd().parse(controller.startDate.value),
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5));
     if (pikeDate != null)
@@ -441,10 +443,13 @@ class AddProject extends GetWidget<AddProjectController> {
     DateTime pikeDate = await showDatePicker(
         initialEntryMode: DatePickerEntryMode.input,
         context: context,
-        initialDate: controller.endDate.value ?? DateTime.now(),
+        initialDate: controller.endDate.value == null
+            ? DateTime.now()
+            : DateFormat.yMMMd().parse(controller.endDate.value),
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5));
     if (pikeDate != null)
       controller.endDate.value = DateFormat.yMMMd().format(pikeDate);
+    // controller.endDate.value=DateFormat('yyyy/MM/dd').parse('2020/04/03'))
   }
 }

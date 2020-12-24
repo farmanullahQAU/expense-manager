@@ -22,6 +22,7 @@ import '../add_project_controller/add_project_controller.dart';
 import '../errorHandler.dart';
 import '../pm_hom_botom_Nav_controller.dart';
 import '../pm_home_controller.dart';
+import '../FetchProjectContr/Fetch_Project_Controller.dart';
 
 class HomeBinding extends Bindings {
   @override
@@ -52,6 +53,7 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => LaborReportController());
     Get.lazyPut(() => PdfViewrController());
     Get.lazyPut(() => ProjectContractController());
+    Get.lazyPut(() => FetchProjectController());
 
     /* Get.put<AuthController>(AuthController(), permanent: true);
        when we use this put approach then when we run our program each controller will be initilize

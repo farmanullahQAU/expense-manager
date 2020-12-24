@@ -292,8 +292,8 @@ class AddNew extends GetWidget {
                                     children: [
                                       SizedBox(
                                         height: 20,
-                                        child: new Text(
-                                            projectObj.customerRelation,
+                                        child: Text(
+                                            projectObj.id.substring(0, 4),
                                             overflow: TextOverflow.ellipsis),
                                       ),
                                     ],

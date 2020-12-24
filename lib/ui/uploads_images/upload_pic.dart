@@ -12,39 +12,37 @@ class UploadPictures extends GetWidget<UploadImagesController> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+        child: DefaultTabController(
+      length: 2,
       child: Scaffold(
-          body: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          //
+        //
 
-          appBar: AppBar(
-            title: Text('Multiple Images'),
-            bottom: TabBar(
-              tabs: [
-                Tab(
-                  icon: Icon(Icons.image),
-                  text: 'Images',
-                ),
-                Tab(
-                  icon: Icon(Icons.cloud_upload),
-                  text: "Upload Images",
-                ),
-              ],
-              indicatorColor: Colors.red,
-              indicatorWeight: 5.0,
-            ),
-          ),
-
-          body: TabBarView(
-            children: <Widget>[
-              FetchImages(),
-              upload(context),
+        appBar: AppBar(
+          title: Text('Multiple Images'),
+          bottom: TabBar(
+            tabs: [
+              Tab(
+                icon: Icon(Icons.image),
+                text: 'Images',
+              ),
+              Tab(
+                icon: Icon(Icons.cloud_upload),
+                text: "Upload Images",
+              ),
             ],
+            indicatorColor: Colors.red,
+            indicatorWeight: 5.0,
           ),
         ),
-      )),
-    );
+
+        body: TabBarView(
+          children: <Widget>[
+            FetchImages(),
+            upload(context),
+          ],
+        ),
+      ),
+    ));
   }
 
   Widget upload(BuildContext context) {
@@ -53,9 +51,9 @@ class UploadPictures extends GetWidget<UploadImagesController> {
         Container(
           child: Column(
             children: <Widget>[
-              SizedBox(
-                height: 20,
-              ),
+              // SizedBox(
+              //   height: 20,
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -109,13 +107,17 @@ class UploadPictures extends GetWidget<UploadImagesController> {
                         controller.uploadImages(context);
                       }
                     },
-                    child: Container(
-                      width: 130,
-                      height: 50,
-                      child: Center(
-                          child: Text(
-                        "Upload Images",
-                      )),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 130,
+                          height: 50,
+                          child: Center(
+                              child: Text(
+                            "Upload Images",
+                          )),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -145,6 +147,7 @@ class UploadPictures extends GetWidget<UploadImagesController> {
             child: Stack(
               children: [
                 AssetThumb(
+                  spinner: Center(child: CircularProgressIndicator()),
                   asset: asset,
                   width: 300,
                   height: 300,

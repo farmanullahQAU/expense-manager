@@ -146,6 +146,7 @@ class LabotReport extends GetWidget<LaborReportController> {
         DataColumn(label: Text('Amount'), tooltip: 'Wage Amount'),
         DataColumn(label: Text('Days-Worked'), tooltip: 'Total Working days'),
         DataColumn(label: Text('Amount Payable'), tooltip: 'Total Salary'),
+        DataColumn(label: Text('Amount Status'), tooltip: 'Total Salary'),
       ],
       rows: controller.allWagers
           .map((data) => DataRow(cells: [
@@ -186,6 +187,11 @@ class LabotReport extends GetWidget<LaborReportController> {
                             await data.reference.update({
                               'totalWage':
                                   (data.amount * data.daysWorked).toString()
+                            }).then((value) {
+                              //to add this total wage to current selected project
+                              controller.totalWageAmount.value +=
+                                  double.parse(data.totalWage);
+                              controller.updateProject();
                             });
                           },
                           child: Icon(Icons.add)),
@@ -194,6 +200,42 @@ class LabotReport extends GetWidget<LaborReportController> {
                   ),
                 ),
                 DataCell(Text(data.totalWage)),
+                DataCell(
+                  data.paymentStatus == false
+                      ? InkWell(
+                          onTap: () async {
+                            data.reference.update({'paymentStatus': true}).then(
+                                (value) => Fluttertoast.showToast(
+                                    backgroundColor: Colors.black,
+                                    msg: "Request Submitted "));
+                          },
+                          child: Row(
+                            children: [
+                              data.paymentStatus == true
+                                  ? Text('Paid')
+                                  : Text('Not Payed'),
+                              Icon(Icons.check_box_outline_blank_rounded)
+                            ],
+                          ),
+                        )
+                      : InkWell(
+                          onTap: () async {
+                            data.reference
+                                .update({'paymentStatus': false}).then(
+                                    (value) => Fluttertoast.showToast(
+                                        backgroundColor: Colors.black,
+                                        msg: "Request Submitted "));
+                          },
+                          child: Row(
+                            children: [
+                              data.paymentStatus == true
+                                  ? Text('Paid')
+                                  : Text('Not Payed'),
+                              Icon(Icons.check_box_outlined)
+                            ],
+                          ),
+                        ),
+                ),
               ]))
           .toList(),
     );

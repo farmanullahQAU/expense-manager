@@ -16,6 +16,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class UploadImagesController extends GetxController {
   var errorController = Get.put(ErrorController());
@@ -27,7 +28,6 @@ class UploadImagesController extends GetxController {
 
   var error = "no error found".obs;
   var imageUrls = <String>[].obs;
-  var isUploading = false.obs;
   var numberOfImages = RxInt();
   var projectList = List<Project>().obs;
   var uploadPicFormKey = GlobalKey<FormState>().obs;
@@ -67,50 +67,24 @@ class UploadImagesController extends GetxController {
   }
   */
   void uploadImages(context) {
-    Get.dialog(AlertDialog(
-      // backgroundColor:
-      //     Theme.of(context).backgroundColor,
-      content: Container(
-        child: SpinKitFadingCircle(
-          color: Theme.of(context).primaryColor,
-        ),
-      ),
-      actions: <Widget>[
-        InkWell(
-          onTap: () {
-            Get.back();
-          },
-          child: Container(
-            width: Get.context.width * 0.6,
-            height: 30,
-            // backgroundColor:
-            //     MultiPickerApp.navigateButton,
-            // backgroundDarkerColor:
-            //     MultiPickerApp.background,
-          ),
-        )
-      ],
-    ));
-
+    Fluttertoast.showToast(msg: "Uploading...", backgroundColor: Colors.black);
     for (var imageFile in images) {
       postImage(imageFile, context).then((downloadUrl) {
         imageUrls.add(downloadUrl.toString());
-        if (imageUrls.length == images.length) {
-          var image = new Images(
-              imageUrl: downloadUrl,
-              date: DateTime.now(),
-              projectId: slectedProjecCont.currentProject.value.id);
-          //    String documnetID = DateTime.now().millisecondsSinceEpoch.toString();
-          FirebaseFirestore.instance
-              .collection('Projects')
-              .doc(slectedProjecCont.currentProject.value.id)
-              .collection('Pictures')
-              .add(image.toMap())
-              .then((value) {
-            print('uploaded');
-            Get.back(); //close dialogue
-          });
-        }
+        var image = new Images(
+            imageUrl: downloadUrl,
+            date: DateTime.now(),
+            projectId: slectedProjecCont.currentProject.value.id);
+        FirebaseFirestore.instance
+            .collection('Projects')
+            .doc(slectedProjecCont.currentProject.value.id)
+            .collection('Pictures')
+            .add(image.toMap())
+            .then((value) {
+          if (imageUrls.length == images.length)
+            Fluttertoast.showToast(
+                msg: "All images uploaded ", backgroundColor: Colors.green);
+        });
       }).catchError((err) {
         errorController.handleStorageError(err);
         UploadPictures().errorDialogue(context);
@@ -170,7 +144,6 @@ class UploadImagesController extends GetxController {
       });
 
       StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
-      print(storageTaskSnapshot.ref.getDownloadURL());
       //  Get.back();
       return storageTaskSnapshot.ref.getDownloadURL();
     } catch (err) {

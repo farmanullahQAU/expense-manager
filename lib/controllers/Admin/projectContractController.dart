@@ -41,8 +41,21 @@ class ProjectContractController extends GetxController {
             Get.defaultDialog(title: 'Error', middleText: error.toString()));
   }
 
+  addNewContract() {
+    FirebaseFirestore.instance
+        .collection('contracts')
+        .add(this.projectContractObj.value.toMap())
+        .then((value) => Fluttertoast.showToast(
+            msg: "Contract Added successfully", backgroundColor: Colors.green));
+  }
+
   reSet() {
     this.contractNameEditingController.value.clear();
     this.contractDesEditingController.value.clear();
+  }
+
+  deleteContract() {
+    reference.value.delete().then((value) => Fluttertoast.showToast(
+        msg: "Deleted Successfully", backgroundColor: Colors.red));
   }
 }

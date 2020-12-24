@@ -33,6 +33,7 @@ class Labor {
   String name;
   String phone;
   String address;
+  bool paymentStatus;
   String laborType;
   String paymentType;
   double amount;
@@ -45,6 +46,7 @@ class Labor {
 
   Labor(
       {this.name,
+      this.paymentStatus,
       this.laborType,
       this.paymentType,
       this.amount,
@@ -81,6 +83,7 @@ class Labor {
     this.amount = map['amount'];
     this.daysWorked = map['daysWorked'];
     this.totalWage = map['totalWage'];
+    this.paymentStatus = map['paymentStatus'];
 
     if (map['contract'] != null) {
       var list = map['contract'] as List;
@@ -104,6 +107,7 @@ class Labor {
         'address': address,
         'laborType': laborType,
         'paymentType': paymentType,
+        'paymentStatus': paymentStatus == null ? false : true,
         'amount': amount,
         'totalWage': totalWage ?? "0.0",
         'daysWorked': this.daysWorked ?? 0,

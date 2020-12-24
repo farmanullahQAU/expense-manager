@@ -5,6 +5,8 @@ import 'package:expense_manager/controllers/authController/auth_controller.dart'
 import 'package:expense_manager/controllers/profileController/profile_controller.dart';
 import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/ui/pm_uis/report_tab.dart';
+import 'package:expense_manager/ui/pm_uis/viewTab.dart';
+
 import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/controllers/select_project_controller.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,6 @@ import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 
 import 'add_new_tab.dart';
-import 'vendor_chart.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
@@ -168,7 +169,7 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
   List<Map<String, dynamic>> _tabs = [
     {'name': 'Add new', 'Icon': Icon(Icons.add_box)},
     {'name': 'Reports', 'Icon': Icon(Icons.report)},
-    {'name': 'Message', 'Icon': Icon(Icons.add_alert)}
+    {'name': 'View', 'Icon': Icon(Icons.fact_check)}
   ];
   @override
   Widget build(BuildContext context) {
@@ -266,7 +267,7 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
           /* tabB bar view */
           controller: _tabController,
           physics: BouncingScrollPhysics(),
-          children: [AddNew(), Reports(), LineChartSample2()],
+          children: [AddNew(), Reports(), ViewTab()],
         ),
       ),
     );
@@ -362,7 +363,7 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                                       SizedBox(
                                         height: 20,
                                         child: new Text(
-                                            projectObj.customerRelation,
+                                            projectObj.id.substring(0, 4),
                                             overflow: TextOverflow.ellipsis),
                                       ),
                                     ],

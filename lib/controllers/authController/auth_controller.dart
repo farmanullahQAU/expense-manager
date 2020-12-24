@@ -13,8 +13,7 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../pm_home_controller.dart';
 import 'auth_error_handler_controller.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-
+//addd
 class AuthController extends GetxController {
   final roundLoadingLoginContr = new RoundedLoadingButtonController().obs;
 

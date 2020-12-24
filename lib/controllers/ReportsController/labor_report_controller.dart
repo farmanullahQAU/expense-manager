@@ -69,8 +69,10 @@ class LaborReportController extends GetxController {
   var amount = RxDouble();
   var contractName = RxString();
   var contractDesc = RxString();
+  var totalWageAmount = 0.0.obs;
 
   var contract = LaborContract().obs;
+  //to update the project at that id when  wage added
 
   @override
   void onInit() {
@@ -82,6 +84,14 @@ class LaborReportController extends GetxController {
     ));
     allContractors.bindStream(Database()
         .getAllContractLabors(selectProjectController.currentProject.value.id));
+  }
+
+/*when user add wage to labe that will be also added to the selected project */
+  updateProject() {
+    FirebaseFirestore.instance
+        .collection("Projects")
+        .doc(selectProjectController.currentProject.value.id)
+        .update({'totalWageAmount': this.totalWageAmount.toString()});
   }
 
   addLaborContract(DocumentReference reference) async {
@@ -120,7 +130,8 @@ class LaborReportController extends GetxController {
                   "Type",
                   "Amount",
                   "Days-Worked",
-                  "Amount-Payable"
+                  "Amount-Payable",
+                  "Payment-Status"
                 ],
                 ...this.allWagers.map((labor) => [
                       labor.name,
@@ -129,7 +140,8 @@ class LaborReportController extends GetxController {
                       labor.laborType,
                       labor.amount.toString(),
                       labor.daysWorked.toString(),
-                      labor.totalWage
+                      labor.totalWage,
+                      labor.paymentStatus == false ? "Not Paid" : "Payed"
                     ])
               ]),
               pw.Header(child: pw.Text('CONTRACT LABOR REPORT')),
