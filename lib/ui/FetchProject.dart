@@ -13,7 +13,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
         child: Container(
           color: Get.isDarkMode
               ? Theme.of(context).primaryColor
-              : Colors.grey[800],
+              : Colors.grey[900],
           child: Obx(() {
             if (controller.userType.value == "Admin")
               return adminProjectsListView();
