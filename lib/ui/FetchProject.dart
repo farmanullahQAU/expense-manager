@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_manager/controllers/Admin/projectContractController.dart';
 import 'package:expense_manager/controllers/FetchProjectContr/Fetch_Project_Controller.dart';
+import 'package:expense_manager/models/project_contract_model.dart';
 
 class FetchProject extends GetWidget<FetchProjectController> {
   @override
@@ -26,7 +27,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
     );
   }
 
-  adminAddCategoryDialog(BuildContext context) {
+  changeContractDialogue(BuildContext context) {
     showDialog(
       useSafeArea: true,
       barrierDismissible: false, //enable and disable outside click
@@ -42,10 +43,10 @@ class FetchProject extends GetWidget<FetchProjectController> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                  onPressed: () async {
-                    // if (controller.addContractFormKey.value.currentState
-                    //     .validate()) {
-                    //   controller.addContractFormKey.value.currentState.save();
+                  onPressed: () {
+                     if (controller.updateContractFormKey.value.currentState
+                        .validate()) {
+                      controller.updateContractFormKey.value.currentState.save();
 
                     //   if (controller.isUpdate.value == true) {
                     //     var contract = new ProjectContracts(
@@ -64,7 +65,10 @@ class FetchProject extends GetWidget<FetchProjectController> {
                     //   }
                     //   Get.back();
                     //   //  Get.toNamed(routeName); //navigate to upload picuture ui
-                    // }
+
+                    controller.udateContract();
+                    Get.back();
+                  }
                   }),
               RaisedButton(
                 color:
@@ -90,43 +94,55 @@ class FetchProject extends GetWidget<FetchProjectController> {
           ),
         ],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: Obx(() => controller.isUpdate.value == true
-            ? Text('Update Contract')
-            : Text('Add Contract')),
+        title: Text('Update Contract'),
+          
         content: SingleChildScrollView(
           child: Form(
-              //    key: controller.addContractFormKey.value,
+                 key: controller.updateContractFormKey.value,
               child: Column(
             children: [
-              TextFormField(
-                //      controller: controller.contractNameEditingController.value,
-                validator: (val) =>
-                    val.isEmpty ? "Plz enter contract name" : null,
-                onSaved: (val) => controller.contractNameString.value = val,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  filled: true,
-                  contentPadding: EdgeInsets.all(4),
-                ),
+             DropdownButtonFormField(
+               onSaved: (val)=>controller.currContract.value=val,
+                          isExpanded: true,
+                          validator: (val) => val == null
+                              ? "Select contract "
+                              : null,
+                          isDense: true,
+                          decoration: InputDecoration(
+                            /* enabledBorder: InputBorder.none that will remove the border and also the upper left 
+              and right cut corner  */
+                            contentPadding: EdgeInsets.only(left: 4),
+                            /* 
+              
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: TextFormField(
-                  //  controller: controller.contractDesEditingController.value,
-                  validator: (val) =>
-                      val.isEmpty ? "Plz enter contract description" : null,
-                  onSaved: (val) => controller.contractDesString.value = val,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 10,
-                  decoration: InputDecoration(
-                    labelText: 'description',
-                    filled: true,
-                    contentPadding: EdgeInsets.all(4),
-                  ),
-                ),
-              ),
+              */
+                            filled: true,
+                          ),
+                          hint: Text('Select Contract'),
+                          items: controller.allContracts
+                              .map((projContractObj) => DropdownMenuItem<ProjectContracts>(
+                                  value: projContractObj,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 20,
+                                        child: new Text(
+                                            projContractObj.contractName,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                    ],
+                                  )))
+                              .toList(),
+                          onChanged: (project) {
+                            controller.currContract.value =
+                                project;
+                          },
+             )
+              
             ],
+             
           )),
         ),
       ),
@@ -189,6 +205,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
                   ],
                 ),
               ),
+           
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -228,50 +245,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
                   ),
                 ],
               ),
-              ButtonBar(
-                alignment: MainAxisAlignment.end,
-                children: [
-                  FlatButton(
-                    onPressed: () {
-                      // controller.contractDesEditingController.value.text =
-                      //     controller.allProjectContracts[i].contractDesc;
-
-                      // controller
-                      //         .contractNameEditingController.value.text =
-                      //     controller.allProjectContracts[i].contractDesc;
-                      // controller.isUpdate.value = true;
-                      // controller.reference.value =
-                      //     controller.allProjectContracts[i].reference;
-                      adminAddCategoryDialog(context);
-                    },
-                    child: Icon(Icons.edit),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      // controller.reference.value =
-                      //   controller.allProjectContracts[i].reference;
-                      Get.defaultDialog(
-                          barrierDismissible: false,
-                          title: 'Confirm',
-                          middleText: "Are you sure to delete?",
-                          cancelTextColor: Get.isDarkMode
-                              ? Theme.of(context).primaryColor
-                              : Colors.red,
-                          onCancel: () {
-                            Get.back();
-                          },
-                          confirmTextColor: Colors.white,
-                          textConfirm: 'OK',
-                          onConfirm: () {
-                            //   controller.deleteContract();
-                          });
-
-                      // Perform some action
-                    },
-                    child: const Icon(Icons.delete),
-                  ),
-                ],
-              ),
+             
             ],
           ),
         );
@@ -344,49 +318,30 @@ class FetchProject extends GetWidget<FetchProjectController> {
                   ),
                 ],
               ),
-              ButtonBar(
-                alignment: MainAxisAlignment.end,
-                children: [
-                  FlatButton(
-                    onPressed: () {
-                      // controller.contractDesEditingController.value.text =
-                      //     controller.allProjectContracts[i].contractDesc;
-
-                      // controller
-                      //         .contractNameEditingController.value.text =
-                      //     controller.allProjectContracts[i].contractDesc;
-                      // controller.isUpdate.value = true;
-                      // controller.reference.value =
-                      //     controller.allProjectContracts[i].reference;
-                      adminAddCategoryDialog(context);
-                    },
-                    child: Icon(Icons.edit),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      // controller.reference.value =
-                      //   controller.allProjectContracts[i].reference;
-                      Get.defaultDialog(
-                          barrierDismissible: false,
-                          title: 'Confirm',
-                          middleText: "Are you sure to delete?",
-                          cancelTextColor: Get.isDarkMode
-                              ? Theme.of(context).primaryColor
-                              : Colors.red,
-                          onCancel: () {
-                            Get.back();
+              Padding(
+                padding: const EdgeInsets.only(left:16.0),
+                child: Row(
+                  mainAxisAlignment:MainAxisAlignment.spaceBetween ,
+                  children: [
+                    Text('Contract'),
+                    ButtonBar(
+                      alignment: MainAxisAlignment.end,
+                      children: [
+                        Text(project.projectContract.contractName),
+                        FlatButton(
+                          onPressed: () {
+                            //select taped project reference
+                            controller.projectReference.value =project.reference;
+      
+                            changeContractDialogue(context);
                           },
-                          confirmTextColor: Colors.white,
-                          textConfirm: 'OK',
-                          onConfirm: () {
-                            //   controller.deleteContract();
-                          });
-
-                      // Perform some action
-                    },
-                    child: const Icon(Icons.delete),
-                  ),
-                ],
+                          child: Icon(Icons.edit),
+                        ),
+             
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -398,12 +353,14 @@ class FetchProject extends GetWidget<FetchProjectController> {
   ListView customerProjectsListView() {
     return ListView.builder(
       itemCount: controller.allCustomesrProject.length,
+
       padding: const EdgeInsets.all(16),
       itemBuilder: (context, i) {
-        var project = controller.allPmProjects[i];
+        var project = controller.allCustomesrProject[i];
         return Card(
           clipBehavior: Clip.antiAlias,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ListTile(
                 subtitle: Row(
@@ -421,6 +378,8 @@ class FetchProject extends GetWidget<FetchProjectController> {
                   ],
                 ),
               ),
+           
+
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -431,6 +390,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
                     ),
                     Text(project.customerRelation,
                         style: TextStyle(color: Colors.black.withOpacity(0.5))),
+
                   ],
                 ),
               ),
@@ -460,50 +420,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
                   ),
                 ],
               ),
-              ButtonBar(
-                alignment: MainAxisAlignment.end,
-                children: [
-                  FlatButton(
-                    onPressed: () {
-                      // controller.contractDesEditingController.value.text =
-                      //     controller.allProjectContracts[i].contractDesc;
-
-                      // controller
-                      //         .contractNameEditingController.value.text =
-                      //     controller.allProjectContracts[i].contractDesc;
-                      // controller.isUpdate.value = true;
-                      // controller.reference.value =
-                      //     controller.allProjectContracts[i].reference;
-                      adminAddCategoryDialog(context);
-                    },
-                    child: Icon(Icons.edit),
-                  ),
-                  FlatButton(
-                    onPressed: () {
-                      // controller.reference.value =
-                      //   controller.allProjectContracts[i].reference;
-                      Get.defaultDialog(
-                          barrierDismissible: false,
-                          title: 'Confirm',
-                          middleText: "Are you sure to delete?",
-                          cancelTextColor: Get.isDarkMode
-                              ? Theme.of(context).primaryColor
-                              : Colors.red,
-                          onCancel: () {
-                            Get.back();
-                          },
-                          confirmTextColor: Colors.white,
-                          textConfirm: 'OK',
-                          onConfirm: () {
-                            //   controller.deleteContract();
-                          });
-
-                      // Perform some action
-                    },
-                    child: const Icon(Icons.delete),
-                  ),
-                ],
-              ),
+        
             ],
           ),
         );

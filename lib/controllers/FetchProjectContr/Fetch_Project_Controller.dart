@@ -9,6 +9,8 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:expense_manager/models/project_contract_model.dart';
 import 'package:expense_manager/controllers/user_controller.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -30,6 +32,11 @@ class FetchProjectController extends GetxController {
 
   var projectAllLabors = List<Labor>().obs;
   var totalWagesAmounts = RxDouble();
+//update contract stups
+var  currContract=ProjectContracts().obs;
+var allContracts=List<ProjectContracts>().obs;
+  final updateContractFormKey = GlobalKey<FormState>().obs;
+
 
   @override
   void onInit() async {
@@ -42,5 +49,12 @@ class FetchProjectController extends GetxController {
     allAdminProjects.bindStream(Database().getAdminAllProjects());
     allCustomesrProject.bindStream(
         Database().getCustomerAllProjects(usrController.currentUsr.value.id));
+        allContracts.bindStream(Database().getProjectContracts());
+  }
+
+  void udateContract(){
+this.projectReference.value.update({'ProjectContract':this.currContract.value.toMap()} ).then((value) => Fluttertoast.showToast(backgroundColor: Colors.black,msg: "Contract updated")).catchError((err)=>Fluttertoast.showToast(msg: err.toString(), backgroundColor:Colors.red));
+
+
   }
 }

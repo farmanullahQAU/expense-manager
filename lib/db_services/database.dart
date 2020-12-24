@@ -308,12 +308,20 @@ class Database {
   getCustomerAllProjects(String customerId) {
     return firestore
         .collection('Projects')
-        .where('customer', isEqualTo: {'id': customerId})
+        .where('customer.id', isEqualTo: customerId)
         .snapshots()
         .map((querySnapshot) {
           var projects = List<Project>();
           querySnapshot.docs
               .forEach((QueryDocumentSnapshot queryDocumentSnapshot) {
+                print('kkkkkkkkkkkkkkkkkkkkkkkkkk');
+              print(
+
+
+
+            Project.fromSnapShot(queryDocumentSnapshot).estimatedCost);
+
+              
             projects.add(Project.fromSnapShot(queryDocumentSnapshot));
           });
 

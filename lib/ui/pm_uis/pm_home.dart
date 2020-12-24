@@ -165,6 +165,8 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
 class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
   TabController _tabController;
   var selectProjectController = Get.find<SelectProjectController>();
+  var usrController = Get.put(UsrController());
+
 
   List<Map<String, dynamic>> _tabs = [
     {'name': 'Add new', 'Icon': Icon(Icons.add_box)},
@@ -210,22 +212,8 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                     );
                   }
                 }),
-                // Obx(
-                //   () {
-                //     if (Get.find<SelectProjectController>()
-                //             .currentProject
-                //             .value !=
-                //         null) {
-                //       return IconButton(
-                //           icon: Icon(Icons.change_history),
-                //           onPressed: () {
-                //             changeProjectDialog(context);
-                //           });
-                //     } else {
-                //       return Container(width: 0.0, height: 0.0);
-                //     }
-                //   },
-                // ),
+               
+               
                 IconButton(
                     icon: Icon(Icons.exit_to_app),
                     onPressed: () {
@@ -335,7 +323,71 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
               child: Column(
                 children: [
                   Obx(() {
-                    if (selectProjectController.projectList != null) {
+
+
+                    if(usrController.currentUsr.value.userType=="Admin")
+                    return adminProjects();
+                    else if(usrController.currentUsr.value.userType=="Project manager")
+                    return pmProjects();
+                    else
+                  return  customerProjects();
+                    
+                  }),
+                ],
+              )),
+        ),
+      ),
+    );
+  }
+Widget customerProjects(){
+  print('customer projects');
+
+   if (selectProjectController.projectListCustomer != null) {
+                      return DropdownButtonFormField(
+                          isExpanded: true,
+                          validator: (val) => val == null
+                              ? "Select project to perform action  "
+                              : null,
+                          isDense: true,
+                          decoration: InputDecoration(
+                            /* enabledBorder: InputBorder.none that will remove the border and also the upper left 
+              and right cut corner  */
+                            contentPadding: EdgeInsets.only(left: 4),
+                            /* 
+              
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+              */
+                            filled: true,
+                          ),
+                          hint: Text('Select Project'),
+                          items: selectProjectController.projectListCustomer
+                              .map((projectObj) => DropdownMenuItem<Project>(
+                                  value: projectObj,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 20,
+                                        child: new Text(
+                                            projectObj.id.substring(0, 4),
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                    ],
+                                  )))
+                              .toList(),
+                          onChanged: (project) {
+                            selectProjectController.currentProject.value =
+                                project;
+                          });
+                    }
+                    return Center(child: CircularProgressIndicator());
+}
+
+Widget pmProjects(){
+  print('Pm projects');
+
+   if (selectProjectController.projectList != null) {
                       return DropdownButtonFormField(
                           isExpanded: true,
                           validator: (val) => val == null
@@ -374,14 +426,52 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                                 project;
                           });
                     }
-                    return Text('loading...');
-                  }),
-                ],
-              )),
-        ),
-      ),
-    );
-  }
+                    return Center(child: CircularProgressIndicator());
+}
+
+Widget adminProjects(){
+  print('admin projects');
+   if (selectProjectController.projectListAdmin != null) {
+                      return DropdownButtonFormField(
+                          isExpanded: true,
+                          validator: (val) => val == null
+                              ? "Select project to perform action  "
+                              : null,
+                          isDense: true,
+                          decoration: InputDecoration(
+                            /* enabledBorder: InputBorder.none that will remove the border and also the upper left 
+              and right cut corner  */
+                            contentPadding: EdgeInsets.only(left: 4),
+                            /* 
+              
+              border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+              ),
+              */
+                            filled: true,
+                          ),
+                          hint: Text('Select Project'),
+                          items: selectProjectController.projectListAdmin
+                              .map((projectObj) => DropdownMenuItem<Project>(
+                                  value: projectObj,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 20,
+                                        child: new Text(
+                                            projectObj.id.substring(0, 4),
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                    ],
+                                  )))
+                              .toList(),
+                          onChanged: (project) {
+                            selectProjectController.currentProject.value =
+                                project;
+                          });
+                    }
+                    return Center(child: CircularProgressIndicator());
+}
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
