@@ -207,7 +207,7 @@ class LabotReport extends GetWidget<LaborReportController> {
                             data.reference.update({'paymentStatus': true}).then(
                                 (value) => Fluttertoast.showToast(
                                     backgroundColor: Colors.black,
-                                    msg: "Request Submitted "));
+                                    msg: "Submitted "));
                           },
                           child: Row(
                             children: [
@@ -256,8 +256,16 @@ class LabotReport extends GetWidget<LaborReportController> {
         DataColumn(label: Text('Phone'), tooltip: 'Labor Phone number'),
         DataColumn(label: Text('Address'), tooltip: 'Labor Address'),
         DataColumn(label: Text('Type'), tooltip: 'Labor Type'),
-        DataColumn(label: Text('Amount'), tooltip: ' Contract Amount'),
         DataColumn(label: Text('Payment-Type'), tooltip: 'Payment Type'),
+
+        DataColumn(label: Text('Contract'), tooltip: 'Contract Name'),
+
+        DataColumn(label: Text('C-Amount'), tooltip: ' Contract Amount'),
+        DataColumn(label: Text('Status'), tooltip: 'Payment Status'),
+
+        
+
+
       ],
       rows: controller.allContractors.map((data) {
         return DataRow(cells: [
@@ -273,25 +281,53 @@ class LabotReport extends GetWidget<LaborReportController> {
           DataCell(Text(data.address)),
 
           DataCell(Text(data.laborType)),
-          DataCell(Text(data.amount.toString())),
-
-          DataCell(
-            Row(
-              children: [
-                FloatingActionButton(
-                    heroTag: data.reference.id,
-                    tooltip: "Add Contract",
-                    backgroundColor: Get.isDarkMode
-                        ? Theme.of(context).primaryColor
-                        : Colors.green,
-                    onPressed: () async {
-                      showContractDialog(context, data.reference);
-                    },
-                    child: Icon(Icons.add_box)),
-                Text(data.paymentType.toString())
-              ],
-            ),
+            DataCell(
+            Text(data.paymentType.toString()),
+            
+            
           ),
+          DataCell(Text(data.contract.contractName)),
+
+          DataCell(Text(data.amount.toString())),
+            DataCell(
+                  data.paymentStatus == false
+                      ? InkWell(
+                          onTap: () async {
+                            data.reference.update({'paymentStatus': true}).then(
+                                (value) => Fluttertoast.showToast(
+                                    backgroundColor: Colors.black,
+                                    msg: "Submitted "));
+                          },
+                          child: Row(
+                            children: [
+                              data.paymentStatus == true
+                                  ? Text('Paid')
+                                  : Text('Not Payed'),
+                              Icon(Icons.check_box_outline_blank_rounded)
+                            ],
+                          ),
+                        )
+                      : InkWell(
+                          onTap: () async {
+                            data.reference
+                                .update({'paymentStatus': false}).then(
+                                    (value) => Fluttertoast.showToast(
+                                        backgroundColor: Colors.black,
+                                        msg: "Request Submitted "));
+                          },
+                          child: Row(
+                            children: [
+                              data.paymentStatus == true
+                                  ? Text('Paid')
+                                  : Text('Not Payed'),
+                              Icon(Icons.check_box_outlined)
+                            ],
+                          ),
+                        ),
+                ),
+
+        
+          
           // DataCell(Text(data.paymentType), onTap: () {
           //   Get.defaultDialog(
           //       title: 'Contracts',
@@ -309,7 +345,10 @@ class LabotReport extends GetWidget<LaborReportController> {
     );
   }
 
-  showContractDialog(BuildContext context, DocumentReference reference) {
+ /* 
+ //add new contract to the taped labor
+ 
+ showContractDialog(BuildContext context, DocumentReference reference) {
     return showDialog(
       barrierDismissible: false, //enable and disable outside click
       context: context,
@@ -440,4 +479,5 @@ class LabotReport extends GetWidget<LaborReportController> {
       ),
     );
   }
+  */
 }

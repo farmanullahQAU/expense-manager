@@ -11,124 +11,118 @@ import 'package:intl/intl.dart';
 class FetchImages extends GetWidget<UploadImagesController> {
   var slectedProjecCont = Get.find<SelectProjectController>();
 
-  var currUser = Get.put(UsrController());
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Container(
-        width: context.width * 0.9,
-        child: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection("Projects")
-              .doc(slectedProjecCont.currentProject.value.id)
-              .collection("Pictures")
-              .snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasData) {
-              return ListView(
-                children: snapshot.data.docs.map((e) {
-                  var images = Images.fromMap(e.data());
+    return SafeArea(
+          child: Scaffold(
+        appBar: AppBar(title: Text('Pictures'),),
+          body: Obx(
+          () => Center(
+            child: Container(
+              color: Get.isDarkMode?Theme.of(context).primaryColor:Colors.grey[900],
+              width: context.width,
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("Projects")
+                    .doc(slectedProjecCont.currentProject.value.id)
+                    .collection("Pictures")
+                    .snapshots(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView(
+                      children: snapshot.data.docs.map((e) {
+                        var images = Images.fromMap(e.data());
 
-                  return Column(
-                    children: [
-                      /*
-                       Container(
-                        width: context.width * 0.9,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(images.imageUrl),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        // title: Text(bank.bankName),
-                        // subtitle: Text(bank.branch),
-                      ),
-                      */
+                        return Column(
+                          children: [
+                      
 
-                      Container(
-                        width: Get.context.width * 0.9,
-                        child: Card(
-                          margin: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 9.0),
-                          clipBehavior: Clip.hardEdge,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                trailing:
-                                    Text(DateFormat.jm().format(images.date)),
-                                leading: Icon(Icons.arrow_drop_down_circle),
-                                title: Row(
-                                  //mainAxisAlignment: MainAxisAlignment.start,
+                            Container(
+                              width: Get.context.width * 0.9,
+                              child: Card(
+                                margin: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 9.0),
+                                clipBehavior: Clip.hardEdge,
+                                child: Column(
                                   children: [
-                                    Text(
-                                        DateFormat.yMMMd().format(images.date)),
-                                  ],
-                                ),
-                                subtitle: Text(
-                                  currUser.currentUsr.value.name,
-                                  style: TextStyle(
-                                      color: Colors.black.withOpacity(0.6)),
-                                ),
-                              ),
-                              //  images.imageUrl != null
-                              //       ?
-                              DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: images.imageUrl != null
-                                    ? Image.network(
-                                        images.imageUrl,
-                                        loadingBuilder: (BuildContext context,
-                                            Widget child,
-                                            ImageChunkEvent loadingProgress) {
-                                          if (loadingProgress == null)
-                                            return child;
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              value: loadingProgress
-                                                          .expectedTotalBytes !=
-                                                      null
-                                                  ? loadingProgress
-                                                          .cumulativeBytesLoaded /
-                                                      loadingProgress
-                                                          .expectedTotalBytes
-                                                  : null,
-                                            ),
-                                          );
-                                        },
-                                      )
-                                    : Center(
-                                        child: CircularProgressIndicator(),
+                                    ListTile(
+                                      trailing:
+                                          Text(DateFormat.jm().format(images.date)),
+                                      leading: Icon(Icons.arrow_drop_down_circle),
+                                      title: Row(
+                                        //mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              DateFormat.yMMMd().format(images.date)),
+                                        ],
                                       ),
-                              ),
-                            ],
+                                      subtitle: Text(
+                                        images.uploadedBy,
+                                        style: TextStyle(
+                                            color: Colors.black.withOpacity(0.6)),
+                                      ),
+                                    ),
+                                    //  images.imageUrl != null
+                                    //       ?
+                                    DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        //border: Border.all(),
+                                      //  borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: images.imageUrl != null
+                                          ? Image.network(
+                                              images.imageUrl,
+                                              loadingBuilder: (BuildContext context,
+                                                  Widget child,
+                                                  ImageChunkEvent loadingProgress) {
+                                                if (loadingProgress == null)
+                                                  return child;
+                                                return Center(
+                                                  child: CircularProgressIndicator(
+                                                    value: loadingProgress
+                                                                .expectedTotalBytes !=
+                                                            null
+                                                        ? loadingProgress
+                                                                .cumulativeBytesLoaded /
+                                                            loadingProgress
+                                                                .expectedTotalBytes
+                                                        : null,
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                          : Center(
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                    ),
+                                  ],
 
-                            // semanticContainer: true,
-                            // clipBehavior: Clip.antiAliasWithSaveLayer,
-                            // child: Image.network(
-                            //   images.imageUrl,
-                            //   fit: BoxFit.fill,
-                            // ),
-                            // shape: RoundedRectangleBorder(
-                            //   borderRadius: BorderRadius.circular(10.0),
-                            // ),
-                            // elevation: 5,
-                            // margin: EdgeInsets.all(10),
-                          ),
-                        ),
-                      )
-                    ],
-                  );
-                }).toList(),
-              );
-            }
-            return Center(child: CircularProgressIndicator());
-          },
+                                  // semanticContainer: true,
+                                  // clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  // child: Image.network(
+                                  //   images.imageUrl,
+                                  //   fit: BoxFit.fill,
+                                  // ),
+                                  // shape: RoundedRectangleBorder(
+                                  //   borderRadius: BorderRadius.circular(10.0),
+                                  // ),
+                                  // elevation: 5,
+                                  // margin: EdgeInsets.all(10),
+                                ),
+                              ),
+                            )
+                          ],
+                        );
+                      }).toList(),
+                    );
+                  }
+                  return Center(child: CircularProgressIndicator());
+                },
+              ),
+            ),
+          ),
         ),
       ),
     );

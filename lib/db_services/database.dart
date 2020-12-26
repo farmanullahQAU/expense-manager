@@ -543,4 +543,5 @@ class Database {
   addLaborToDb(Labor labor) async {
     await FirebaseFirestore.instance.collection("Labors").add(labor.toMap());
   }
+ 
 }

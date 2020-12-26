@@ -1,7 +1,5 @@
-import 'package:expense_manager/controllers/uploadImages/upload_images_controller.dart';
-import 'package:expense_manager/models/project_model.dart';
-import 'package:expense_manager/ui/Reports/payment_report.dart';
-import 'package:expense_manager/ui/Labor/add_labor.dart';
+import 'package:expense_manager/controllers/Admin/addLaborCategorController.dart';
+
 import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,9 +8,12 @@ import 'package:get/get.dart';
 
 import 'package:expense_manager/controllers/select_project_controller.dart';
 
+import '../selectProject.dart';
+
 class AddNew extends GetWidget {
   var selectProjectController = Get.put(SelectProjectController());
   var usrController = Get.find<UsrController>();
+  var addLaborCategoryController = AddLaborCategoryController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,107 +23,129 @@ class AddNew extends GetWidget {
         child: GridView.count(
           crossAxisCount: context.isLandscape ? 2 : 3,
           children: [
-            Obx(() => usrController.currentUsr.value.userType == "Admin"
-                ? InkWell(
+            Obx(
+              () =>
+                usrController.currentUsr.value.userType == "Admin" ?
+                   InkWell(
                     child: addCard(context, Colors.orange, 'Material-Category',
                         Icons.payment),
                     onTap: () {
                       selectProjectController.currentProject.value == null
                           /* if the current project is not null then user will be directed to ui */
-                          ? showSelectProjectDialog(context, '/addPaymentUi')
+                          ? SelectProject().showAdminSelectProjectDialog(
+                              context, 'addPaymentUi')
                           : Get.toNamed('addPaymentUi');
                     },
-                  )
-                : InkWell(
+                  ):
+              
+                 InkWell(
                     child:
                         addCard(context, Colors.pink, 'Payment', Icons.payment),
                     onTap: () {
                       selectProjectController.currentProject.value == null
                           /* if the current project is not null then user will be directed to ui */
-                          ? showSelectProjectDialog(context, '/addPaymentUi')
+                          ? SelectProject().showPmSelectProjectDialog(context, 'addPaymentUi')
                           : Get.toNamed('addPaymentUi');
                     },
-                  )),
-            Obx(
-              () => usrController.currentUsr.value.userType == "Admin"
-                  ? InkWell(
-                      child: addCard(context, Colors.red, 'Labor-Category',
-                          Icons.account_box),
-                      onTap: () {
-                        //  Get.toNamed('addBankAccountUi');
-                      },
-                    )
-                  : InkWell(
-                      child: addCard(
-                          context, Colors.red, ' Account', Icons.account_box),
-                      onTap: () {
-                        Get.toNamed('addBankAccountUi');
-                      },
-                    ),
+                  )
+              
+            
             ),
-            Obx(
-              () => usrController.currentUsr.value.userType == "Admin"
-                  ? InkWell(
-                      child: addCard(context, Theme.of(context).primaryColor,
-                          'Project-Manager', Icons.person_add),
-                      onTap: () {
-                        //  Get.toNamed('addCustomer');
-                      },
-                    )
-                  : InkWell(
-                      child: addCard(context, Theme.of(context).primaryColor,
-                          'Customer', Icons.person_add),
-                      onTap: () {
-                        Get.toNamed('addCustomer');
-                      },
-                    ),
+
+            Obx(() =>
+              usrController.currentUsr.value.userType == "Admin"? 
+                InkWell(
+                  child: addCard(
+                      context, Colors.red, 'Labor-Category', Icons.account_box),
+                  onTap: () {
+             adminAddLaborCategoryDialog(context);
+                  },
+                ):
+          
+              InkWell(
+                  child: addCard(
+                      context, Colors.red, ' Account', Icons.account_box),
+                  onTap: () {
+                    Get.toNamed('addBankAccountUi');
+                  },
+                )
+            
             ),
-            Obx(() => usrController.currentUsr.value.userType == "Admin"
-                ? InkWell(
+            Obx(() =>
+              usrController.currentUsr.value.userType == "Admin"?
+               InkWell(
+                  child: addCard(context, Theme.of(context).primaryColor,
+                      'Project-Manager', Icons.person_add),
+                  onTap: () {
+                    //  Get.toNamed('addCustomer');
+                  },
+                ):
+            
+            InkWell(
+                  child: addCard(context, Theme.of(context).primaryColor,
+                      'Customer', Icons.person_add),
+                  onTap: () {
+                    Get.toNamed('addCustomer');
+                  },
+                )
+             
+            ),
+
+
+//
+  Obx(() =>
+            usrController.currentUsr.value.userType == "Admin"?
+               InkWell(
                     child: addCard(context, Theme.of(context).primaryColor,
                         'Project-Contract', Icons.person_add),
                     onTap: () {
                       Get.toNamed('projectContractUi');
                     },
-                  )
-                : InkWell(
+                  ):
+              
+              InkWell(
                     child: addCard(context, Theme.of(context).primaryColor,
                         'Vendor', Icons.people),
                     onTap: () {
                       //   Get.toNamed('addCustomer');
                     },
-                  )),
-            Obx(() => usrController.currentUsr.value.userType == "Admin"
-                ? InkWell(
+                  )
+          ),
+
+//
+
+ Obx(() =>
+            usrController.currentUsr.value.userType == "Admin"? 
+              InkWell(
                     child: addCard(context, Colors.deepOrangeAccent, 'Picture',
                         Icons.photo),
                     onTap: () {
                       selectProjectController.currentProject.value == null
-                          ? showSelectProjectDialog(context, 'uploadPictureUi')
-                          : Get.toNamed('uploadPictureUi');
+                          ?SelectProject().showAdminSelectProjectDialog(context, 'fetchImagesUi')
+                          : Get.toNamed('fetchImagesUi');
                       //  showSelectProjectDialog(context);
                     },
-                  )
-                : InkWell(
+                  ):
+              
+           InkWell(
                     child: addCard(context, Colors.deepOrangeAccent, 'Picture',
                         Icons.add_a_photo),
                     onTap: () {
                       selectProjectController.currentProject.value == null
-                          ? showSelectProjectDialog(context, 'uploadPictureUi')
+                          ?SelectProject().showPmSelectProjectDialog(context, 'uploadPictureUi')
                           : Get.toNamed('uploadPictureUi');
                       //  showSelectProjectDialog(context);
                     },
-                  )),
-            // InkWell(
-            //   child: addCard(context, Colors.deepOrangeAccent, 'Picture',
-            //       Icons.add_a_photo),
-            //   onTap: () {
-            //     selectProjectController.currentProject.value == null
-            //         ? showSelectProjectDialog(context, 'uploadPictureUi')
-            //         : Get.toNamed('uploadPictureUi');
-            //     //  showSelectProjectDialog(context);
-            //   },
-            // ),
+                  )
+             
+            ),
+
+//
+            
+                
+                
+        
+          
             Obx(
               () => usrController.currentUsr.value.userType == "Admin"
                   ? InkWell(
@@ -160,7 +183,11 @@ class AddNew extends GetWidget {
                     onTap: () {
                       selectProjectController.currentProject.value == null
                           /* if the current project is not null then user will be directed to ui */
-                          ? showSelectProjectDialog(context, '/addLaborUi')
+                          ? 
+                          
+                          
+                          SelectProject().showPmSelectProjectDialog(context, 'addLaborUi')
+                          
                           : Get.toNamed('addLaborUi');
                     },
                     child: addCard(
@@ -205,7 +232,12 @@ class AddNew extends GetWidget {
     );
   }
 
-  showSelectProjectDialog(BuildContext context, String routeName) {
+  
+
+ 
+
+//to add labor category to the database e.g plumber etc.
+  adminAddLaborCategoryDialog(BuildContext context) {
     showDialog(
       useSafeArea: true,
       barrierDismissible: false, //enable and disable outside click
@@ -215,26 +247,25 @@ class AddNew extends GetWidget {
           Row(
             children: [
               RaisedButton(
-                color: Theme.of(context).primaryColor,
-                elevation: 5.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                onPressed: () {
-                  if (selectProjectController
-                      .selectProjectFormKey.value.currentState
-                      .validate()) {
-                    selectProjectController
-                        .selectProjectFormKey.value.currentState
-                        .save();
-                    Get.back();
-                    Get.toNamed(routeName); //navigate to upload picuture ui
-                  }
-                },
-                child: Text(
-                  "Ok",
-                ),
-              ),
+                  child: Text('Ok'),
+                  color: Theme.of(context).primaryColor,
+                  elevation: 5.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  onPressed: () async {
+                    if (addLaborCategoryController
+                        .addCategoryFormKey.value.currentState
+                        .validate()) {
+                      addLaborCategoryController
+                          .addCategoryFormKey.value.currentState
+                          .save();
+
+                      addLaborCategoryController.addLaborCategoryToDb();
+                      Get.back();
+                      //  Get.toNamed(routeName); //navigate to upload picuture ui
+                    }
+                  }),
               RaisedButton(
                 color:
                     Get.isDarkMode ? Theme.of(context).accentColor : Colors.red,
@@ -259,57 +290,37 @@ class AddNew extends GetWidget {
           ),
         ],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: Text('Projects Pannel'),
+        title: Text('Add Labor Category'),
         content: SingleChildScrollView(
           child: Form(
-              key: selectProjectController.selectProjectFormKey.value,
+              key: addLaborCategoryController.addCategoryFormKey.value,
               child: Column(
                 children: [
-                  Obx(() {
-                    if (selectProjectController.projectList != null) {
-                      return DropdownButtonFormField(
-                          isExpanded: true,
-                          validator: (val) =>
-                              val == null ? "Please select project" : null,
-                          isDense: true,
-                          decoration: InputDecoration(
-                            /* enabledBorder: InputBorder.none that will remove the border and also the upper left 
-              and right cut corner  */
-                            contentPadding: EdgeInsets.only(left: 4),
-                            /* 
-              
-              border: OutlineInputBorder(
-                borderSide: BorderSide.none,
-              ),
-              */
-                            filled: true,
-                          ),
-                          hint: Text('Select Project'),
-                          items: selectProjectController.projectList
-                              .map((projectObj) => DropdownMenuItem<Project>(
-                                  value: projectObj,
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 20,
-                                        child: Text(
-                                            projectObj.id.substring(0, 4),
-                                            overflow: TextOverflow.ellipsis),
-                                      ),
-                                    ],
-                                  )))
-                              .toList(),
-                          onChanged: (project) {
-                            selectProjectController.currentProject.value =
-                                project;
-                          });
-                    }
-                    return Text('loading...');
-                  }),
+                  TextFormField(
+                    controller:
+                        addLaborCategoryController.categoryTextCotroller.value,
+                    validator: (val) =>
+                        val.isEmpty ? "Plz enter Category name" : null,
+                    onSaved: (val) =>
+                        addLaborCategoryController.categoryString.value = val,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      labelText: 'Labor Category',
+                      filled: true,
+                      contentPadding: EdgeInsets.all(4),
+                    ),
+                  ),
                 ],
               )),
         ),
       ),
     );
   }
+
+
+
+
+
+
+  
 }

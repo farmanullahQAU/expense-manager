@@ -184,7 +184,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
       itemCount: controller.allAdminProjects.length,
       padding: const EdgeInsets.all(16),
       itemBuilder: (context, i) {
-        var project = controller.allPmProjects[i];
+        var project = controller.allAdminProjects[i];
         return Card(
           clipBehavior: Clip.antiAlias,
           child: Column(
@@ -244,6 +244,17 @@ class FetchProject extends GetWidget<FetchProjectController> {
                     ),
                   ),
                 ],
+              ),
+
+                  Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal:16.0),
+                child: Row(
+                  mainAxisAlignment:MainAxisAlignment.spaceBetween ,
+                  children: [
+                    Text('Contract'),
+                    Text(project.projectContract.contractName),
+                  ],
+                ),
               ),
              
             ],

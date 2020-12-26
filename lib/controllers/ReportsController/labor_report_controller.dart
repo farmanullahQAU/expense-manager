@@ -9,6 +9,7 @@ import 'package:expense_manager/models/project_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -50,16 +51,16 @@ class LaborReportController extends GetxController {
 
   /*add New labor contract */
 
-  var contractDetailsTextController = TextEditingController().obs;
-  var contractNameTextController = TextEditingController().obs;
-  var selectedProjectController = Get.find<SelectProjectController>();
+  // var contractDetailsTextController = TextEditingController().obs;
+  // var contractNameTextController = TextEditingController().obs;
+  // var selectedProjectController = Get.find<SelectProjectController>();
 
-  TextEditingController amountTextEditingController = TextEditingController();
-  final phoneNumberTextController = TextEditingController().obs;
-  final nameTextController = TextEditingController().obs;
-  final addressTextController = TextEditingController().obs;
-  final laborTypeTextController = TextEditingController().obs;
-  final contractDetailsFormKey = GlobalKey<FormState>().obs;
+  // TextEditingController amountTextEditingController = TextEditingController();
+  // final phoneNumberTextController = TextEditingController().obs;
+  // final nameTextController = TextEditingController().obs;
+  // final addressTextController = TextEditingController().obs;
+  // final laborTypeTextController = TextEditingController().obs;
+  // final contractDetailsFormKey = GlobalKey<FormState>().obs;
 
   /*add New labor contract */
 
@@ -71,7 +72,6 @@ class LaborReportController extends GetxController {
   var contractDesc = RxString();
   var totalWageAmount = 0.0.obs;
 
-  var contract = LaborContract().obs;
   //to update the project at that id when  wage added
 
   @override
@@ -94,7 +94,7 @@ class LaborReportController extends GetxController {
         .update({'totalWageAmount': this.totalWageAmount.toString()});
   }
 
-  addLaborContract(DocumentReference reference) async {
+ /* addLaborContract(DocumentReference reference) async {
     var contract = LaborContract(
         contractName: this.contractName.value,
         amount: this.amount.value,
@@ -103,7 +103,7 @@ class LaborReportController extends GetxController {
     await reference.update({
       "contract": FieldValue.arrayUnion([contract.toMap()])
     });
-  }
+  }*/
 
   onSortColum(int columnIndex, bool ascending) {
     if (columnIndex == 0) {
@@ -121,7 +121,24 @@ class LaborReportController extends GetxController {
     pdf.addPage(pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         build: (context) => [
-              pw.Header(child: pw.Text('WAGERS REPORT')),
+              pw.Header(child: pw.Row( 
+              
+                
+                children:[ 
+                  
+                  
+                  pw.Text('WAGERS REPORT'),
+                  pw.Spacer(
+
+                    
+                  ),
+                  pw.Text('date created:    '),
+                
+              
+                 pw.Text(DateFormat.yMd().format(DateTime.now()))] )
+              
+             ),
+          
               pw.Table.fromTextArray(context: context, data: <List<String>>[
                 <String>[
                   "Name",
@@ -131,7 +148,7 @@ class LaborReportController extends GetxController {
                   "Amount",
                   "Days-Worked",
                   "Amount-Payable",
-                  "Payment-Status"
+                  "Pay-Status"
                 ],
                 ...this.allWagers.map((labor) => [
                       labor.name,
@@ -145,22 +162,48 @@ class LaborReportController extends GetxController {
                     ])
               ]),
               pw.Header(child: pw.Text('CONTRACT LABOR REPORT')),
-              pw.Table.fromTextArray(context: context, data: <List<dynamic>>[
+              pw.Table.fromTextArray(context: context, data: <List<String>>[
                 <String>[
                   "Name",
                   "Phone",
                   "Address",
                   "Type",
-                  "Amount",
+                  "Contract",
+                  "C-Amount",
+                  "Pay-Status"
+                
                 ],
                 ...this.allContractors.map((labor) => [
                       labor.name,
                       labor.phone,
                       labor.address,
                       labor.laborType,
+                      labor.contract.contractName,
                       labor.amount.toString(),
+                      labor.paymentStatus == false ? "Not Paid" : "Payed"
+
                     ]),
-              ]),
+              ],
+              
+              ),
+             /* pw.Table.fromTextArray(data: [
+
+                [
+                'Contract Description'
+
+                ], ...this.allContractors.map((labor) => [
+
+                  labor.contract.description
+                ])
+              ])*/
+            
+
+
+
+
+
+
+              
               // pw.Header(
               //     child: pw.Text(
               //         'ALL CONTRACTS OF PROJECT ${selectProjectController.currentProject.value.id.substring(0, 5)}')),

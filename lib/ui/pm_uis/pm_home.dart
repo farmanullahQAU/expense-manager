@@ -152,12 +152,44 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
                 },
               ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: Obx((){
+
+if(
+
+        usrController.currentUsr.value.userType=="Project manager"
+
+)
+{
+   return FloatingActionButton(
           child: Icon(Icons.business),
           onPressed: () {
             Get.toNamed('addProject');
             // Get.defaultDialog(title: 'Add new user', actions: [AddCustomer()]);
-          }),
+          });
+
+
+}
+else if(
+
+        usrController.currentUsr.value.userType=="Customer"
+
+)
+{
+
+   return  FloatingActionButton(
+          child: Icon(Icons.payment),
+          onPressed: () {
+          //  Get.toNamed('addProject');
+            // Get.defaultDialog(title: 'Add new user', actions: [AddCustomer()]);
+          });
+}
+else return Container(width:0.0, height:0.0);
+      
+      })
+      
+      
+      
+     
     );
   }
 }
@@ -173,10 +205,16 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
     {'name': 'Reports', 'Icon': Icon(Icons.report)},
     {'name': 'View', 'Icon': Icon(Icons.fact_check)}
   ];
+
+   List<Map<String, dynamic>> customerViewTabs = [
+    {'name': 'Reports', 'Icon': Icon(Icons.report)},
+    {'name': 'View', 'Icon': Icon(Icons.fact_check)}
+  ];
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: _tabs.length,
+      length:usrController.currentUsr.value.userType=="Project manager"|| usrController.currentUsr.value.userType=="Admin"?_tabs.length:customerViewTabs.length,
+      
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -193,7 +231,7 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                         IconButton(
                           icon: Icon(Icons.check_box_outlined),
                           onPressed: () {
-                            changeProjectDialog(context, 'Project Changed');
+                          selectProjectDialog(context, 'Project Changed');
                           },
                         ),
                       ],
@@ -205,7 +243,7 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                         IconButton(
                           icon: Icon(Icons.check_box_outline_blank_rounded),
                           onPressed: () {
-                            changeProjectDialog(context, "Project Selected");
+                            selectProjectDialog(context, "Project Selected");
                           },
                         ),
                       ],
@@ -236,32 +274,68 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
               delegate: _SliverAppBarDelegate(
                 TabBar(
                   onTap: (int index) {
-                    controller.tabTitle.value = _tabs[index]['name'];
+
+                    
+                    controller.tabTitle.value =usrController.currentUsr.value.userType=="Admin"||
+                    usrController.currentUsr.value.userType=="Project manager"?_tabs[index]['name']:customerViewTabs[index]['name'];
+                    
+                    
+                    
                   },
                   labelColor: Theme.of(context).accentColor,
                   unselectedLabelColor: Colors.grey,
 
                   // indicatorColor: Colors.red[100],
-                  tabs: _tabs.map((nme) {
+                  tabs:
+                  usrController.currentUsr.value.userType=="Admin"||
+                    usrController.currentUsr.value.userType=="Project manager"?
+                      _tabs.map((nme) {
+                    return Tab(icon: nme['Icon'], text: nme['name']);
+                  }).toList():      customerViewTabs.map((nme) {
                     return Tab(icon: nme['Icon'], text: nme['name']);
                   }).toList(),
+                  
+                  
+                  
+                  
+                  
+                
                 ),
               ),
               pinned: false,
             ),
           ];
         },
-        body: TabBarView(
+        body:Obx(()=>
+        
+      usrController.currentUsr.value.userType=="Admin"||usrController.currentUsr.value.userType=="Project manager"?
+        TabBarView(
           /* tabB bar view */
           controller: _tabController,
           physics: BouncingScrollPhysics(),
+
+
+          
           children: [AddNew(), Reports(), ViewTab()],
+        ): TabBarView(
+          /* tabB bar view */
+          controller: _tabController,
+          physics: BouncingScrollPhysics(),
+
+
+          
+          children: [ Reports(), ViewTab()],
         ),
+        )
+        
+        
+        
+        
       ),
     );
   }
 
-  changeProjectDialog(BuildContext context, String message) {
+  selectProjectDialog(BuildContext context, String message) {
     showDialog(
       useSafeArea: true,
       barrierDismissible: false, //enable and disable outside click
@@ -340,6 +414,8 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
     );
   }
 Widget customerProjects(){
+
+  //return customer project dropdown
   print('customer projects');
 
    if (selectProjectController.projectListCustomer != null) {
@@ -387,7 +463,7 @@ Widget customerProjects(){
 Widget pmProjects(){
   print('Pm projects');
 
-   if (selectProjectController.projectList != null) {
+   if (selectProjectController.projectListPm != null) {
                       return DropdownButtonFormField(
                           isExpanded: true,
                           validator: (val) => val == null
@@ -407,7 +483,7 @@ Widget pmProjects(){
                             filled: true,
                           ),
                           hint: Text('Select Project'),
-                          items: selectProjectController.projectList
+                          items: selectProjectController.projectListPm
                               .map((projectObj) => DropdownMenuItem<Project>(
                                   value: projectObj,
                                   child: Column(

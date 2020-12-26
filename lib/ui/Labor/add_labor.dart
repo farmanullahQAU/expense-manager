@@ -77,13 +77,7 @@ class AddLabor extends GetWidget<AddLaborController> {
             },
             keyboardType: TextInputType.text,
 
-            /* keyboardType: TextInputType.multiline,
-            minLines: 1,
-            maxLines: 12,
-            maxLength: 200,
-            // expands: true,
-            textInputAction: TextInputAction.newline,
-            */
+           
             controller: controller.nameTextController.value,
             decoration: InputDecoration(
                 suffixIcon: Obx(() => controller.name.value == "" ||
@@ -570,6 +564,7 @@ class AddLabor extends GetWidget<AddLaborController> {
               child: Column(
                 children: [
                   TextFormField(
+                    
                     controller: controller.contractNameTextController.value,
                     validator: (val) =>
                         val.isEmpty ? "Please enter contract name" : null,

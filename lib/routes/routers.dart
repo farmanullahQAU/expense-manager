@@ -17,6 +17,7 @@ import 'package:expense_manager/ui/Reports/pdf_viewer.dart';
 import 'package:expense_manager/ui/Reports/labor_report.dart';
 import 'package:expense_manager/ui/admin_ui/project_contracts.dart';
 import 'package:expense_manager/ui/FetchProject.dart';
+import 'package:expense_manager/ui/uploads_images/fetch_images.dart';
 
 import 'package:get/get.dart';
 
@@ -67,6 +68,11 @@ class RouterClass {
       name: '/uploadPictureUi',
       page: () => UploadPictures(),
     ),
+      GetPage(
+      binding: HomeBinding(),
+      name: '/fetchImagesUi',
+      page: () => FetchImages(),
+    ),
     GetPage(
       binding: HomeBinding(),
       name: '/sendMessageUi',
@@ -102,5 +108,8 @@ class RouterClass {
       name: '/fetchProjectsUi',
       page: () => FetchProject(),
     ),
+    
+    
+    
   ];
 }

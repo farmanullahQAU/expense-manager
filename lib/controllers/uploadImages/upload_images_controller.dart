@@ -17,10 +17,13 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:expense_manager/controllers/user_controller.dart';
 
 class UploadImagesController extends GetxController {
   var errorController = Get.put(ErrorController());
   var slectedProjecCont = Get.find<SelectProjectController>();
+  var usrController = Get.find<UsrController>();
+
 
   var fetchImages = List<NetworkImage>().obs;
   var images = List<Asset>().obs;
@@ -72,6 +75,7 @@ class UploadImagesController extends GetxController {
       postImage(imageFile, context).then((downloadUrl) {
         imageUrls.add(downloadUrl.toString());
         var image = new Images(
+          uploadedBy: usrController.currentUsr.value.name,
             imageUrl: downloadUrl,
             date: DateTime.now(),
             projectId: slectedProjecCont.currentProject.value.id);
@@ -82,12 +86,16 @@ class UploadImagesController extends GetxController {
             .add(image.toMap())
             .then((value) {
           if (imageUrls.length == images.length)
+          {
+
+            
             Fluttertoast.showToast(
                 msg: "All images uploaded ", backgroundColor: Colors.green);
+                Get.toNamed('fetchImagesUi');
+          }
         });
       }).catchError((err) {
-        errorController.handleStorageError(err);
-        UploadPictures().errorDialogue(context);
+    Get.defaultDialog(title:'Error', middleText:err.toString(), onCancel:()=>Get.back(),  );
       });
     }
   }
@@ -149,7 +157,8 @@ class UploadImagesController extends GetxController {
     } catch (err) {
       errorController.errorString.value =
           errorController.handleStorageError(err);
-      UploadPictures().errorDialogue(context);
+    Get.defaultDialog(title:'Error', middleText:err.toString(), onCancel:()=>Get.back(),  );
+
     }
   }
 }

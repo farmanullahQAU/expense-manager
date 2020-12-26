@@ -255,7 +255,7 @@ class Reports extends GetWidget {
               child: Column(
                 children: [
                   Obx(() {
-                    if (selectedProjCont.projectList != null) {
+                    if (selectedProjCont.projectListPm != null) {
                       return DropdownButtonFormField(
                           isExpanded: true,
                           validator: (val) =>
@@ -274,7 +274,7 @@ class Reports extends GetWidget {
                             filled: true,
                           ),
                           hint: Text('Select Project'),
-                          items: selectedProjCont.projectList
+                          items: selectedProjCont.projectListPm
                               .map((projectObj) => DropdownMenuItem<Project>(
                                   value: projectObj,
                                   child: Column(

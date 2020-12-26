@@ -48,11 +48,7 @@ class AddLaborController extends GetxController {
   }
 
   addLabor() async {
-    if (this.contract.value != null)
-      this.contract.value.amount = this.amount.value;
-    else {
-      this.contract.value = null;
-    }
+  
 
     var laborObj = Labor(
         laborProjectIds: [
@@ -64,7 +60,7 @@ class AddLaborController extends GetxController {
         amount: this.amount.value,
         phone: this.number.value.phoneNumber,
         address: this.address.value,
-        contract: this.contract.value != null ? [this.contract.value] : null);
+        contract: this.contract.value != null ? this.contract.value : null);
 
     try {
       await Database().addLaborToDb(laborObj);

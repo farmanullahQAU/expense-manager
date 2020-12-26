@@ -110,7 +110,7 @@ class Usr {
 //         'phone': this.phone
 //       };
 // }
-
+/*
 class ProjectManager {
   String name;
   String email;
@@ -194,3 +194,4 @@ class Admin {
         'phone': phone
       };
 }
+*/

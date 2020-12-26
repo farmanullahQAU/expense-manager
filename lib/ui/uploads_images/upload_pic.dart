@@ -12,132 +12,42 @@ class UploadPictures extends GetWidget<UploadImagesController> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        //
+        child: Scaffold(
+          //
 
-        appBar: AppBar(
-          title: Text('Multiple Images'),
-          bottom: TabBar(
-            tabs: [
-              Tab(
-                icon: Icon(Icons.image),
-                text: 'Images',
-              ),
-              Tab(
-                icon: Icon(Icons.cloud_upload),
-                text: "Upload Images",
-              ),
-            ],
-            indicatorColor: Colors.red,
-            indicatorWeight: 5.0,
+          appBar: AppBar(
+            
+            title: Text(' Images'),
+          actions: [Obx(()=>controller.images.length!=0?
+                       IconButton(icon: Icon(Icons.cloud_upload),onPressed: (){
+                         controller.uploadImages(context);
+         
+            
+              
+            },):Container(width: 0.0,height: 0.0,),
+          )],
           ),
-        ),
 
-        body: TabBarView(
-          children: <Widget>[
-            FetchImages(),
-            upload(context),
-          ],
-        ),
-      ),
-    ));
-  }
+          body:Stack(children: [Container(child: buildGridView(context),)],),
+          floatingActionButton: FloatingActionButton(
 
-  Widget upload(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          child: Column(
-            children: <Widget>[
-              // SizedBox(
-              //   height: 20,
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
+onPressed: (){
                       controller.loadAssets();
-                    },
-                    child: Container(
-                      width: 130,
-                      height: 50,
-                      child: Center(
-                          child: Text(
-                        "Pick images",
-                      )),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      if (controller.images.length == 0) {
-                        showDialog(
-                            context: context,
-                            builder: (_) {
-                              return AlertDialog(
-                                // backgroundColor:
-                                //     Theme.of(context).backgroundColor,
-                                content: Text(
-                                  "No image selected",
-                                ),
-                                actions: <Widget>[
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                      width: 80,
-                                      height: 30,
-                                      // backgroundColor:
-                                      //     MultiPickerApp.navigateButton,
-                                      // backgroundDarkerColor:
-                                      //     MultiPickerApp.background,
-                                      child: Center(
-                                          child: Text(
-                                        "Ok",
-                                      )),
-                                    ),
-                                  )
-                                ],
-                              );
-                            });
-                      } else {
-                        controller.uploadImages(context);
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 130,
-                          height: 50,
-                          child: Center(
-                              child: Text(
-                            "Upload Images",
-                          )),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Expanded(
-                child: buildGridView(context),
-              )
-            ],
+
+
+  
+},
+            child: Icon(Icons.add_a_photo),
           ),
-        ),
-      ],
-    );
+        ));
   }
+
+  
 
   Widget buildGridView(context) {
     return Obx(
       () => GridView.count(
+        padding: EdgeInsets.only(top:20),
         crossAxisCount: 3,
         children: List.generate(controller.images.length, (index) {
           Asset asset = controller.images[index];
@@ -169,34 +79,5 @@ class UploadPictures extends GetWidget<UploadImagesController> {
     );
   }
 
-  errorDialogue(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-            // backgroundColor:
-            //     Theme.of(context).backgroundColor,
-            content: Text(errorController.errorString.value),
-            actions: <Widget>[
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  width: 80,
-                  height: 30,
-                  // backgroundColor:
-                  //     MultiPickerApp.navigateButton,
-                  // backgroundDarkerColor:
-                  //     MultiPickerApp.background,
-                  child: Center(
-                      child: Text(
-                    "Ok",
-                  )),
-                ),
-              )
-            ],
-          );
-        });
-  }
+ 
 }
