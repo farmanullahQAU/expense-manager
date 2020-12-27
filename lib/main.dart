@@ -5,6 +5,7 @@ import 'package:get/route_manager.dart';
 import 'controllers/bindings/home_binding.dart';
 
 void main() async {
+  //we starts from here
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
