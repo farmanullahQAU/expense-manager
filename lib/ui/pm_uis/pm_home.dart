@@ -6,6 +6,7 @@ import 'package:expense_manager/controllers/profileController/profile_controller
 import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/ui/pm_uis/report_tab.dart';
 import 'package:expense_manager/ui/pm_uis/viewTab.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/controllers/select_project_controller.dart';
@@ -15,6 +16,7 @@ import 'package:get/state_manager.dart';
 
 import 'add_new_tab.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:expense_manager/ui/selectProject.dart';
 
 class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
   var usrController = Get.put(UsrController());
@@ -127,7 +129,9 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
             .elementAt(controller.getBottomNavSeleIndex),
       ),
       bottomNavigationBar: Obx(
-        () => usrController.currentUsr.value.userType == "Admin"
+
+        //if curret user is admin or project manager the bottomm nav bar will not show
+        () => usrController.currentUsr.value.userType == "Admin"||usrController.currentUsr.value.userType=="Customer"
             ? Container(width: 0.0, height: 0.0)
             : BottomNavigationBar(
                 selectedFontSize: 15,
@@ -183,6 +187,8 @@ else if(
             // Get.defaultDialog(title: 'Add new user', actions: [AddCustomer()]);
           });
 }
+
+//if current user is admin
 else return Container(width:0.0, height:0.0);
       
       })
@@ -206,131 +212,125 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
     {'name': 'View', 'Icon': Icon(Icons.fact_check)}
   ];
 
-   List<Map<String, dynamic>> customerViewTabs = [
-    {'name': 'Reports', 'Icon': Icon(Icons.report)},
-    {'name': 'View', 'Icon': Icon(Icons.fact_check)}
-  ];
+  
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length:usrController.currentUsr.value.userType=="Project manager"|| usrController.currentUsr.value.userType=="Admin"?_tabs.length:customerViewTabs.length,
-      
-      child: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              actions: [
-                Obx(() {
-                  if (selectProjectController.currentProject.value != null) {
-                    return Row(
-                      children: [
-                        Text(
-                          selectProjectController
-                              .currentProject.value.customer.email,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.check_box_outlined),
-                          onPressed: () {
-                          selectProjectDialog(context, 'Project Changed');
-                          },
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Row(
-                      children: [
-                        Text('Select Project'),
-                        IconButton(
-                          icon: Icon(Icons.check_box_outline_blank_rounded),
-                          onPressed: () {
-                            selectProjectDialog(context, "Project Selected");
-                          },
-                        ),
-                      ],
-                    );
-                  }
-                }),
-               
-               
-                IconButton(
-                    icon: Icon(Icons.exit_to_app),
-                    onPressed: () {
-                      Get.find<AuthController>().logout();
-                    }),
-              ],
-              forceElevated: innerBoxIsScrolled,
-              expandedHeight: 150.0,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                  // centerTitle: true,
-                  title: Obx(() => Text(controller.tabTitle.value)),
-                  background: Image.network(
-                    "https://propakistani.pk/wp-content/uploads/2020/08/Construction.jpg",
-                    fit: BoxFit.cover,
-                  )),
-            ),
-            SliverPersistentHeader(
-              delegate: _SliverAppBarDelegate(
-                TabBar(
-                  onTap: (int index) {
-
-                    
-                    controller.tabTitle.value =usrController.currentUsr.value.userType=="Admin"||
-                    usrController.currentUsr.value.userType=="Project manager"?_tabs[index]['name']:customerViewTabs[index]['name'];
-                    
-                    
-                    
-                  },
-                  labelColor: Theme.of(context).accentColor,
-                  unselectedLabelColor: Colors.grey,
-
-                  // indicatorColor: Colors.red[100],
-                  tabs:
-                  usrController.currentUsr.value.userType=="Admin"||
-                    usrController.currentUsr.value.userType=="Project manager"?
-                      _tabs.map((nme) {
-                    return Tab(icon: nme['Icon'], text: nme['name']);
-                  }).toList():      customerViewTabs.map((nme) {
-                    return Tab(icon: nme['Icon'], text: nme['name']);
-                  }).toList(),
-                  
-                  
-                  
-                  
-                  
-                
-                ),
+    return Obx(()=>usrController.currentUsr.value.userType=="Customer"?customerSliver(context):
+           DefaultTabController(
+        length:_tabs.length,
+        
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                actions: [
+                  Obx(() {
+                    if (selectProjectController.currentProject.value != null) {
+                      return Row(
+                        children: [
+                          Text(
+                            selectProjectController
+                                .currentProject.value.customer.email,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.check_box_outlined),
+                            onPressed: () {
+                            selectProjectDialog(context, 'Project Changed');
+                            },
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Row(
+                        children: [
+                          Text('Select Project'),
+                          IconButton(
+                            icon: Icon(Icons.check_box_outline_blank_rounded),
+                            onPressed: () {
+                              selectProjectDialog(context, "Project Selected");
+                            },
+                          ),
+                        ],
+                      );
+                    }
+                  }),
+                 
+                 
+                  IconButton(
+                      icon: Icon(Icons.exit_to_app),
+                      onPressed: () {
+                        Get.find<AuthController>().logout();
+                      }),
+                ],
+                forceElevated: innerBoxIsScrolled,
+                expandedHeight: 150.0,
+                floating: false,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                    // centerTitle: true,
+                    title: Obx(() => Text(controller.tabTitle.value)),
+                    background: Image.network(
+                      "https://propakistani.pk/wp-content/uploads/2020/08/Construction.jpg",
+                      fit: BoxFit.cover,
+                    )),
               ),
-              pinned: false,
-            ),
-          ];
-        },
-        body:Obx(()=>
+              
+            
+                            
+                            
+                             SliverPersistentHeader(
+                  delegate: _SliverAppBarDelegate(
+                    TabBar(
+                      onTap: (int index) {
+
+                        
+                        controller.tabTitle.value =_tabs[index]['name'];
+                        
+                        
+                        
+                      },
+                      labelColor: Theme.of(context).accentColor,
+                      unselectedLabelColor: Colors.grey,
+
+                      // indicatorColor: Colors.red[100],
+                      tabs:
+                   
+                          _tabs.map((nme) {
+                        return Tab(icon: nme['Icon'], text: nme['name']);
+                      }).toList(),
+                      
+                      
+                      
+                      
+                      
+                    
+                    ),
+                  ),
+                  pinned: false,
+                ),
+              
+            ];
+          },
+          body:
+          
         
-      usrController.currentUsr.value.userType=="Admin"||usrController.currentUsr.value.userType=="Project manager"?
-        TabBarView(
-          /* tabB bar view */
-          controller: _tabController,
-          physics: BouncingScrollPhysics(),
+        
+        //if current user is admin or project manager then show three tabs
+          TabBarView(
+            /* tabB bar view */
+            controller: _tabController,
+            physics: BouncingScrollPhysics(),
 
 
+            
+            children: [AddNew(), Reports(), ViewTab()],
+          )
           
-          children: [AddNew(), Reports(), ViewTab()],
-        ): TabBarView(
-          /* tabB bar view */
-          controller: _tabController,
-          physics: BouncingScrollPhysics(),
-
-
           
-          children: [ Reports(), ViewTab()],
+          
+          
+          
         ),
-        )
-        
-        
-        
-        
       ),
     );
   }
@@ -548,7 +548,192 @@ Widget adminProjects(){
                     }
                     return Center(child: CircularProgressIndicator());
 }
+
+
+customerSliver(BuildContext context){
+
+  return  Container(
+
+      child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                actions: [
+                  Obx(() {
+                    if (selectProjectController.currentProject.value != null) {
+                      return Row(
+                        children: [
+                          Text(
+                            selectProjectController
+                                .currentProject.value.customer.email,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.check_box_outlined),
+                            onPressed: () {
+                            selectProjectDialog(context, 'Project Changed');
+                            },
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Row(
+                        children: [
+                          Text('Select Project'),
+                          IconButton(
+                            icon: Icon(Icons.check_box_outline_blank_rounded),
+                            onPressed: () {
+                              selectProjectDialog(context, "Project Selected");
+                            },
+                          ),
+                        ],
+                      );
+                    }
+                  }),
+                 
+                 
+                  IconButton(
+                      icon: Icon(Icons.exit_to_app),
+                      onPressed: () {
+                        Get.find<AuthController>().logout();
+                      }),
+                ],
+                forceElevated: innerBoxIsScrolled,
+                expandedHeight: 150.0,
+                floating: false,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                    // centerTitle: true,
+                    title: Obx(() => Text(controller.tabTitle.value)),
+                    background: Image.network(
+                      "https://propakistani.pk/wp-content/uploads/2020/08/Construction.jpg",
+                      fit: BoxFit.cover,
+                    )),
+              ),
+            
+                //    SliverPersistentHeader(
+                //   delegate: CustomerSliverPersistentHeaderDeligate(),
+                //   pinned: false,
+                // ),
+          
+            ];
+          },
+          body:
+          
+        
+        
+         customerHomePage(context)
+        
+          
+          
+          
+          
+        ),
+  );
 }
+
+
+
+customerHomePage(BuildContext context){
+
+   return Container(
+        margin: EdgeInsets.all(20),
+        // color: Get.isDarkMode ? Colors.grey[700] : Colors.greenAccent,
+        child: GridView.count(
+          crossAxisCount: context.isLandscape ? 2 : 3,
+          children: [
+          
+                InkWell(
+              child: addCustomerHomePageCard(
+                  context, Colors.green, 'Project Report', Icons.person),
+              onTap: () {
+                selectProjectController.currentProject.value == null
+                    ? SelectProject().showCustomerSelectProjectDialog(context,
+                         "projectReportUi")
+                    : Get.toNamed('projectReportUi');
+              },
+            
+            ),
+              
+                 
+              
+            
+            
+
+          
+                
+                         InkWell(
+                child: addCustomerHomePageCard(context, Colors.green[400], ' Payment Report ',
+                    Icons.account_balance_wallet),
+                onTap: () {
+                 
+                  selectProjectController.currentProject.value == null
+                      ? SelectProject().showCustomerSelectProjectDialog(context,
+                          "paymentReportUi")
+                      : Get.toNamed('paymentReportUi');
+                },
+              ),
+               InkWell(
+              child: addCustomerHomePageCard(
+                  context, Colors.green, 'Project', Icons.business_sharp),
+              onTap: () {
+                      selectProjectController.currentProject.value == null
+              
+                   ?SelectProject().showCustomerSelectProjectDialog(context, 'projectReportUi')
+                          : Get.toNamed('projectReportUi');                               
+              },
+            ),
+             InkWell(
+                    child: addCustomerHomePageCard(context, Colors.deepOrangeAccent, 'Picture',
+                        Icons.photo),
+                    onTap: () {
+                      selectProjectController.currentProject.value == null
+                          ? SelectProject().showCustomerSelectProjectDialog(context, 'fetchImagesUi')
+                          : Get.toNamed('fetchImagesUi');
+                      //  showSelectProjectDialog(context);
+                    },
+                  )
+          
+
+          
+          ],
+        ));
+}
+
+
+
+  addCustomerHomePageCard(BuildContext context, Color color, String title, IconData icon) {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      borderOnForeground: true,
+      semanticContainer: false,
+      margin: EdgeInsets.all(5),
+      child: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Icon(
+              icon,
+              color: Get.isDarkMode ? Theme.of(context).accentColor : color,
+              size: context.isLandscape ? 20 : 40,
+            ),
+          ),
+          Text(
+            title,
+            style: GoogleFonts.lobsterTwo(
+              textStyle: TextStyle(color: color, letterSpacing: .2),
+            ),
+          )
+        ],
+      )),
+    );
+  }
+}
+
+
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate(this.tabBar);
@@ -572,7 +757,14 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
     return false;
   }
-}
+ }
+
+
+
+
+
+
+
 
 /*
 Widget makeCard(BuildContext context) {
