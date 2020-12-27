@@ -132,7 +132,7 @@ class PaymentReportController extends GetxController {
     if (!status.isGranted) {
       status = await Permission.storage.request();
     }
-    if (status.isGranted) {
+  
       await file.writeAsBytes(this.pdf.save());
       Fluttertoast.showToast(msg: "Successfully Created & Downloaded");
       //set variable document of pdfViewrController
@@ -143,9 +143,6 @@ class PaymentReportController extends GetxController {
       //set appBar title
       pdfViewrController.appBarTitle.value = "Payment Report";
       Get.toNamed('pdfViewerUi');
-    } else {
-      Fluttertoast.showToast(msg: "No Permisson");
-    }
   }
 }
 /*

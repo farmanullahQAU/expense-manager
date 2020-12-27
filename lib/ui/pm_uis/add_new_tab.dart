@@ -161,7 +161,7 @@ class AddNew extends GetWidget {
                     )
                   : InkWell(
                       onTap: () {
-                        //      Get.to(PaymentReport());
+                          Get.toNamed('addMaterialUi');
                       },
                       child: addCard(
                         context,

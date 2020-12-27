@@ -2,13 +2,16 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/authController/auth_error_handler_controller.dart';
+import 'package:expense_manager/models/material_model.dart';
 import 'package:expense_manager/models/payment_model.dart';
 import 'package:expense_manager/models/project_contract_model.dart';
 import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/models/user_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:expense_manager/models/labor_model.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/route_manager.dart';
 
 class Database {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -145,7 +148,7 @@ class Database {
   getVendors() {
     try {
       return firestore.collection('vendors').snapshots().map((querySnapshot) {
-        List<Vendor> paymentTypeList = List();
+        var paymentTypeList = List<Vendor>();
 
         querySnapshot.docs.forEach((queryDocumentSnapshot) {
           paymentTypeList.add(Vendor.fromMap(queryDocumentSnapshot.data()));
@@ -543,5 +546,40 @@ class Database {
   addLaborToDb(Labor labor) async {
     await FirebaseFirestore.instance.collection("Labors").add(labor.toMap());
   }
+
+
+  // add materials
+    getMaterialUnits()async{
+
+   var documentSnapshot= await firestore.collection("units").doc('materialUnits').get();
+   return documentSnapshot.data()['units'].cast<String>();
+
+
+   //cast<String>() is very important if this is not included then this erro will 
+   //map<dynamic> is not subtype of map<String>
+
+  
+  }
+
+
+  addBuyMaterialToDb(Materials material)async{
+
+  await FirebaseFirestore.instance.collection("Materials").add(material.toMap()).then((value) =>Fluttertoast.showToast(
+    backgroundColor: Colors.black,
+    msg: "Submited Successfully")).catchError((err)=>Get.defaultDialog(title:'Error', middleText: err.toString(),
+    
+    onConfirm: (){
+    
+      Get.back();
+    
+    },
+    textConfirm: 'OK', 
+    cancelTextColor: Colors.white,
+    ),);
+
+
+  }
+
+
  
 }

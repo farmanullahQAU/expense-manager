@@ -132,10 +132,29 @@ class LaborReportController extends GetxController {
 
                     
                   ),
-                  pw.Text('date created:    '),
+                  pw.Column(
+                    
+                    children: [
+                  
+                    pw.Row(children: [
+                        pw.Text('date created   '),
                 
               
-                 pw.Text(DateFormat.yMd().format(DateTime.now()))] )
+                 pw.Text(DateFormat.yMd().format(DateTime.now()))
+
+
+                    ]),
+
+                    pw.Row(children: [
+                      pw.Text('project-ID   '),
+                    pw.Text(this.selectProjectController.currentProject.value.id.substring(0,4)),
+
+
+                    ]),
+                    
+
+                  ]),
+                ] )
               
              ),
           

@@ -24,6 +24,8 @@ import '../errorHandler.dart';
 import '../pm_hom_botom_Nav_controller.dart';
 import '../pm_home_controller.dart';
 import '../FetchProjectContr/Fetch_Project_Controller.dart';
+import 'package:expense_manager/controllers/MaterialControllers/AddMaterialController.dart';
+
 
 class HomeBinding extends Bindings {
   @override
@@ -56,6 +58,9 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => ProjectContractController());
     Get.lazyPut(() => FetchProjectController());
     Get.lazyPut(() => AddLaborCategoryController());
+    Get.lazyPut(() => AddMaterialController());
+
+    
 
     
 
