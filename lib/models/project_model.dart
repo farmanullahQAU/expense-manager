@@ -60,12 +60,15 @@ class Project {
   List<String> projectPmIds;
   String currExpenses;
   String totalWageAmount;
+  String totalContractAmount;
 
   DocumentReference reference;
 
   Project(
       {this.starDate,
       this.totalWageAmount,
+  this.totalContractAmount,
+
       this.currExpenses,
       this.endDate,
       this.customerRelation,
@@ -90,6 +93,7 @@ class Project {
     var pmIds = map['projectPmIds'];
     List<String> pmIdsList = pmIds.cast<String>();
     this.projectPmIds = pmIdsList;
+    this.totalContractAmount=map['totalContractAmount'];
   }
 
   Project.fromSnapShot(DocumentSnapshot snapshot)
@@ -106,6 +110,9 @@ class Project {
         'projectPmIds': this.projectPmIds,
         'totalWageAmount':
             this.totalWageAmount == null ? "No Wage yet" : this.totalWageAmount,
+          'totalContractAmount':  this.totalContractAmount == null ? "No Contracts" : this.totalWageAmount,
+
+
         'currExpenses':
             this.currExpenses == null ? "No Expenses yet" : this.currExpenses
         // 'projectPmIds': this.projectPmIds.toList(),

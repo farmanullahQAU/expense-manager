@@ -71,6 +71,7 @@ class LaborReportController extends GetxController {
   var contractName = RxString();
   var contractDesc = RxString();
   var totalWageAmount = 0.0.obs;
+  var totalContractsAmounts = 0.0.obs;
 
   //to update the project at that id when  wage added
 
@@ -87,12 +88,20 @@ class LaborReportController extends GetxController {
   }
 
 /*when user add wage to labe that will be also added to the selected project */
-  updateProject() {
+  updateProjectTotalWage() {
     FirebaseFirestore.instance
         .collection("Projects")
         .doc(selectProjectController.currentProject.value.id)
         .update({'totalWageAmount': this.totalWageAmount.toString()});
   }
+
+   updateProjectTotalContractAmount() {
+    FirebaseFirestore.instance
+        .collection("Projects")
+        .doc(selectProjectController.currentProject.value.id)
+        .update({'totalContractAmount': this.totalContractsAmounts.toString()});
+  }
+
 
  /* addLaborContract(DocumentReference reference) async {
     var contract = LaborContract(

@@ -183,16 +183,19 @@ class LabotReport extends GetWidget<LaborReportController> {
                                 .catchError((err) => Fluttertoast.showToast(
                                     backgroundColor: Colors.red,
                                     msg: err.toString()));
-
+//update total wage in database
                             await data.reference.update({
                               'totalWage':
                                   (data.amount * data.daysWorked).toString()
                             }).then((value) {
-                              //to add this total wage to current selected project
                               controller.totalWageAmount.value +=
                                   double.parse(data.totalWage);
-                              controller.updateProject();
-                            });
+                              //to add this total wage to current selected project
+
+                              controller.updateProjectTotalWage();
+                            }
+                            
+                            );
                           },
                           child: Icon(Icons.add)),
                       Text(data.daysWorked.toString())
@@ -205,9 +208,12 @@ class LabotReport extends GetWidget<LaborReportController> {
                       ? InkWell(
                           onTap: () async {
                             data.reference.update({'paymentStatus': true}).then(
-                                (value) => Fluttertoast.showToast(
+                                (value) {
+                                return   Fluttertoast.showToast(
                                     backgroundColor: Colors.black,
-                                    msg: "Submitted "));
+                                    msg: "Submitted ");
+
+                                });
                           },
                           child: Row(
                             children: [
@@ -222,9 +228,14 @@ class LabotReport extends GetWidget<LaborReportController> {
                           onTap: () async {
                             data.reference
                                 .update({'paymentStatus': false}).then(
-                                    (value) => Fluttertoast.showToast(
+                                    (value) {
+
+
+
+                                     return  Fluttertoast.showToast(
                                         backgroundColor: Colors.black,
-                                        msg: "Request Submitted "));
+                                        msg: "Request Submitted ");
+                                    });
                           },
                           child: Row(
                             children: [
@@ -294,9 +305,26 @@ class LabotReport extends GetWidget<LaborReportController> {
                       ? InkWell(
                           onTap: () async {
                             data.reference.update({'paymentStatus': true}).then(
-                                (value) => Fluttertoast.showToast(
+                                (value) {
+
+                                  
+                                   controller.totalContractsAmounts.value +=
+                                   //contract amount 
+                                  data.amount;  
+                                  controller.updateProjectTotalContractAmount();
+                                
+
+                                 return Fluttertoast.showToast(
                                     backgroundColor: Colors.black,
-                                    msg: "Submitted "));
+                                    msg: "Submitted ");
+
+                                   
+
+                                    
+
+
+
+                                } );
                           },
                           child: Row(
                             children: [
@@ -311,9 +339,17 @@ class LabotReport extends GetWidget<LaborReportController> {
                           onTap: () async {
                             data.reference
                                 .update({'paymentStatus': false}).then(
-                                    (value) => Fluttertoast.showToast(
+                                    (value){
+
+//when the user uncheck  C-amount status then the total totalContractsAmounts will be decremented
+ controller.totalContractsAmounts.value -=
+                                   //contract amount 
+                                  data.amount;  
+                                  controller.updateProjectTotalContractAmount();
+                                    return  Fluttertoast.showToast(
                                         backgroundColor: Colors.black,
-                                        msg: "Request Submitted "));
+                                        msg: "Request Submitted ");
+                                    });
                           },
                           child: Row(
                             children: [
