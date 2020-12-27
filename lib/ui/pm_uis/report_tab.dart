@@ -35,7 +35,7 @@ return  InkWell(
               onTap: () {
                 selectedProjCont.currentProject.value == null
                     ? SelectProject().showAdminSelectProjectDialog(context,
-                         "projectReportUi")
+                         "projectReportUi",false)
                     : Get.toNamed('projectReportUi');
               },
             
@@ -49,7 +49,7 @@ return  InkWell(
               onTap: () {
                 selectedProjCont.currentProject.value == null
                     ? SelectProject().showAdminSelectProjectDialog(context,
-                         "projectReportUi")
+                         "projectReportUi",false)
                     : Get.toNamed('projectReportUi');
               },
             
@@ -64,7 +64,7 @@ return  InkWell(
               onTap: () {
                 selectedProjCont.currentProject.value == null
                     ? SelectProject().showCustomerSelectProjectDialog(context,
-                         "projectReportUi")
+                         "projectReportUi",false)
                     : Get.toNamed('projectReportUi');
               },
             
@@ -93,7 +93,7 @@ Obx((){
                 //     : selectPaymentTypeDialog(context);
                 selectedProjCont.currentProject.value == null
                     ? SelectProject().showAdminSelectProjectDialog(context,
-                        "paymentReportUi")
+                        "paymentReportUi",false)
                     : Get.toNamed('paymentReportUi');
               },
             );
@@ -111,7 +111,7 @@ Obx((){
                 //     : selectPaymentTypeDialog(context);
                 selectedProjCont.currentProject.value == null
                     ? SelectProject().showPmSelectProjectDialog(context,
-                        "paymentReportUi")
+                        "paymentReportUi",false)
                     : Get.toNamed('paymentReportUi');
               },
             );
@@ -129,7 +129,7 @@ Obx((){
                 //     : selectPaymentTypeDialog(context);
                 selectedProjCont.currentProject.value == null
                     ? SelectProject().showCustomerSelectProjectDialog(context,
-                        "paymentReportUi")
+                        "paymentReportUi",false)
                     : Get.toNamed('paymentReportUi');
               },
             );
@@ -150,7 +150,7 @@ Obx((){
 
                        selectedProjCont.currentProject.value == null
                     ? SelectProject().showAdminSelectProjectDialog(context,
-                        "")
+                        "",false)
                     : Get.toNamed('paymentReportUi');
 
 
@@ -171,7 +171,7 @@ Obx((){
 
                        selectedProjCont.currentProject.value == null
                     ? SelectProject().showPmSelectProjectDialog(context,
-                        "")
+                        "",false)
 
                         //naviagate to material report
                     : Get.toNamed('paymentReportUi');
@@ -200,7 +200,7 @@ Obx((){
               onTap: () {
   selectedProjCont.currentProject.value == null
                     ? SelectProject().showAdminSelectProjectDialog(context,
-                        "")
+                        "",false)
                         //respective ui
                     : Get.toNamed('paymentReportUi');
 
@@ -227,7 +227,7 @@ Obx((){
 
                   selectedProjCont.currentProject.value == null
                     ? SelectProject().showPmSelectProjectDialog(context,
-                        "")
+                        "",false)
                     : Get.toNamed('paymentReportUi');
               },
               child: addCard(
@@ -254,7 +254,7 @@ Obx((){
               onTap: () {
                 selectedProjCont.currentProject.value == null
                     ? SelectProject().showAdminSelectProjectDialog(context,
-                        "laborReportUi")
+                        "laborReportUi",false)
                     : Get.toNamed('laborReportUi');
               },
               child: addCard(
@@ -274,7 +274,7 @@ Obx((){
               onTap: () {
                 selectedProjCont.currentProject.value == null
                     ? SelectProject().showPmSelectProjectDialog(context,
-                        "laborReportUi")
+                        "laborReportUi",false)
                     : Get.toNamed('laborReportUi');
               },
               child: addCard(

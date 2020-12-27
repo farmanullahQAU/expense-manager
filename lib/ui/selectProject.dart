@@ -2,6 +2,7 @@ import 'package:expense_manager/controllers/select_project_controller.dart';
 import 'package:expense_manager/models/project_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class SelectProject extends GetWidget<SelectProjectController>{
@@ -13,7 +14,9 @@ class SelectProject extends GetWidget<SelectProjectController>{
 
 
 
-   showPmSelectProjectDialog(BuildContext context, String routeName) {
+   showPmSelectProjectDialog(BuildContext context, String routeName, bool isChange
+   
+   ) {
     showDialog(
       useSafeArea: true,
       barrierDismissible: false, //enable and disable outside click
@@ -42,6 +45,7 @@ if(routeName!="")
 
 }
                   }
+                  isChange?Fluttertoast.showToast(msg: "Project Changed", backgroundColor: Colors.black):Fluttertoast.showToast(msg: "Project Selected", backgroundColor: Colors.blue[300]);
                 },
                 child: Text(
                   "Ok",
@@ -124,7 +128,7 @@ if(routeName!="")
       ),
     );
   }
-   showAdminSelectProjectDialog(BuildContext context, String routeName) {
+   showAdminSelectProjectDialog(BuildContext context, String routeName, bool isChange) {
 
 
     showDialog(
@@ -155,6 +159,8 @@ if(routeName!="")
 
 }
                   }
+                  isChange?Fluttertoast.showToast(msg: "Project Changed", backgroundColor: Colors.black):Fluttertoast.showToast(msg: "Project Selected", backgroundColor: Colors.blue[300]);
+
                 },
                 child: Text(
                   "Ok",
@@ -240,7 +246,7 @@ if(routeName!="")
 
 
 
-   showCustomerSelectProjectDialog(BuildContext context, String routeName) {
+   showCustomerSelectProjectDialog(BuildContext context, String routeName ,bool isChange) {
 
 
     showDialog(
@@ -271,6 +277,8 @@ if(routeName!="")
 
 }
                   }
+                  isChange?Fluttertoast.showToast(msg: "Project Changed", backgroundColor: Colors.black):Fluttertoast.showToast(msg: "Project Selected", backgroundColor: Colors.blue[300]);
+
                 },
                 child: Text(
                   "Ok",

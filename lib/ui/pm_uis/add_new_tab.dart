@@ -33,7 +33,7 @@ class AddNew extends GetWidget {
                       selectProjectController.currentProject.value == null
                           /* if the current project is not null then user will be directed to ui */
                           ? SelectProject().showAdminSelectProjectDialog(
-                              context, 'addPaymentUi')
+                              context, 'addPaymentUi', true)
                           : Get.toNamed('addPaymentUi');
                     },
                   ):
@@ -44,7 +44,7 @@ class AddNew extends GetWidget {
                     onTap: () {
                       selectProjectController.currentProject.value == null
                           /* if the current project is not null then user will be directed to ui */
-                          ? SelectProject().showPmSelectProjectDialog(context, 'addPaymentUi')
+                          ? SelectProject().showPmSelectProjectDialog(context, 'addPaymentUi',false)
                           : Get.toNamed('addPaymentUi');
                     },
                   )
@@ -121,7 +121,7 @@ class AddNew extends GetWidget {
                         Icons.photo),
                     onTap: () {
                       selectProjectController.currentProject.value == null
-                          ?SelectProject().showAdminSelectProjectDialog(context, 'fetchImagesUi')
+                          ?SelectProject().showAdminSelectProjectDialog(context, 'fetchImagesUi', false)
                           : Get.toNamed('fetchImagesUi');
                       //  showSelectProjectDialog(context);
                     },
@@ -132,7 +132,7 @@ class AddNew extends GetWidget {
                         Icons.add_a_photo),
                     onTap: () {
                       selectProjectController.currentProject.value == null
-                          ?SelectProject().showPmSelectProjectDialog(context, 'uploadPictureUi')
+                          ?SelectProject().showPmSelectProjectDialog(context, 'uploadPictureUi',false)
                           : Get.toNamed('uploadPictureUi');
                       //  showSelectProjectDialog(context);
                     },
@@ -186,7 +186,7 @@ class AddNew extends GetWidget {
                           ? 
                           
                           
-                          SelectProject().showPmSelectProjectDialog(context, 'addLaborUi')
+                          SelectProject().showPmSelectProjectDialog(context, 'addLaborUi',false)
                           
                           : Get.toNamed('addLaborUi');
                     },
