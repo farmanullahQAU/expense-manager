@@ -170,20 +170,17 @@ class SelectUsr extends SearchDelegate {
                                 ),
                                 imageUrl: receivers.photoUrl,
                                 errorWidget: (context, url, error) =>
-                                    Icon(Icons.account_circle, size: 80),
+                                    CircleAvatar(
+                                      backgroundColor: Colors.green,
+                                      child: Icon(
+                                      Icons.account_circle, size: 50)),
                                 imageBuilder: (context, imageProvider) =>
                                     CircleAvatar(
                                   backgroundColor: Colors.white,
                                   backgroundImage: imageProvider,
                                 ),
                               )
-                            : CircleAvatar(
-                                backgroundColor: Color(0xffE6E6E6),
-                                child: Icon(
-                                  Icons.person,
-                                  color: Color(0xffCCCCCC),
-                                ),
-                              ),
+                            : Container(width: 0.0,height: 0.0,),
 
                         /*date account created*/
                         trailing: Text(

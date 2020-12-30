@@ -19,6 +19,8 @@ import 'package:expense_manager/ui/admin_ui/project_contracts.dart';
 import 'package:expense_manager/ui/FetchProject.dart';
 import 'package:expense_manager/ui/uploads_images/fetch_images.dart';
 import 'package:expense_manager/ui/Materials/addMaterail.dart';
+import 'package:expense_manager/ui/invitation.dart';
+import 'package:expense_manager/ui/Chat/search_user.dart';
 
 import 'package:get/get.dart';
 
@@ -114,6 +116,19 @@ class RouterClass {
       name: '/addMaterialUi',
       page: () => AddMaterial(),
     ),
+     GetPage(
+      binding: HomeBinding(),
+      name: '/invitationUi',
+      page: () => Invitation(),
+    ),
+     GetPage(
+      binding: HomeBinding(),
+      name: '/searchUsr',
+      page: () => SearchUsr(),
+    ),
+
+
+    
     
     
     

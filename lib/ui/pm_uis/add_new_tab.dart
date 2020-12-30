@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:expense_manager/controllers/select_project_controller.dart';
+import 'package:expense_manager/controllers/AddCustPmController.dart';
 
 import '../selectProject.dart';
 
@@ -14,6 +15,7 @@ class AddNew extends GetWidget {
   var selectProjectController = Get.put(SelectProjectController());
   var usrController = Get.find<UsrController>();
   var addLaborCategoryController = AddLaborCategoryController();
+ var custOrPm=Get.find< AddCustomerOrpmController>() ;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +79,10 @@ class AddNew extends GetWidget {
                   child: addCard(context, Theme.of(context).primaryColor,
                       'Project-Manager', Icons.person_add),
                   onTap: () {
-                    //  Get.toNamed('addCustomer');
+
+                    //add usr with userType project manager by admin
+                    custOrPm.pmOrCustomer.value="Project manager";
+                  Get.toNamed('addCustomer');
                   },
                 ):
             
@@ -85,6 +90,9 @@ class AddNew extends GetWidget {
                   child: addCard(context, Theme.of(context).primaryColor,
                       'Customer', Icons.person_add),
                   onTap: () {
+                    //add usr with userType project manager by Project manager 
+
+                    custOrPm.pmOrCustomer.value="Customer";
                     Get.toNamed('addCustomer');
                   },
                 )
@@ -150,7 +158,7 @@ class AddNew extends GetWidget {
               () => usrController.currentUsr.value.userType == "Admin"
                   ? InkWell(
                       onTap: () {
-                        //    Get.to(PaymentReport());
+                           Get.toNamed('searchUsr');
                       },
                       child: addCard(
                         context,

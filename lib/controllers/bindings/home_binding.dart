@@ -16,6 +16,7 @@ import 'package:expense_manager/controllers/ReportsController/pdf_viewer_control
 import 'package:expense_manager/controllers/Admin/projectContractController.dart';
 
 import 'package:get/instance_manager.dart';
+import 'package:expense_manager/controllers/NotificationPlugin/pushNotification.dart';
 
 import 'package:get/get.dart';
 
@@ -25,6 +26,8 @@ import '../pm_hom_botom_Nav_controller.dart';
 import '../pm_home_controller.dart';
 import '../FetchProjectContr/Fetch_Project_Controller.dart';
 import 'package:expense_manager/controllers/MaterialControllers/AddMaterialController.dart';
+import 'package:expense_manager/controllers/AddCustPmController.dart';
+import 'package:expense_manager/controllers/invitationController.dart';
 
 
 class HomeBinding extends Bindings {
@@ -59,6 +62,15 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => FetchProjectController());
     Get.lazyPut(() => AddLaborCategoryController());
     Get.lazyPut(() => AddMaterialController());
+    Get.lazyPut(() => FirebasePushNotificationService());
+    Get.lazyPut(() => AddCustomerOrpmController());
+    Get.lazyPut(() => InvitationController());
+
+    
+
+    
+
+    
 
     
 

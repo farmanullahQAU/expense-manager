@@ -12,6 +12,7 @@ class Login1 extends GetWidget<AuthController> {
 
   @override
   Widget build(BuildContext context) {
+   
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,

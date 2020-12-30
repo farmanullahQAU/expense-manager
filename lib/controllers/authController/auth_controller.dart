@@ -120,7 +120,6 @@ class AuthController extends GetxController {
 
     } on FirebaseAuthException catch (error) {
       this.roundLoadingLoginContr.value.stop();
-      print('login error');
       print(error.toString());
       String erroMessage = handleError(error);
       // Get.snackbar('Error!', erroMessage, snackPosition: SnackPosition.TOP);

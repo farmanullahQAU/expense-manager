@@ -7,6 +7,8 @@ import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/ui/pm_uis/report_tab.dart';
 import 'package:expense_manager/ui/pm_uis/viewTab.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:expense_manager/controllers/AddCustPmController.dart';
+
 
 import 'package:expense_manager/models/project_model.dart';
 import 'package:expense_manager/controllers/select_project_controller.dart';
@@ -22,6 +24,7 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
   var usrController = Get.put(UsrController());
   var profileController = Get.put(ProfileController());
   var selectProjectController = Get.find<SelectProjectController>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +186,8 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
 }
 
 class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
+ var custOrPm=Get.find< AddCustomerOrpmController>() ;
+
   TabController _tabController;
   var selectProjectController = Get.find<SelectProjectController>();
   var usrController = Get.put(UsrController());
@@ -218,11 +223,11 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                                   IconButton(
                                     icon: Icon(Icons.check_box_outlined),
                                     onPressed: () {
-                                      Obx(() {
+                                    
                                         if (usrController
                                                 .currentUsr.value.userType ==
                                             "Admin") {
-                                          return SelectProject()
+                                           SelectProject()
                                               .showAdminSelectProjectDialog(
                                                   context, '', true);
                                         } else {
@@ -230,7 +235,7 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                                               .showPmSelectProjectDialog(
                                                   context, '',true);
                                         }
-                                      });
+                                      
                                     },
                                   ),
                                 ],
@@ -244,19 +249,19 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                                         Icons.check_box_outline_blank_rounded),
                                     onPressed: () {
 
-                                       Obx(() {
+                                       
                                         if (usrController
                                                 .currentUsr.value.userType ==
                                             "Admin") {
-                                          return SelectProject()
+                                           SelectProject()
                                               .showAdminSelectProjectDialog(
                                                   context, '',false);
                                         } else {
-                                          return SelectProject()
+                                        SelectProject()
                                               .showPmSelectProjectDialog(
                                                   context, '',false);
                                         }
-                                      });
+                                      
                                       
                                     },
                                   ),
@@ -604,7 +609,7 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
           children: [
             InkWell(
               child: addCustomerHomePageCard(
-                  context, Colors.green, 'Project Report', Icons.person),
+                  context, Colors.green, 'Project Report', Icons.graphic_eq_outlined),
               onTap: () {
                 selectProjectController.currentProject.value == null
                     ? SelectProject().showCustomerSelectProjectDialog(
@@ -642,7 +647,15 @@ class PmHomeTabNav extends GetWidget<PmHomeTabNavController> {
                     : Get.toNamed('fetchImagesUi');
                 //  showSelectProjectDialog(context);
               },
-            )
+            ),
+              InkWell(
+                  child: addCustomerHomePageCard(context, Theme.of(context).primaryColor,
+                      'Message', Icons.chat_bubble_outline),
+                  onTap: () {
+
+                Get.toNamed('searchUsr');
+                  },
+                )
           ],
         ));
   }

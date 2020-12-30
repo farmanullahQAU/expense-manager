@@ -20,10 +20,11 @@ class Root extends GetWidget {
   Widget build(BuildContext context) {
     return GetX(
       builder: (_) {
+
+        
         if (authController.firebaseLoggedInuser.value != null) {
           return Splash();
         } else {
-          print('login page');
           return Login1();
         }
       },
@@ -45,25 +46,29 @@ class Splash extends GetWidget<UsrController> {
           },
           builder: (_) {
             if (authController.firebaseLoggedInuser.value == null) {
-              print('login 2');
               return Login1();
             }
-            if (controller.currentUsr.value.userType == "Project manager") {
-              controller.usrType.value = controller.currentUsr.value.userType;
+            else  if (controller.currentUsr.value.userType!=null) 
               return PmHomeBottomNav();
-            }
-            if (controller.currentUsr.value.userType == "Admin") {
-              controller.usrType.value = controller.currentUsr.value.userType;
 
-              return PmHomeBottomNav();
-            }
+            
+            // if (controller.currentUsr.value.userType == "Project manager") {
+            //   controller.usrType.value = controller.currentUsr.value.userType;
+            //   return PmHomeBottomNav();
+            // }
+            // if (controller.currentUsr.value.userType == "Admin") {
+            //   controller.usrType.value = controller.currentUsr.value.userType;
+
+            //   return PmHomeBottomNav();
+            // }
 
 
-            if (controller.currentUsr.value.userType == "Customer") {
-              controller.usrType.value = controller.currentUsr.value.userType;
+            // if (controller.currentUsr.value.userType == "Customer") {
+            //   controller.usrType.value = controller.currentUsr.value.userType;
 
-              return PmHomeBottomNav();
-            }
+            //   return PmHomeBottomNav();
+            // }
+            else
             return Center(
               //     child: SpinKitFadingCircle(
               //       size: ,

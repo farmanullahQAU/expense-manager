@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_manager/controllers/authController/auth_error_handler_controller.dart';
 import 'package:expense_manager/models/material_model.dart';
@@ -12,8 +11,14 @@ import 'package:expense_manager/models/labor_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
+import 'package:expense_manager/models/tokenModel.dart';
+
 
 class Database {
+
+final FirebaseMessaging _fcm = FirebaseMessaging();
+
+
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   CollectionReference projec =
       FirebaseFirestore.instance.collection('projects');
@@ -29,8 +34,7 @@ class Database {
         .doc(usr.id)
         .set(usr.toMap())
         .catchError((error) {
-      print('create New user error');
-      print(error.toString());
+      
       String errorMessage = handleError(error);
     });
   }
@@ -50,6 +54,23 @@ class Database {
         .get()
         .catchError((error) {});
     return Usr.fromMap(documentSnapshot.data());
+  }
+  getDeviceToken(String usrId)async{
+  
+
+     String fcmToken = await _fcm.getToken();
+        print('llllllllllllllllllll');
+        print(fcmToken);
+       var fcmTokenRef=usrs.doc(usrId).collection("tokens").doc(fcmToken);
+       
+       await fcmTokenRef.set(TokenModel(
+
+         token: fcmToken,createdAt: FieldValue.serverTimestamp()
+       
+       
+       ).toJson()
+       );
+  
   }
 
 /*

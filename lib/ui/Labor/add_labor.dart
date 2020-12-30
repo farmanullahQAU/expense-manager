@@ -135,7 +135,6 @@ class AddLabor extends GetWidget<AddLaborController> {
             ),
             onInputChanged: (PhoneNumber number) {
               controller.number.value = number;
-              print(controller.number.value = number);
             },
             onInputValidated: (bool value) {
               controller.isValidPhone.value =

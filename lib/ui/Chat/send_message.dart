@@ -4,9 +4,23 @@ import 'package:expense_manager/controllers/ChatController/send_message_controll
 import 'package:expense_manager/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_chat_bubble/bubble_type.dart';
+import 'package:flutter_chat_bubble/bubble_type.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_10.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_2.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_3.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_4.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_6.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_7.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_8.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_9.dart';
 
 class SendMessage extends GetWidget<SendMessageController> {
   var sendM = Get.put(SendMessageController);
@@ -17,6 +31,7 @@ class SendMessage extends GetWidget<SendMessageController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+
           appBar: AppBar(
             //app bar title
             title: Text(
@@ -51,7 +66,7 @@ class SendMessage extends GetWidget<SendMessageController> {
                 children: [
                   Column(
                     children: [
-                      createListMessage(),
+                      createListMessage(context),
                       //show stickers
                       //  controller.isEmojiOpen?createSticker():Container(),
                       createInput(),
@@ -67,6 +82,7 @@ class SendMessage extends GetWidget<SendMessageController> {
 
   createInput() {
     return Container(
+    
       child: Row(
         children: [
           //send image button
@@ -125,7 +141,7 @@ class SendMessage extends GetWidget<SendMessageController> {
     );
   }
 
-  createListMessage() {
+  createListMessage(BuildContext context) {
     controller.setChatId();
     return Flexible(
         child: controller.chatId.value == ""
@@ -138,7 +154,7 @@ class SendMessage extends GetWidget<SendMessageController> {
                     .collection("messages")
                     .doc(controller.chatId.value)
                     .collection(controller.chatId.value)
-                    .orderBy("timestamp", descending: true)
+                    .orderBy("timestamp", descending: false)
                     .limit(20)
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -153,31 +169,47 @@ class SendMessage extends GetWidget<SendMessageController> {
                         itemCount: snapshot.data.docs.length, //check it out
                         padding: EdgeInsets.all(10.0),
                         itemBuilder: (BuildContext context, int index) =>
-                            createItems(index, snapshot.data.docs[index]));
+                            createItems(index, snapshot.data.docs[index], context));
                   }
                 }));
   }
 
   createSticker() {}
 
-  createItems(int index, QueryDocumentSnapshot doc) {
+  createItems(int index, QueryDocumentSnapshot doc, BuildContext context) {
     if (doc.data()["idFrom"] == this.controller.sender.value.id) {
       return Row(
         children: [
           doc.data()["type"] == 0
               ?
-              //textMessages
-              Container(
-                  child: Text(doc.data()["content"],
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w500)),
-                  padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                  width: 200,
-                  decoration: BoxDecoration(
-                      color: Colors.lightBlueAccent,
-                      borderRadius: BorderRadius.circular(8.0)),
-                  margin: EdgeInsets.only(
-                      bottom: isLastMsgRight(index) ? 20.0 : 10.0, right: 10.0))
+              //textMessages container sender
+              // Container(
+              //     child: Text(doc.data()["content"],
+              //         style: TextStyle(
+              //             color: Colors.white, fontWeight: FontWeight.w500)),
+              //     padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+              //     width: 200,
+              //     decoration: BoxDecoration(
+              //         color: Colors.lightBlueAccent,
+              //         borderRadius: BorderRadius.circular(8.0)),
+              //     margin: EdgeInsets.only(
+              //         bottom: isLastMsgRight(index) ? 20.0 : 10.0, right: 10.0))
+              ChatBubble(
+        clipper: ChatBubbleClipper1(type: BubbleType.sendBubble),
+        alignment: Alignment.topRight,
+        margin: EdgeInsets.only(top: 20),
+        backGroundColor: Colors.blue,
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.7,
+          ),
+          child: Text(
+            doc.data()["content"],
+          
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      )
               : doc.data()["type"] == 1
                   ? Container(
                       child: FlatButton(
@@ -259,9 +291,13 @@ class SendMessage extends GetWidget<SendMessageController> {
                             width: 35.0,
                             height: 35.0,
                           ),
-                          width: 35.0,
-                          height: 35.0,
+                         
                           fit: BoxFit.cover,
+                           imageBuilder: (context, imageProvider) =>
+                                    CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  backgroundImage: imageProvider,
+                                ),
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(8.0)))
                     : Container(
@@ -272,22 +308,39 @@ class SendMessage extends GetWidget<SendMessageController> {
                 doc.data()["type"] == 0
                     ?
                     //textMessages
-                    Container(
-                        child: Text(doc.data()["content"],
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400)),
-                        padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
-                        width: 200,
-                        decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(8.0)),
-                        margin: EdgeInsets.only(
-                          left: 10.0,
-                        ) //
+                    // Container(
+                      
+                    //     child: Text(doc.data()["content"],
+                    //         style: TextStyle(
+                    //             color: Colors.black,
+                    //             fontWeight: FontWeight.w400)),
+                    //     padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
+                    //     width: 200,
+                    //     decoration: BoxDecoration(
+                    //         color: Colors.yellowAccent,
+                    //         borderRadius: BorderRadius.circular(8.0)),
+                    //     margin: EdgeInsets.symmetric(horizontal: 10,
+                    //       vertical: 10.0,
+                    //     ) //
 
-                        ) /////////
-                    : doc.data()["type"] == 1
+                    //     )
+                         /////////
+                        ChatBubble(
+    clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
+    backGroundColor: Color(0xffE7E7ED),
+    margin: EdgeInsets.only(top: 20),
+    child: Container(
+      constraints: BoxConstraints(
+        maxWidth: context.width,
+      ),
+      child: Text(
+        doc.data()["content"],
+        style: TextStyle(color: Colors.black),
+      ),
+    ),
+  )
+
+                    : doc.data()["type"] == 1  //if the recived message is image
                         ? Container(
                             child: FlatButton(
                               onPressed: () {
@@ -307,7 +360,7 @@ class SendMessage extends GetWidget<SendMessageController> {
                                     decoration: BoxDecoration(
                                       color: Colors.grey,
                                       borderRadius: BorderRadius.all(
-                                          Radius.circular(8.0)),
+                                          Radius.circular(20.0)),
                                     ),
                                   ),
                                   errorWidget: (context, url, error) =>
@@ -354,7 +407,7 @@ class SendMessage extends GetWidget<SendMessageController> {
                         fontStyle: FontStyle.italic,
                       ),
                     ),
-                    margin: EdgeInsets.only(left: 50, top: 50, bottom: 5.0),
+                    margin: EdgeInsets.only(left: 50, top: 0.0, bottom: 5.0),
                   )
                 : Container()
           ],
