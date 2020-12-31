@@ -8,6 +8,8 @@ import 'package:expense_manager/ui/pm_uis/report_tab.dart';
 import 'package:expense_manager/ui/pm_uis/viewTab.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:expense_manager/controllers/AddCustPmController.dart';
+import 'package:expense_manager/controllers/Admin/changeLogoController.dart';
+
 
 
 import 'package:expense_manager/models/project_model.dart';
@@ -24,6 +26,8 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
   var usrController = Get.put(UsrController());
   var profileController = Get.put(ProfileController());
   var selectProjectController = Get.find<SelectProjectController>();
+  var changeLogoController=Get.find<ChangeLogoController>();
+
 
 
   @override
@@ -113,11 +117,18 @@ class PmHomeBottomNav extends GetWidget<PmHomeBottomNavController> {
                   ),
                 ),
               ),
-              ListTile(
-                onTap: () {},
+           Obx(()=> usrController.currentUsr.value.userType=="Admin"?
+            ListTile(
+                onTap: () {
+changeLogoController.choseImage();
+              
+                },
                 leading: Icon(Icons.add_a_photo),
-                title: Text('Upload Images'),
-              ),
+                title: Text('Update Logo'),
+              ):Container(width: 0.0,height: 0.0,)
+           
+           
+           )  ,
               ListTile(
                 leading: Icon(Icons.account_circle),
                 title: Text('Profile'),

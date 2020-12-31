@@ -3,6 +3,7 @@ import 'package:expense_manager/controllers/user_controller.dart';
 import 'package:expense_manager/db_services/database.dart';
 import 'package:expense_manager/ui/add_customer.dart';
 import 'package:expense_manager/ui/admin_ui/login1.dart';
+import 'package:expense_manager/controllers/Admin/changeLogoController.dart';
 
 import 'package:expense_manager/ui/pm_uis/pm_home.dart';
 
@@ -12,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:expense_manager/models/user_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Root extends GetWidget {
   var authController = Get.find<AuthController>();
@@ -34,6 +36,7 @@ class Root extends GetWidget {
 
 class Splash extends GetWidget<UsrController> {
   var authController = Get.find<AuthController>();
+  var changeLogoController=Get.find<ChangeLogoController>();
 
   @override
   Widget build(BuildContext context) {
@@ -75,34 +78,96 @@ class Splash extends GetWidget<UsrController> {
               //   color: Theme.of(context).primaryColor,
               // )
 
-              child: SizedBox(
-                width: 200.0,
-                height: 100.0,
-                child: Shimmer.fromColors(
-                  baseColor: Colors.green,
-                  highlightColor: Colors.yellow,
-                  child: Column(
-                    children: [
-                      SpinKitFadingCircle(
-                        size: 50,
-                        color: Theme.of(context).primaryColor,
+              // child: SizedBox(
+              //   width: 200.0,
+              //   height: 100.0,
+              //   child: Shimmer.fromColors(
+              //     baseColor: Colors.green,
+              //     highlightColor: Colors.yellow,
+              //     child: Column(
+              //       children: [
+              //         SpinKitFadingCircle(
+              //           size: 50,
+              //           color: Theme.of(context).primaryColor,
+              //         ),
+              //         Text(
+              //           'Loading Profile...',
+              //           textAlign: TextAlign.center,
+              //           style: TextStyle(
+              //             fontSize: 20.0,
+              //             fontWeight: FontWeight.bold,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+
+              child:Obx(()=>changeLogoController.photoUrl.value!=null?
+                             Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                  
+                    CachedNetworkImage(
+                      placeholder:(context, str)=>addSpinkitLoader(context) ,
+                       width: 150,
+                        height: 150,
+                      
+                      errorWidget:(context,url,err)=>addSpinkitLoader(context)
+                      
+                       ,
+                      imageBuilder:(BuildContext context, imag)=> CircleAvatar(
+                        backgroundImage: imag,
+                        backgroundColor: Colors.black,
                       ),
-                      Text(
-                        'Loading Profile...',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
+                      imageUrl:changeLogoController.photoUrl.value),
+                       SpinKitRipple(
+                          size: 90,
+                          color: Theme.of(context).primaryColor,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      
+                  ],
+
+                  //if url is null then show image from assets
+
+
+                ):CircleAvatar(
+                  
+                  
+                  radius: 100.0,
+                  backgroundColor: Colors.transparent,
+  backgroundImage: AssetImage('images/launchsplash.png'),
+  
+
+),
               ),
             );
           },
         ),
       ),
     );
+  }
+
+
+ Widget addSpinkitLoader(BuildContext context)
+  {
+    return SizedBox(
+                width: 200.0,
+                height: 100.0,
+                child: Shimmer.fromColors(
+                  baseColor: Colors.blue,
+                  highlightColor: Colors.yellow,
+                  child: Column(
+                    children: [
+                      SpinKitRipple(
+                        size: 90,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                     
+                    ],
+                  ),
+                ),
+              );
+
   }
 }

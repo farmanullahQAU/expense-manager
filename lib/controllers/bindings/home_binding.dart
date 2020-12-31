@@ -28,6 +28,7 @@ import '../FetchProjectContr/Fetch_Project_Controller.dart';
 import 'package:expense_manager/controllers/MaterialControllers/AddMaterialController.dart';
 import 'package:expense_manager/controllers/AddCustPmController.dart';
 import 'package:expense_manager/controllers/invitationController.dart';
+import 'package:expense_manager/controllers/Admin/changeLogoController.dart';
 
 
 class HomeBinding extends Bindings {
@@ -65,6 +66,9 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => FirebasePushNotificationService());
     Get.lazyPut(() => AddCustomerOrpmController());
     Get.lazyPut(() => InvitationController());
+    Get.lazyPut(() => ChangeLogoController());
+
+    
 
     
 

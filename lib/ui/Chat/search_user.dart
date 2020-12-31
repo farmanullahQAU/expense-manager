@@ -151,7 +151,8 @@ class SelectUsr extends SearchDelegate {
     return res.isEmpty
         ? Text('no data fount')
         : StreamBuilder(
-            stream: FirebaseFirestore.instance.collection("users").snapshots(),
+          //get all usrs except current logged in usr
+            stream: FirebaseFirestore.instance.collection("users").where('id',isNotEqualTo:usrController.currentUsr.value.id ).snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasData) {
@@ -159,63 +160,87 @@ class SelectUsr extends SearchDelegate {
                   children: snapshot.data.docs.map((usrObj) {
                     var receivers = Usr.fromMap(usrObj.data());
 
-                    return ListTile(
-                        leading: receivers.photoUrl != null
-                            ? CachedNetworkImage(
-                                width: 50,
-                                height: 50,
-                                placeholder: (BuildContext context, _) =>
-                                    CircularProgressIndicator(
-                                  strokeWidth: 2.0,
-                                ),
-                                imageUrl: receivers.photoUrl,
-                                errorWidget: (context, url, error) =>
-                                    CircleAvatar(
-                                      backgroundColor: Colors.green,
-                                      child: Icon(
-                                      Icons.account_circle, size: 50)),
-                                imageBuilder: (context, imageProvider) =>
-                                    CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  backgroundImage: imageProvider,
-                                ),
-                              )
-                            : Container(width: 0.0,height: 0.0,),
+                   // return Obx((){
 
-                        /*date account created*/
-                        trailing: Text(
-                            DateFormat.yMMMd().format(
-                              FirebaseAuth
-                                  .instance.currentUser.metadata.creationTime,
+                      //if current usr is customer than it will not send message to admin or other customers
+                    ////  if(usrController.currentUsr.value.userType=="Customer"&&receivers.userType=="Admin"||receivers.userType=="Customer")
+                  //  return Container(width: 0.0,height: 0.0,);
+                      // // else
+                      // // //admin can't send message to customers
+                       if(usrController.currentUsr.value.userType=="Admin"&&receivers.userType=="Customer")
+                       return Container(width: 0.0,height: 0.0);
+                       else
+                                         return  ListTile(
+                          leading: receivers.photoUrl != null
+                              ? CachedNetworkImage(
+                                  width: 50,
+                                  height: 50,
+                                  placeholder: (BuildContext context, _) =>
+                                      CircularProgressIndicator(
+                                    strokeWidth: 2.0,
+                                  ),
+                                  imageUrl: receivers.photoUrl,
+                                  errorWidget: (context, url, error) =>
+                                      // CircleAvatar(
+                                      //   backgroundColor: Colors.green,
+                                      //   child: Icon(
+                                      //   Icons.account_circle, size: 50)
+                                        
+                                      //   ),
+                                        CircleAvatar(
+                                        backgroundColor: Colors.blue,
+                                        child: Text(
+                                        
+                                          receivers.name.substring(0,2).toUpperCase(), style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20.0),
+                                        )
+                                        
+                                        ),
+                                  imageBuilder: (context, imageProvider) =>
+                                      CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    backgroundImage: imageProvider,
+                                  ),
+                                )
+                              : Container(width: 0.0,height: 0.0,),
+
+                          /*date account created*/
+                          trailing: Text(
+                              DateFormat.yMMMd().format(
+                                FirebaseAuth
+                                    .instance.currentUser.metadata.creationTime,
+                              ),
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(0.3),
+                              )),
+                          subtitle: Text(
+                            receivers.userType,
+                            style: GoogleFonts.lobsterTwo(
+                              textStyle: TextStyle(
+                                  color: Colors.blue, letterSpacing: .2),
                             ),
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.3),
-                            )),
-                        subtitle: Text(
-                          receivers.userType,
-                          style: GoogleFonts.lobsterTwo(
-                            textStyle: TextStyle(
-                                color: Colors.blue, letterSpacing: .2),
                           ),
-                        ),
-                        //  leading:
-                        onTap: () {
-                          print(receivers.id);
-                          //tap on listTile of all get receivers profile
-                          query = receivers.name;
-                          //set receiver and sender in  controller
-                          sendMessageController.receiver.value = receivers;
-                          sendMessageController.sender.value =
-                              usrController.currentUsr.value;
+                          //  leading:
+                          onTap: () {
+                            print(receivers.id);
+                            //tap on listTile of all get receivers profile
+                            query = receivers.name;
+                            //set receiver and sender in  controller
+                            sendMessageController.receiver.value = receivers;
+                            sendMessageController.sender.value =
+                                usrController.currentUsr.value;
 
-                          Get.toNamed('/sendMessageUi');
+                            Get.toNamed('/sendMessageUi');
 
-                          query = ""; //when user back search bar wilk be empty
-                        },
-                        title: Text(receivers.name));
+                            query = ""; //when user back search bar wilk be empty
+                          },
+                          title: Text(receivers.name));
+                  //  }
+                   // );
                   }).toList(),
                 );
               }
