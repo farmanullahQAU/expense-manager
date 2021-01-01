@@ -59,8 +59,8 @@ class Project {
   ProjectContracts projectContract;
   List<String> projectPmIds;
   String currExpenses;
-  String totalWageAmount;
-  String totalContractAmount;
+  double totalWageAmount;
+  double totalContractAmount;
 
   DocumentReference reference;
 
@@ -81,7 +81,7 @@ class Project {
 
   Project.fromMap(Map<String, dynamic> map, {this.reference}) {
     this.currExpenses = map['currExpenses'];
-    this.totalWageAmount = map['totalWageAmount'];
+    this.totalWageAmount=double.parse(map['totalWageAmount']);
     this.starDate = map['starDate'];
     this.endDate = map['endDate'];
     this.id = map['id'];
@@ -93,7 +93,9 @@ class Project {
     var pmIds = map['projectPmIds'];
     List<String> pmIdsList = pmIds.cast<String>();
     this.projectPmIds = pmIdsList;
-    this.totalContractAmount=map['totalContractAmount'];
+
+    this.totalContractAmount=double.parse(map['totalContractAmount']);
+
   }
 
   Project.fromSnapShot(DocumentSnapshot snapshot)
@@ -109,12 +111,12 @@ class Project {
         'projectContract': this.projectContract.toMap(),
         'projectPmIds': this.projectPmIds,
         'totalWageAmount':
-            this.totalWageAmount == null ? "No Wage yet" : this.totalWageAmount,
-          'totalContractAmount':  this.totalContractAmount == null ? "No Contracts" : this.totalWageAmount,
+            this.totalWageAmount == null ?0.0 : this.totalWageAmount,
+          'totalContractAmount':  this.totalContractAmount == null ?0.0 : this.totalWageAmount,
 
 
         'currExpenses':
-            this.currExpenses == null ? "No Expenses yet" : this.currExpenses
+            this.currExpenses == this.currExpenses
         // 'projectPmIds': this.projectPmIds.toList(),
       };
 }

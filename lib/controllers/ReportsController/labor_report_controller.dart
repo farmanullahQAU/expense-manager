@@ -32,10 +32,14 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 
 import 'package:expense_manager/models/labor_model.dart';
 import 'package:expense_manager/controllers/ReportsController/pdf_viewer_controller.dart';
+import 'package:expense_manager/controllers/user_controller.dart';
 
 class LaborReportController extends GetxController {
+
+ //  final documentReference=Rx<DocumentReference>();
   var selectProjectController = Get.find<SelectProjectController>();
   var pdfViewrController = Get.find<PdfViewrController>();
+  var usrController=Get.find<UsrController>();
 
   var isLoading = true.obs;
   var document = PDFDocument(); //to view pdf
@@ -49,20 +53,7 @@ class LaborReportController extends GetxController {
   var currFilterOption = "".obs;
   var sort = false.obs;
 
-  /*add New labor contract */
 
-  // var contractDetailsTextController = TextEditingController().obs;
-  // var contractNameTextController = TextEditingController().obs;
-  // var selectedProjectController = Get.find<SelectProjectController>();
-
-  // TextEditingController amountTextEditingController = TextEditingController();
-  // final phoneNumberTextController = TextEditingController().obs;
-  // final nameTextController = TextEditingController().obs;
-  // final addressTextController = TextEditingController().obs;
-  // final laborTypeTextController = TextEditingController().obs;
-  // final contractDetailsFormKey = GlobalKey<FormState>().obs;
-
-  /*add New labor contract */
 
   var address = RxString();
   var name = RxString();
@@ -70,8 +61,14 @@ class LaborReportController extends GetxController {
   var amount = RxDouble();
   var contractName = RxString();
   var contractDesc = RxString();
-  var totalWageAmount = 0.0.obs;
-  var totalContractsAmounts = 0.0.obs;
+  var currExpenses=0.0.obs;
+
+
+/* total contracts sum of a single project */
+  var totalContractsAmounts=RxDouble();
+  /*total wages sum of a single project */
+ var totalWagesAmount=RxDouble();
+
 
   //to update the project at that id when  wage added
 
@@ -85,22 +82,39 @@ class LaborReportController extends GetxController {
     ));
     allContractors.bindStream(Database()
         .getAllContractLabors(selectProjectController.currentProject.value.id));
+
+        
+    totalContractsAmounts.bindStream(Database().getAllContractCost(selectProjectController
+    .currentProject.value.id));
+    totalWagesAmount.bindStream(Database().getAllWagesCost(selectProjectController
+    .currentProject.value.id));
   }
 
 /*when user add wage to labe that will be also added to the selected project */
-  updateProjectTotalWage() {
+  updateProjectTotalWage()  {
     FirebaseFirestore.instance
         .collection("Projects")
         .doc(selectProjectController.currentProject.value.id)
-        .update({'totalWageAmount': this.totalWageAmount.toString()});
+        .update({'totalWageAmount': this.totalWagesAmount.toString()}).then((value) => Fluttertoast
+        .showToast(msg: "Request Submitted", backgroundColor:Colors.blue));
   }
 
    updateProjectTotalContractAmount() {
-    FirebaseFirestore.instance
+     FirebaseFirestore.instance
         .collection("Projects")
         .doc(selectProjectController.currentProject.value.id)
-        .update({'totalContractAmount': this.totalContractsAmounts.toString()});
+        .update({'totalContractAmount': this.totalContractsAmounts.toString()}).then((value) =>
+         Fluttertoast.showToast(msg: 'Requested Submitted',backgroundColor: Colors.blue));
   }
+  updateCurrExpense(){
+
+    //update current total expenses inide of that project 
+   FirebaseFirestore.instance.collection("Projects").doc(selectProjectController
+    .currentProject.value.id).update({'currExpenses':(this.totalWagesAmount.value+this.totalContractsAmounts.value).toString()});
+
+
+  }
+ 
 
 
  /* addLaborContract(DocumentReference reference) async {
@@ -185,7 +199,6 @@ class LaborReportController extends GetxController {
                       labor.laborType,
                       labor.amount.toString(),
                       labor.daysWorked.toString(),
-                      labor.totalWage,
                       labor.paymentStatus == false ? "Not Paid" : "Payed"
                     ])
               ]),
@@ -198,6 +211,7 @@ class LaborReportController extends GetxController {
                   "Type",
                   "Contract",
                   "C-Amount",
+                  "Days-Worked"
                   "Pay-Status"
                 
                 ],

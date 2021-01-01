@@ -13,9 +13,12 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../pm_home_controller.dart';
 import 'auth_error_handler_controller.dart';
+import 'package:expense_manager/controllers/select_project_controller.dart';
+
 //addd
 class AuthController extends GetxController {
   final roundLoadingLoginContr = new RoundedLoadingButtonController().obs;
+  
 
   // void initDynamicLinks() async {
   //   FirebaseDynamicLinks.instance.onLink(
@@ -150,6 +153,8 @@ class AuthController extends GetxController {
 
       userController.clear();
       pmHomeTabNavController.clear();
+      Get.find<SelectProjectController>().currentProject.value=null;
+      //if we not do this
       //to remove logged in user from cache locally
       Get.back();
     } on FirebaseAuthException catch (err) {

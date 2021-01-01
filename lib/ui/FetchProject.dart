@@ -239,7 +239,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Labor Wages:'),
-                        Text(project.totalWageAmount)
+                        Text(project.totalWageAmount.toString())
                       ],
                     ),
                   ),
@@ -323,7 +323,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Labor Wages:'),
-                        Text(project.totalWageAmount)
+                        Text(project.totalWageAmount.toString())
                       ],
                     ),
                   ),
@@ -335,7 +335,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Total Contracts:'),
-                        Text(project.totalContractAmount)
+                        Text(project.totalContractAmount.toString())
                       ],
                     ),
                   ),
@@ -437,7 +437,7 @@ class FetchProject extends GetWidget<FetchProjectController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Labor Wages:'),
-                        Text(project.totalWageAmount)
+                        Text(project.totalWageAmount.toString())
                       ],
                     ),
                   ),

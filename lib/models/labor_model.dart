@@ -33,11 +33,11 @@ class Labor {
   String paymentType;
   double amount;
   int daysWorked;
-  String totalWage;
   LaborContract contract;
 
   //To fetch all labor of a project we have used array of projectIds
-  List<String> laborProjectIds;
+ // List<String> laborProjectIds;
+ String laborProjectIds;
 
   Labor(
       {this.name,
@@ -50,7 +50,6 @@ class Labor {
       this.contract,
       this.daysWorked,
       this.laborProjectIds,
-      this.totalWage,
       this.reference});
 
   /* Labor.fromMap(Map<String, dynamic> map, {this.reference}) {
@@ -77,7 +76,6 @@ class Labor {
     this.paymentType = map['paymentType'];
     this.amount = map['amount'];
     this.daysWorked = map['daysWorked'];
-    this.totalWage = map['totalWage'];
     this.paymentStatus = map['paymentStatus'];
 
     // if (map['contract'] != null) {
@@ -89,10 +87,10 @@ class Labor {
       this.contract=  map['contract'] != null ? LaborContract.fromMap(map['contract']) : null;
 
 
-    var projIds = map['laborProjectIds'];
+  this.laborProjectIds = map['laborProjectIds'];
 
-    List<String> projIdsList = projIds.cast<String>();
-    this.laborProjectIds = projIdsList;
+    // List<String> projIdsList = projIds.cast<String>();
+    // this.laborProjectIds = projIdsList;
   }
 
   Labor.fromSnapShot(DocumentSnapshot snapshot)
@@ -106,7 +104,6 @@ class Labor {
         'paymentType': paymentType,
         'paymentStatus': paymentStatus == null ? false : true,
         'amount': amount,
-        'totalWage': totalWage ?? "0.0",
         'daysWorked': this.daysWorked ?? 0,
       /*  'contract': this.contract != null
             ? contract.map((labor) => labor.toMap()).toList()

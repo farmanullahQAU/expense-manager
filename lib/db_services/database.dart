@@ -383,11 +383,54 @@ final FirebaseMessaging _fcm = FirebaseMessaging();
       return payments;
     });
   }
+  getAllContractCost(String projId){
+    //total of all contracts amount of a single project
+   return  firestore.collection("Projects").where('id',isEqualTo:projId ).limit(1).snapshots().map((querySnapshot) {
+var project=Project();
+var total=0.0;
+querySnapshot.docs.forEach((queryDocumentSnapshot ){
+  project=Project.fromSnapShot(queryDocumentSnapshot);
+  total=project.totalContractAmount;
+
+
+
+}
+);
+
+return total;
+
+
+
+
+    });
+  }
+  getAllWagesCost(String projId){
+    //total of all contracts amount of a single project
+   return  firestore.collection("Projects").where('id',isEqualTo:projId ).limit(1).snapshots().map((querySnapshot) {
+var project=Project();
+var total=0.0;
+querySnapshot.docs.forEach((queryDocumentSnapshot ){
+  project=Project.fromSnapShot(queryDocumentSnapshot);
+  total=project.totalWageAmount;
+
+
+
+}
+);
+
+return total;
+
+
+
+
+    });
+  }
+  
 
   getAllWager(String projectId) {
     return FirebaseFirestore.instance
         .collection('Labors')
-        .where('laborProjectIds', arrayContains: projectId)
+        .where('laborProjectIds', isEqualTo: projectId)
         .where("paymentType", isEqualTo: "Daily-Wage-Base")
         .snapshots()
         .map((event) {
@@ -403,7 +446,7 @@ final FirebaseMessaging _fcm = FirebaseMessaging();
   getAllContractLabors(String projectId) {
     return FirebaseFirestore.instance
         .collection('Labors')
-        .where('laborProjectIds', arrayContains: projectId)
+        .where('laborProjectIds', isEqualTo: projectId)
         .where("paymentType", isEqualTo: "Contract-Base")
         .snapshots()
         .map((event) {
@@ -419,7 +462,7 @@ final FirebaseMessaging _fcm = FirebaseMessaging();
   getAllLabors(String projectId) {
     return FirebaseFirestore.instance
         .collection('Labors')
-        .where('laborProjectIds', arrayContains: projectId)
+        .where('laborProjectIds', isEqualTo: projectId)
         .snapshots()
         .map((event) {
       var labor = List<Labor>();
@@ -430,6 +473,7 @@ final FirebaseMessaging _fcm = FirebaseMessaging();
       return labor;
     }); //.handleError((error) => Fluttertoast.showToast(msg: error.toString()));
   }
+
 
   // getAllContractLabors(String projectI) {
   //   return FirebaseFirestore.instance

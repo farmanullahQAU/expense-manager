@@ -84,7 +84,7 @@ class RouterClass {
     GetPage(
       binding: HomeBinding(),
       name: '/projectReportUi',
-      page: () => ProjectReprot(),
+      page: () => ProjectReport(),
     ),
     GetPage(
       binding: HomeBinding(),

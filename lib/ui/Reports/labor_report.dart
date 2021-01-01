@@ -10,8 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:expense_manager/controllers/user_controller.dart';
 
 class LabotReport extends GetWidget<LaborReportController> {
+  var usrController=Get.find<UsrController>();
   // savePdf() async {
   //   final file = File("example.pdf");
   //   await file.writeAsBytes(pdf.save());
@@ -168,7 +170,12 @@ class LabotReport extends GetWidget<LaborReportController> {
                 DataCell(
                   Row(
                     children: [
+
+                      //admin can't add working day
+                      usrController.currentUsr.value.userType=="Customer"||usrController.
+                      currentUsr.value.userType=="Admin"?Container(width: 0.0,height: 0.0,):
                       FloatingActionButton(
+                      child: Icon(Icons.add),
                           heroTag: data.reference.id,
                           tooltip: "Add Working Day",
                           backgroundColor: Get.isDarkMode
@@ -176,76 +183,82 @@ class LabotReport extends GetWidget<LaborReportController> {
                               : Colors.green,
                           onPressed: () async {
                             await data.reference
-                                .update({'daysWorked': FieldValue.increment(1)})
-                                .then((value) => Fluttertoast.showToast(
-                                    backgroundColor: Colors.green,
-                                    msg: "Working day Addedd Successfully"))
+                                .update({'daysWorked': FieldValue.increment(1),
+                                })
+
+                                
                                 .catchError((err) => Fluttertoast.showToast(
                                     backgroundColor: Colors.red,
                                     msg: err.toString()));
-//update total wage in database
-                            await data.reference.update({
-                              'totalWage':
-                                  (data.amount * data.daysWorked).toString()
-                            }).then((value) {
-                              controller.totalWageAmount.value +=
-                                  double.parse(data.totalWage);
-                              //to add this total wage to current selected project
-
-                              controller.updateProjectTotalWage();
-                            }
                             
-                            );
-                          },
-                          child: Icon(Icons.add)),
+                             
+                          }),
+
+                          //show amount payable in ui no in database
                       Text(data.daysWorked.toString())
                     ],
                   ),
                 ),
-                DataCell(Text(data.totalWage)),
+                DataCell(Text((data.daysWorked*data.amount).toString())),
+            
                 DataCell(
-                  data.paymentStatus == false
-                      ? InkWell(
-                          onTap: () async {
-                            data.reference.update({'paymentStatus': true}).then(
-                                (value) {
-                                return   Fluttertoast.showToast(
-                                    backgroundColor: Colors.black,
-                                    msg: "Submitted ");
+                  
 
-                                });
-                          },
-                          child: Row(
-                            children: [
-                              data.paymentStatus == true
-                                  ? Text('Paid')
-                                  : Text('Not Payed'),
-                              Icon(Icons.check_box_outline_blank_rounded)
-                            ],
-                          ),
-                        )
-                      : InkWell(
-                          onTap: () async {
-                            data.reference
-                                .update({'paymentStatus': false}).then(
+                  Row(
+                    children: [
+                     
+                      
+                      data.daysWorked!=0?
+                      data.paymentStatus == false
+                          ? InkWell(
+                              onTap: () async {
+                                data.reference.update({'paymentStatus': true}).then(
                                     (value) {
+                                      controller.totalWagesAmount.value +=
+                                      data.daysWorked*data.amount;
+                                      controller.updateProjectTotalWage();
+                                   
+
+                                    }
+                                    
+                                    );
+                              },
+                              child: Row(
+                                children: [
+                                  data.paymentStatus == true
+                                      ? Text('Paid')
+                                      : Text('Not Payed'),
+                                  Icon(Icons.check_box_outline_blank_rounded)
+                                ],
+                              ),
+                            )
+                          : InkWell(
+
+                              onTap: usrController.currentUsr.value.userType=="Admin"||usrController.currentUsr.value.userType=="Customer"?null:
+                              () async {
+                                data.reference
+                                    .update({'paymentStatus': false}).then(
+                                        (value) {
+                                          //fix it
+                                           controller.totalWagesAmount.value -=data.daysWorked*data.amount;
+                                      controller.updateProjectTotalWage();
 
 
 
-                                     return  Fluttertoast.showToast(
-                                        backgroundColor: Colors.black,
-                                        msg: "Request Submitted ");
-                                    });
-                          },
-                          child: Row(
-                            children: [
-                              data.paymentStatus == true
-                                  ? Text('Paid')
-                                  : Text('Not Payed'),
-                              Icon(Icons.check_box_outlined)
-                            ],
-                          ),
-                        ),
+                                        
+                                        });
+                              },
+                              child: Row(
+                                children: [
+                                  data.paymentStatus == true
+                                      ? Text('Paid')
+                                      : Text('Not Payed'),
+                                  Icon(Icons.check_box_outlined)
+                                ],
+                              ),
+                            ):Text('No-Record'),
+                    ],
+                  ),
                 ),
               ]))
           .toList(),
@@ -305,13 +318,16 @@ class LabotReport extends GetWidget<LaborReportController> {
                       ? InkWell(
                           onTap: () async {
                             data.reference.update({'paymentStatus': true}).then(
-                                (value) {
+                                (value)async {
 
                                   
                                    controller.totalContractsAmounts.value +=
                                    //contract amount 
                                   data.amount;  
-                                  controller.updateProjectTotalContractAmount();
+                            //  controller.currExpenses.value+=controller.totalWageAmount.value;
+
+                                await  controller.updateProjectTotalContractAmount();
+                              await  controller.updateCurrExpense();
                                 
 
                                  return Fluttertoast.showToast(
@@ -336,16 +352,20 @@ class LabotReport extends GetWidget<LaborReportController> {
                           ),
                         )
                       : InkWell(
-                          onTap: () async {
+                          onTap: ()  {
                             data.reference
                                 .update({'paymentStatus': false}).then(
-                                    (value){
+                                    (value)async{
 
-//when the user uncheck  C-amount status then the total totalContractsAmounts will be decremented
- controller.totalContractsAmounts.value -=
+/*when the user uncheck  C-amount status then the total totalContractsAmounts 
+will be decrement by that amount*/
+ controller.totalContractsAmounts.value-=data.amount;
+
                                    //contract amount 
-                                  data.amount;  
-                                  controller.updateProjectTotalContractAmount();
+                                  
+                                 await controller.updateProjectTotalContractAmount();
+                              await  controller.updateCurrExpense();
+
                                     return  Fluttertoast.showToast(
                                         backgroundColor: Colors.black,
                                         msg: "Request Submitted ");

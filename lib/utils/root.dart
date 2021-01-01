@@ -104,9 +104,7 @@ class Splash extends GetWidget<UsrController> {
               // ),
 
               child:Obx(()=>changeLogoController.photoUrl.value!=null?
-                             Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                             
                   
                     CachedNetworkImage(
                       placeholder:(context, str)=>addSpinkitLoader(context) ,
@@ -117,21 +115,19 @@ class Splash extends GetWidget<UsrController> {
                       
                        ,
                       imageBuilder:(BuildContext context, imag)=> CircleAvatar(
+                  backgroundColor: Colors.transparent,
                         backgroundImage: imag,
-                        backgroundColor: Colors.black,
                       ),
-                      imageUrl:changeLogoController.photoUrl.value),
-                       SpinKitRipple(
-                          size: 90,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                      imageUrl:changeLogoController.photoUrl.value)
                       
-                  ],
+                      
+            
 
                   //if url is null then show image from assets
 
 
-                ):CircleAvatar(
+            :CircleAvatar
+                (
                   
                   
                   radius: 100.0,
@@ -151,23 +147,20 @@ class Splash extends GetWidget<UsrController> {
 
  Widget addSpinkitLoader(BuildContext context)
   {
-    return SizedBox(
-                width: 200.0,
-                height: 100.0,
-                child: Shimmer.fromColors(
-                  baseColor: Colors.blue,
-                  highlightColor: Colors.yellow,
-                  child: Column(
-                    children: [
-                      SpinKitRipple(
-                        size: 90,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                     
-                    ],
-                  ),
-                ),
-              );
+    print('spinkit');
+    return Shimmer.fromColors(
+      baseColor: Colors.blue,
+      highlightColor: Colors.yellow,
+      child: Column(
+        children: [
+          SpinKitRipple(
+            size: 50.0,
+            color: Theme.of(context).primaryColor,
+          ),
+         
+        ],
+      ),
+    );
 
   }
 }

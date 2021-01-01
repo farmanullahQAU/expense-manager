@@ -51,9 +51,9 @@ class AddLaborController extends GetxController {
   
 
     var laborObj = Labor(
-        laborProjectIds: [
-          Get.find<SelectProjectController>().currentProject.value.id
-        ],
+        laborProjectIds: 
+          Get.find<SelectProjectController>().currentProject.value.id,
+      
         name: this.name.value,
         laborType: currLaborType.value.laborType,
         paymentType: this.currPaymentType.value,
